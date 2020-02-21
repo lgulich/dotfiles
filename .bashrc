@@ -114,3 +114,5 @@ fi
 
 
 source ~/.bashrc_config
+export VISUAL=/usr/bin/vim
+export EDITOR=/usr/bin/bim
