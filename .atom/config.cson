@@ -9,7 +9,7 @@
     ]
     telemetryConsent: "no"
   editor:
-    fontSize: 11
+    fontSize: 12
   "exception-reporting":
     userId: "9e58c3f2-18ed-4f43-a330-93869ccb327e"
   "tree-view": {}
