@@ -112,7 +112,55 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# Make bash autocomplete with up arrow.
+bind '"\e[A":history-search-backward'
+bind '"\e[B":history-search-forward'
 
-source ~/.bashrc_config
+# Make cd act like pushd
+function cd() {
+  if [ "$#" = "0" ]
+  then
+  pushd ${HOME} > /dev/null
+  elif [ -f "${1}" ]
+  then
+    ${EDITOR} ${1}
+  else
+  pushd "$1" > /dev/null
+  fi
+}
+
+function bd(){
+  if [ "$#" = "0" ]
+  then
+    popd > /dev/null
+  else
+    for i in $(seq ${1})
+    do
+      popd > /dev/null
+    done
+  fi
+}
+
+
+alias lsn="ls -lhtr --time-style long-iso | tac | cat -n | tac | sed -s 's/^\s*\([0-9]*\)\s*\(.*\)/[\1]  \2 [\1]/'g && pwd"
+function lfn() {
+    if [ "x${1}" == "x" ]
+    then
+        n=1 
+    else
+        n="${1}"
+    fi  
+    ls -rt1 | tail -n ${n} | head -n 1
+}
+
+export PATH="/usr/lib/ccache:$PATH"
+export CXX="g++-8"
+
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+
 export VISUAL=/usr/bin/vim
 export EDITOR=/usr/bin/bim
+
+
+
