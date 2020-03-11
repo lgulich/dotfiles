@@ -154,7 +154,7 @@ function lfn() {
 }
 
 export PATH="/usr/lib/ccache:$PATH"
-export CXX="g++-8"
+export CXX="g++-9"
 
 source /opt/ros/melodic/setup.bash
 source ~/catkin_ws/devel/setup.bash
