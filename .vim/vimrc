@@ -1,20 +1,31 @@
-" Plugins
+"  ------------------
+"  - Plugin Manager -
+"  ------------------
 set nocompatible
 filetype off
-
 set rtp+=~/.vim/bundle/Vundle.vim
+
+"  ------------------
+"  - Vundle Plugins -
+"  ------------------
 call vundle#begin()
 
-Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'scrooloose/nerdtree'
 Plugin 'joshdick/onedark.vim'
-
+Plugin 'scrooloose/nerdtree'
+Plugin 'chiel92/vim-autoformat'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'yuki-ycino/fzf-preview.vim'
 
 call vundle#end()
 filetype plugin indent on
 
-" Remap keys
+"  --------------
+"  - Remap keys -
+"  --------------
 :imap jj <ESC>
+:map <CTRL><ALT>l :Autoformat
+
 
 " Additional
 "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
@@ -33,17 +44,82 @@ if (empty($TMUX))
   endif
 endif
 
-" Colorscheme
+" --------------
+" - Colorscheme-
+" --------------
 syntax on
 colorscheme onedark
 
-" NERDTree
+" --------------
+" -  NERDTree  -
+" --------------
+map <C-n> :NERDTreeToggle<CR>
+
+" Show NERDTree when opening directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-map <C-n> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-" General
+" Show file previews in NERDTree
+let g:nerd_preview_enabled = 0
+let g:preview_last_buffer  = 0
+
+function! NERDTreePreview()
+  " Only on nerdtree window
+  if (&ft ==# 'nerdtree')
+    " Get filename
+    let l:filename = substitute(getline("."), "^\\s\\+\\|\\s\\+$","","g")
+
+    " Preview if it is not a folder
+    let l:lastchar = strpart(l:filename, strlen(l:filename) - 1, 1)
+    if (l:lastchar != "/" && strpart(l:filename, 0 ,2) != "..")
+
+      let l:store_buffer_to_close = 1
+      if (bufnr(l:filename) > 0)
+        " Don't close if the buffer is already open
+        let l:store_buffer_to_close = 0
+      endif
+
+      " Do preview
+      execute "normal go"
+
+      " Close previews buffer
+      if (g:preview_last_buffer > 0)
+        execute "bwipeout " . g:preview_last_buffer
+        let g:preview_last_buffer = 0
+      endif
+
+      " Set last buffer to close it later
+      if (l:store_buffer_to_close)
+        let g:preview_last_buffer = bufnr(l:filename)
+      endif
+    endif
+  elseif (g:preview_last_buffer > 0)
+    " Close last previewed buffer
+    let g:preview_last_buffer = 0
+  endif
+endfunction
+
+function! NERDTreePreviewToggle()
+  if (g:nerd_preview_enabled)
+    let g:nerd_preview_enabled = 0
+    augroup nerdpreview
+      autocmd!
+    augroup END
+  else
+    let g:nerd_preview_enabled = 1
+    augroup nerdpreview
+      autocmd!
+      autocmd CursorMoved * nested call NERDTreePreview()
+    augroup END
+  endif
+endfunction
+
+call NERDTreePreviewToggle()
+
+"  -----------
+"  - General -
+"  -----------
 if has("autocmd")
 	  au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
 	    au InsertEnter,InsertChange *
