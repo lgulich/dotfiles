@@ -1,4 +1,4 @@
-SCRIPT_DIR="$(dirname -- "$0")"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Run tmux if exists.
 if command -v tmux>/dev/null; then
@@ -13,9 +13,9 @@ fi
 
 
 echo "Checking for updates..."
-({cd ~/dotfiles && git fetch -q} &> /dev/null)
+git -C "$SCRIPT_DIR" fetch -q &> /dev/null 
 
-if [ $({cd ~/dotfiles} &> /dev/null && git rev-list HEAD...origin/master | wc -l) = 0 ]
+if [ $(git -C "$SCRIPT_DIR" rev-list HEAD...origin/master | wc -l) = 0 ]
 then
 	echo "Already up to date."
 else
