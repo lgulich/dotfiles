@@ -17,6 +17,7 @@ ZSH_CUSTOM="$SCRIPT_DIR"
 plugins=(
   vi-mode
   git
+  zsh-autosuggestions
 )
 source "$ZSH"/oh-my-zsh.sh
 
@@ -24,7 +25,6 @@ source "$ZSH"/oh-my-zsh.sh
 source "$SCRIPT_DIR"/util.sh
 source "$SCRIPT_DIR"/aliases.sh
 source "$SCRIPT_DIR"/keybindings.sh
-source "$SCRIPT_DIR"/prompt.sh
 
 # Load Powerlevel10k config. To reconfigure run `p10k configure`
 [[ ! -f "$SCRIPT_DIR"/p10k.zsh ]] || source "$SCRIPT_DIR"/p10k.zsh

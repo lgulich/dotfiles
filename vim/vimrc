@@ -13,7 +13,7 @@ call vundle#begin()
 Plugin 'joshdick/onedark.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'chiel92/vim-autoformat'
-Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf' 
 Plugin 'junegunn/fzf.vim'
 Plugin 'yuki-ycino/fzf-preview.vim'
 
