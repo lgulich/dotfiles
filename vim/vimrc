@@ -3,7 +3,7 @@
 "  ------------------
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/dotfiles/vim/bundle/Vundle.vim
 
 "  ------------------
 "  - Vundle Plugins -
