@@ -3,21 +3,19 @@
 "  ------------------
 set nocompatible
 filetype off
-set rtp+=~/dotfiles/vim/bundle/Vundle.vim
+set rtp+=~/dotfiles/vim/vim_plug
 
-"  ------------------
-"  - Vundle Plugins -
-"  ------------------
-call vundle#begin()
-
-Plugin 'joshdick/onedark.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'chiel92/vim-autoformat'
-Plugin 'junegunn/fzf' 
-Plugin 'junegunn/fzf.vim'
-Plugin 'yuki-ycino/fzf-preview.vim'
-
-call vundle#end()
+"  -----------
+"  = Plugins =
+"  -----------
+call plug#begin('~/.vim/plugged')
+Plug 'joshdick/onedark.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'chiel92/vim-autoformat'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'yuki-ycino/fzf-preview.vim'
+call plug#end()
 
 "  -----------
 "  - General -
