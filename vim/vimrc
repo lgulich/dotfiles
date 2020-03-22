@@ -14,8 +14,8 @@ Plug 'joshdick/onedark.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'yuki-ycino/fzf-preview.vim'
-Plug 'Chiel92/vim-autoformat'
+Plug 'chiel92/vim-autoformat'
+Plug 'ycm-core/YouCompleteMe', {'do': './install.py --clangd-completer'}
 
 " C-style languages
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
@@ -47,7 +47,8 @@ set textwidth=80
 "  - Remap keys -
 "  --------------
 :imap jj <ESC>
-:noremap <F3> :Autoformat<CR>
+:map <F3> :Autoformat<CR>
+:map <C-t> :Files<CR>
 
 " --------------
 " - Colorscheme-
