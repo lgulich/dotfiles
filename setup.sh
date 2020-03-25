@@ -4,7 +4,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Install dependencies
 sudo apt-get update
-sudo apt-get install -y git vim tmux zsh
+sudo apt-get install -y git vim tmux zsh curl
 
 # Check that zsh is used.
 if [[ ! "$SHELL" =~ .*zsh.* ]]; then
@@ -30,9 +30,6 @@ echo "source-file $SCRIPT_DIR/tmux/tmux.conf" > ~/.tmux.conf
 echo "source ~/.vimrc" > ~/.ideavimrc
 
 ln -fs "$SCRIPT_DIR"/i3/config ~/.config/i3/config
-
-rm -rf ~/.atom
-ln -fs "$SCRIPT_DIR"/.atom ~/.atom
 
 # Install vim plugins.
 vim +PluginInstall +qall
