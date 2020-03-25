@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # ROS & Ascento aliases
 alias cda='cd ~/catkin_ws/src/ascento'
 alias cdc='cd ~/catkin_ws'
@@ -15,7 +17,7 @@ alias gc='git commit'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias srcbashrc='source ~/.bashrc'
+alias cd='cd_and_ls'
 
 # Setup Clion for catkin metapackages. Use like so:
 # $ update-clion-ws you_metapackage_name

@@ -34,6 +34,7 @@ if has("autocmd")
         \ endif
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
+set autoread " Detect when a file has changed
 
 " Indentation and text width
 set tabstop=2
@@ -42,6 +43,17 @@ set shiftround
 set expandtab
 set autoindent
 set textwidth=80
+set colorcolumn=81 " VLine at 80
+
+" Line numbering
+set ruler
+set number
+set relativenumber
+set showcmd
+
+" Minimal lines above and below caret
+set scrolloff=5
+
 
 "  --------------
 "  - Remap keys -
@@ -80,7 +92,6 @@ map <C-n> :NERDTreeToggle<CR>
 " Show NERDTree when opening directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Show file previews in NERDTree
 let g:nerd_preview_enabled = 0

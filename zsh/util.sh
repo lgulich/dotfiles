@@ -1,5 +1,7 @@
-function cd() {
-  builtin cd "$1" && ls -a
+#!/bin/zsh
+
+function cd_and_ls() {
+  cd "$1" && ls 
 }
 
 function add_sudo() {
