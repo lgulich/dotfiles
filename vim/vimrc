@@ -18,6 +18,7 @@ Plug 'chiel92/vim-autoformat'
 Plug 'ycm-core/YouCompleteMe', {'do': './install.py --clangd-completer'}
 
 " C-style languages
+Plug 'kgreenek/vim-ros-ycm' " Creates ycm_extra_conf for catkin
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 call plug#end()
 
@@ -43,7 +44,6 @@ set shiftround
 set expandtab
 set autoindent
 set textwidth=80
-set colorcolumn=81 " VLine at 80
 
 " Line numbering
 set ruler
@@ -88,10 +88,6 @@ colorscheme onedark
 " -  NERDTree  -
 " --------------
 map <C-n> :NERDTreeToggle<CR>
-
-" Show NERDTree when opening directory
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " Show file previews in NERDTree
 let g:nerd_preview_enabled = 0
