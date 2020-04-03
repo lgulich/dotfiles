@@ -1,3 +1,6 @@
+# Load .profile
+[ -f ~/.profile ] && source ~/.profile
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -28,3 +31,6 @@ source "$SCRIPT_DIR"/keybindings.sh
 
 # Load Powerlevel10k config. To reconfigure run `p10k configure`
 [[ ! -f "$SCRIPT_DIR"/p10k.zsh ]] || source "$SCRIPT_DIR"/p10k.zsh
+
+# Load fzf fuzzyfinder.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

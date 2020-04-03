@@ -4,7 +4,16 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Install dependencies
 sudo apt-get update
-sudo apt-get install -y git vim tmux zsh curl
+sudo apt-get install -y \
+  cmake \
+  curl \
+  git \
+  i3 \
+  python3 \
+  python3-pip \
+  vim \
+  tmux \
+  zsh
 
 # Check that zsh is used.
 if [[ ! "$SHELL" =~ .*zsh.* ]]; then
@@ -12,6 +21,7 @@ if [[ ! "$SHELL" =~ .*zsh.* ]]; then
   echo
   if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
     chsh -s "$(which zsh)"
+    echo "Log out for actions to take change!"
   fi
 fi
 
@@ -29,7 +39,12 @@ echo "source $SCRIPT_DIR/vim/vimrc" > ~/.vimrc
 echo "source-file $SCRIPT_DIR/tmux/tmux.conf" > ~/.tmux.conf
 echo "source ~/.vimrc" > ~/.ideavimrc
 
+mkdir -p ~/.config/i3
 ln -fs "$SCRIPT_DIR"/i3/config ~/.config/i3/config
 
+# Load gnome terminal settings
+dconf reset -f /org/gnome/terminal
+dconf load /org/gnome/terminal < "$SCRIPT_DIR"/terminal/gnome_terminal_settings.txt
+
 # Install vim plugins.
-vim +PluginInstall +qall
+vim +PlugInstall +qall

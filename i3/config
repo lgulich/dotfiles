@@ -90,8 +90,10 @@ bindsym $mod+Shift+0 move container to workspace 10
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
+
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
+
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
@@ -126,36 +128,47 @@ bindsym $mod+r mode "resize"
 bar {
   status_command i3status
     colors {
-      background #333953
+      background #282C34
+      statusline #ABB2BF
     }
 }
+
+# Colors
+client.focused          #98C379 #282C34 #282C34 #61AFEF #98C370 
+client.focused_inactive #282C34 #282C34 #282C34 #61AFEF #282C34 
+client.unfocused        #282C34 #282C34 #282C34 #61AFEF #282C34
+
+
+# Border layout
+for_window [class="^.*"] border pixel 3
 
 ## VARIA
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
-new_window 1pixel
+
 
 ## STARTUP OPTIONS
-workspace 1 output DisplayPort-0
-workspace 2 output DisplayPort-1
-workspace 3 output DisplayPort-0
-workspace 4 output DisplayPort-1
-workspace 5 output DisplayPort-0
-workspace 6 output DisplayPort-1
-workspace 7 output DisplayPort-0
-workspace 8 output DisplayPort-1
-workspace 9 output DisplayPort-0
-workspace 0 output DisplayPort-1
+set $display1 DP-4-8
+set $display2 DP-4-1
+workspace 1 output $display1
+workspace 2 output $display2
+workspace 3 output $display1
+workspace 4 output $display2
+workspace 5 output $display1
+workspace 6 output $display2
+workspace 7 output $display1
+workspace 8 output $display2
+workspace 9 output $display1
+workspace 0 output $display2
 
 # Assign programs to workspaces
-assign [class="firefox"] 2
-for_window [class="Spotify"] move to workspace 3
+for_window [class="Spotify"] move to workspace 10
 assign [class="atom"] 3
 assign [class="clion"] 5
 
-exec gnome-terminal
-exec firefox
+exec gnome-terminal workspace 1
+exec firefox workspace 2
 exec i3-msg workspace 1
 
 ## MEDIA BUTTONS

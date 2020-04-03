@@ -9,6 +9,7 @@ alias setup_ghostrobot='export ROS_MASTER_URI=http://10.42.0.100:11311; export R
 
 # Git aliases
 alias nah='git reset --hard; git clean -df;'
+alias gch='git checkout'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'

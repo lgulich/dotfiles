@@ -1,0 +1,11 @@
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(40,44,52)'
+use-theme-colors=false
+cursor-shape='ibeam'
+visible-name='lionel'
+foreground-color='rgb(171,178,191)'
+use-system-font=false
+font='MesloLGS NF 12'
+
+[legacy]
+schema-version=uint32 3

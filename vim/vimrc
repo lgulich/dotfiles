@@ -54,7 +54,6 @@ set showcmd
 " Minimal lines above and below caret
 set scrolloff=5
 
-
 "  --------------
 "  - Remap keys -
 "  --------------
@@ -82,7 +81,12 @@ if (empty($TMUX))
 endif
 
 syntax on
-colorscheme onedark
+try
+  colorscheme onedark
+catch /^Vim\%((\a\+)\)\=:E185/
+  colorscheme default
+  set background=dark
+endtry
 
 " --------------
 " -  NERDTree  -
@@ -147,7 +151,7 @@ endfunction
 call NERDTreePreviewToggle()
 
 "  ---------------
-"  - headerguard -
+"  - Headerguard -
 "  ---------------
 function! g:HeaderguardName()
   let project_name = expand('%:p:gs@.*include/\(.*\)/.*@\1@g')
@@ -161,3 +165,7 @@ function! g:HeaderguardLine3()
   return "#endif  // " . g:HeaderguardName() . ""
 endfunction
 
+"  --------------
+"  - ROS config -
+"  --------------
+autocmd BufRead,BufNewFile *.launch setfiletype xml
