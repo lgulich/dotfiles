@@ -1,9 +1,6 @@
 [submodule "zsh/plugins/ohmyzsh"]
 	path = zsh/plugins/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh.git
-[submodule "vim/bundle/Vundle.vim"]
-	path = vim/bundle/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
 [submodule "zsh/themes/powerlevel10k"]
 	path = zsh/themes/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k.git
