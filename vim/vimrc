@@ -15,9 +15,10 @@ Plug 'scrooloose/nerdtree'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'chiel92/vim-autoformat'
-Plug 'ycm-core/YouCompleteMe', {'do': './install.py --clangd-completer'}
+" Plug 'ycm-core/YouCompleteMe', {'do': './install.py --clangd-completer'}
 
 " C-style languages
+Plug 'bfrg/vim-cpp-modern'
 Plug 'kgreenek/vim-ros-ycm' " Creates ycm_extra_conf for catkin
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 call plug#end()
@@ -60,6 +61,7 @@ set scrolloff=5
 :imap jj <ESC>
 :map <F3> :Autoformat<CR>
 :map <C-t> :Files<CR>
+:command MakeTags !ctags -R .
 
 " --------------
 " - Colorscheme-

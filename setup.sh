@@ -3,17 +3,26 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Install dependencies
-sudo apt-get update
-sudo apt-get install -y \
-  cmake \
-  curl \
-  git \
-  i3 \
-  python3 \
-  python3-pip \
-  vim \
-  tmux \
-  zsh
+if [ "$OSTYPE" == "linux-gnu" ]; then
+  sudo apt-get update && sudo apt-get install -y \
+    cmake \
+    curl \
+    git \
+    i3 \
+    python3 \
+    python3-pip \
+    vim \
+    tmux \
+    zsh
+elif [ "$OSTYPE" == "darwin" ]; then
+  brew install \
+    cmake \
+    curl \
+    git \
+    tmux \
+    vim \
+    zsh 
+fi
 
 # Check that zsh is used.
 if [[ ! "$SHELL" =~ .*zsh.* ]]; then
