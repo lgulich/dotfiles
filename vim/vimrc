@@ -19,6 +19,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug '907th/vim-auto-save'
 
 " C-style languages
 Plug 'bfrg/vim-cpp-modern'
@@ -32,6 +33,7 @@ call plug#end()
 "  - General -
 "  -----------
 set autoread " Detect when a file has changed
+set noswapfile " Disable swap files
 
 " Indentation and text width
 set tabstop=2
@@ -61,18 +63,28 @@ if has("autocmd")
         \ endif
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
+
 "  --------------
 "  - Remap keys -
 "  --------------
-:imap jj <ESC>
-:map <F3> :Autoformat<CR>
-:map <C-t> :Files<CR>
-:map <F5> :call CurtineIncSw()<CR>
+" Exit insert mode.
+imap jj <ESC>
+" Autoformat file.
+map <F3> :Autoformat<CR>
+" Switch between header / implementation file.
+map <F5> :call CurtineIncSw()<CR>
+" Fzf find file.
+map <C-t> :Files<CR>
+" Replace all occurrences of word under carret.
+nmap <Leader>s :%s/\<<C-r><C-w>\>/
+" Toggle NERDtree browser.
+map <C-n> :NERDTreeToggle<CR>
 
 "  ----------------
 "  - New Commands -
 "  ----------------
-:command MakeTags !ctags -R .<CR>
+"Create tags in current directory.
+command MakeTags !ctags -R .<CR> 
 
 " --------------
 " - Colorscheme-
@@ -101,11 +113,14 @@ catch /^Vim\%((\a\+)\)\=:E185/
   set background=dark
 endtry
 
-" --------------
-" -  NERDTree  -
-" --------------
-map <C-n> :NERDTreeToggle<CR>
+" ------------------
+" - vim-auto-save -
+" ------------------
+let g:auto_save = 1 " Enable autosave on startup.
 
+" ------------
+" - NERDTree -
+" ------------
 " Show file previews in NERDTree
 let g:nerd_preview_enabled = 0
 let g:preview_last_buffer  = 0
