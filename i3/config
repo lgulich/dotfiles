@@ -3,7 +3,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:SourceCodePro 8
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -168,7 +168,7 @@ assign [class="atom"] 3
 assign [class="clion"] 5
 
 exec gnome-terminal workspace 1
-exec firefox workspace 2
+exec brave-browser workspace 2
 exec i3-msg workspace 1
 
 ## MEDIA BUTTONS
