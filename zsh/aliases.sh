@@ -13,7 +13,8 @@ alias gch='git checkout'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
-alias gpublish='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
+alias gpublish='git_publish_branch'
+alias gclean='git_clean_up_branches'
 
 # File browsing aliases
 alias ll='ls -alF'
@@ -24,4 +25,3 @@ alias cd='cd_and_ls'
 # Setup Clion for catkin metapackages. Use like so:
 # $ update-clion-ws you_metapackage_name
 alias update-clion-ws='rm -rf ~/clion_ws/ && python ~/Documents/editors_tools/init_clion.py -c ~/ -n ~/clion_ws -w ~/catkin_ws'
-

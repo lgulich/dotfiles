@@ -1,4 +1,5 @@
 # Modifier key
+# Mod1=alt, Mod4=cmd
 set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -160,16 +161,24 @@ workspace 6 output $display2
 workspace 7 output $display1
 workspace 8 output $display2
 workspace 9 output $display1
-workspace 0 output $display2
+workspace 10 output $display2
 
 # Assign programs to workspaces
+assign [class="Brave-browser"] 2
+assign [class="Atom"] 3
+assign [class="Clion"] 5
+assign [class="Franz"] 10
 for_window [class="Spotify"] move to workspace 10
-assign [class="atom"] 3
-assign [class="clion"] 5
 
+assign [class="gazebo"] 6
+assign [class="rviz"] 6
+assign [class="rqt_reconfigure"] 6
+
+# Start up programs
+exec i3-msg workspace 1
 exec gnome-terminal workspace 1
 exec brave-browser workspace 2
-exec i3-msg workspace 1
+exec franz workspace 10
 
 ## MEDIA BUTTONS
 # Pulse Audio controls
