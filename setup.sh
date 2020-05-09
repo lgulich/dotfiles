@@ -56,4 +56,6 @@ dconf reset -f /org/gnome/terminal
 dconf load /org/gnome/terminal < "$SCRIPT_DIR"/terminal/gnome_terminal_settings.txt
 
 # Install vim plugins.
+curl -sL install-node.now.sh/lts | sudo bash # Needed for coc.vim
 vim +PlugInstall +qall
+
