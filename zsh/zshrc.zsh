@@ -1,3 +1,5 @@
+# shellcheck shell=zsh
+
 # Load .profile
 [ -f ~/.profile ] && source ~/.profile
 
@@ -8,29 +10,36 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-SCRIPT_DIR="$(dirname -- "$0")"
+script_dir="$(dirname -- "$0")"
 
 export VISUAL=vim
 export EDITOR=vim
 
 # Oh my zsh configuration
-export ZSH="$SCRIPT_DIR"/plugins/ohmyzsh
-ZSH_THEME="powerlevel10k/powerlevel10k"
-ZSH_CUSTOM="$SCRIPT_DIR"
-plugins=(
+export ZSH="$script_dir"/plugins/ohmyzsh
+export ZSH_THEME="powerlevel10k/powerlevel10k"
+export ZSH_CUSTOM="$script_dir"
+export plugins=(
   vi-mode
   git
   zsh-autosuggestions
 )
 source "$ZSH"/oh-my-zsh.sh
 
+# Load custom helpers
+source "$script_dir"/general_helpers.sh
+source "$script_dir"/catkin_helpers.sh
+source "$script_dir"/git_helpers.sh
+
 # Source other configurations
-source "$SCRIPT_DIR"/util.sh
-source "$SCRIPT_DIR"/aliases.sh
-source "$SCRIPT_DIR"/keybindings.sh
+source "$script_dir"/aliases.sh
+source "$script_dir"/keybindings.zsh
+
+
+
 
 # Load Powerlevel10k config. To reconfigure run `p10k configure`
-[[ ! -f "$SCRIPT_DIR"/p10k.zsh ]] || source "$SCRIPT_DIR"/p10k.zsh
+[[ ! -f "$script_dir"/p10k.zsh ]] || source "$script_dir"/p10k.zsh
 
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

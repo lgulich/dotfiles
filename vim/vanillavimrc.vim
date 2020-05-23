@@ -49,9 +49,14 @@ set scrolloff=5
 command MakeTags !ctags -R .<CR>
 "" }}}
 "" Remappings {{{
-imap jj <ESC> " Exit insert mode.
-nmap <Leader>s :%s/\<<C-r><C-w>\>/ " Replace all occurrences of word under carret.
-nnoremap <space> za " Toggle fold around current block.
+" Exit insert mode.
+inoremap jj <ESC> 
+
+" Replace all occurrences of word under carret.
+nmap <Leader>s :%s/\<<C-r><C-w>\>/ 
+
+" Toggle fold around current block.
+nnoremap <space> za 
 
 " Move vertically by visual line.
 nnoremap j gj

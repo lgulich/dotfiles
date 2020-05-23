@@ -1,5 +1,7 @@
-SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
-DOTFILES="$(dirname "$SCRIPT_DIR")"
+# shellcheck shell=sh
+
+script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
+dotfiles="$(dirname "$script_dir")"
 
 # Run tmux if exists.
 if command -v tmux>/dev/null; then
@@ -13,17 +15,19 @@ else
 fi
 
 
-echo "Checking for updates..."
-git -C "$DOTFILES" fetch -q &> /dev/null
+if [ "$AUTO_UPDATE" = "true" ]; then
+  echo "Checking for updates..."
+  git -C "$dotfiles" fetch -q > /dev/null 2>&1
 
-if [ "$(git -C "$DOTFILES" rev-list HEAD...origin/master | wc -l)" = 0 ]
-then
-	echo "Already up to date."
-else
-	echo "Updates Detected:"
-	git -C "$DOTFILES" log ..@{u} --pretty=format:%Cred%aN:%Creset\ %s\ %Cgreen%cd
-	echo "Setting up..."
-	git -C "$DOTFILES" pull -q && git -C "$DOTFILES" submodule update --init --recursive
+  if [ "$(git -C "$dotfiles" rev-list HEAD...origin/master | wc -l)" = 0 ]; then
+    echo "Already up to date."
+  else
+    echo "Updates Detected:"
+    git -C "$dotfiles" log ..@{u} --pretty=format:%Cred%aN:%Creset\ %s\ %Cgreen%cd
+    echo "Setting up..."
+    git -C "$dotfiles" pull -q && git -C "$dotfiles" submodule update --init --recursive
+		"$dotfiles"/setup.sh
+  fi
 fi
 
-source "$SCRIPT_DIR"/zshrc.sh
+. "$script_dir"/zshrc.zsh

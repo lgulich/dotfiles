@@ -1,4 +1,4 @@
-#!/bin/sh -e
+# shellcheck shell=sh
 
 git_publish_branch(){
   git push --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
@@ -10,4 +10,8 @@ git_clean_up_branches(){
   do
     git branch -D "$branch"
   done
+}
+
+git_go_to_repo_root() {
+  cd "$(git rev-parse --show-toplevel || echo ".")" || exit 1
 }
