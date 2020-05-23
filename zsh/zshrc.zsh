@@ -16,10 +16,11 @@ export VISUAL=vim
 export EDITOR=vim
 
 # Oh my zsh configuration
-export ZSH="$script_dir"/plugins/ohmyzsh
-export ZSH_THEME="powerlevel10k/powerlevel10k"
-export ZSH_CUSTOM="$script_dir"
-export plugins=(
+# export ZSH="$script_dir"/ohmyzsh
+export ZSH="/home/lionel/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_CUSTOM="$script_dir"
+plugins=(
   vi-mode
   git
   zsh-autosuggestions
@@ -34,9 +35,6 @@ source "$script_dir"/git_helpers.sh
 # Source other configurations
 source "$script_dir"/aliases.sh
 source "$script_dir"/keybindings.zsh
-
-
-
 
 # Load Powerlevel10k config. To reconfigure run `p10k configure`
 [[ ! -f "$script_dir"/p10k.zsh ]] || source "$script_dir"/p10k.zsh
