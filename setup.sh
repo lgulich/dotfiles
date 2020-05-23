@@ -44,7 +44,7 @@ curl -fLo "$SCRIPT_DIR"/vim/vim_plug/autoload/plug.vim --create-dirs \
 
 # Create the dotfiles for the home folder.
 echo "source $SCRIPT_DIR/zsh/zshrc_manager.sh" > ~/.zshrc
-echo "source $SCRIPT_DIR/vim/vimrc" > ~/.vimrc
+echo "source $SCRIPT_DIR/vim/vimrc.vim" > ~/.vimrc
 echo "source-file $SCRIPT_DIR/tmux/tmux.conf" > ~/.tmux.conf
 echo "source ~/.vimrc" > ~/.ideavimrc
 
@@ -56,4 +56,6 @@ dconf reset -f /org/gnome/terminal
 dconf load /org/gnome/terminal < "$SCRIPT_DIR"/terminal/gnome_terminal_settings.txt
 
 # Install vim plugins.
+curl -sL install-node.now.sh/lts | sudo bash # Needed for coc.vim
 vim +PlugInstall +qall
+

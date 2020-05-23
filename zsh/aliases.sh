@@ -1,11 +1,9 @@
-#!/bin/sh
+# shellcheck shell=sh
 
 # ROS & Ascento aliases
-alias cda='cd ~/catkin_ws/src/ascento'
-alias cdc='cd ~/catkin_ws'
-alias srccws='source ~/catkin_ws/devel/setup.bash'
+alias cc='cd ~/compp_core'
+alias cws='cd ~/compp_ws'
 alias kg="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient"
-alias setup_ghostrobot='export ROS_MASTER_URI=http://10.42.0.100:11311; export ROS_IP=10.42.0.100'
 
 # Git aliases
 alias nah='git reset --hard; git clean -df;'
@@ -13,15 +11,12 @@ alias gch='git checkout'
 alias gs='git status'
 alias ga='git add'
 alias gc='git commit'
-alias gpublish='git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)'
+alias gpr='git pull --rebase'
+alias gpublish='git_publish_branch'
+alias gclean='git_clean_up_branches'
 
 # File browsing aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias cd='cd_and_ls'
-
-# Setup Clion for catkin metapackages. Use like so:
-# $ update-clion-ws you_metapackage_name
-alias update-clion-ws='rm -rf ~/clion_ws/ && python ~/Documents/editors_tools/init_clion.py -c ~/ -n ~/clion_ws -w ~/catkin_ws'
-
