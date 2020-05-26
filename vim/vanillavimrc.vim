@@ -65,6 +65,14 @@ nnoremap k gk
 " Move to beginning / end of line
 nnoremap B ^
 nnoremap E $
+
+" Copy / Paste from primary (selection) clipboard.
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+
+" Copy / Paste from clipboard (ctrl-c) clipboard.
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
 "" }}}
 "" Color Setup {{{
 if (empty($TMUX))
