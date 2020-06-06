@@ -13,13 +13,10 @@ set textwidth=80
 
 " Searching
 set incsearch " Search as characters are entered.
-set hlsearch " Highlight matches.
-"" }}}
-"" Folding {{{
-set foldenable " Enable folding.
-set foldlevelstart=10 " Default fold all above level 10.
-set foldnestmax=10 " Maximum number of nested folds.
-set foldmethod=indent " Fold based on indent level.
+" set hlsearch " Highlight matches.
+
+" Backspace key
+set backspace=indent,eol,start
 "" }}}
 "" Appearance {{{
 " Change carret shape to I-beam in insert mode.

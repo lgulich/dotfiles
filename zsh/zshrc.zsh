@@ -17,7 +17,7 @@ export EDITOR=vim
 
 # Oh my zsh configuration
 # export ZSH="$script_dir"/ohmyzsh
-export ZSH="/home/lionel/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 # ZSH_CUSTOM="$script_dir"
 plugins=(

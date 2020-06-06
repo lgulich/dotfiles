@@ -3,7 +3,7 @@
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Install dependencies
-if [ "$OSTYPE" == "linux-gnu" ]; then
+if [[ "$OSTYPE" =~ "linux-gnu" ]]; then
   sudo apt-get update && sudo apt-get install -y \
     cmake \
     curl \
@@ -15,7 +15,7 @@ if [ "$OSTYPE" == "linux-gnu" ]; then
     vim \
     tmux \
     zsh
-elif [ "$OSTYPE" == "darwin" ]; then
+elif [[ "$OSTYPE" =~ "darwin" ]]; then
   brew install \
     cmake \
     curl \
@@ -41,25 +41,27 @@ git -C "$script_dir" submodule init
 git -C "$script_dir" submodule update
 
 # Create the dotfiles for the home folder.
-echo "source $script_dir/zsh/zshrc_manager.sh" > ~/.zshrc
-echo "source $script_dir/vim/vimrc.vim" > ~/.vimrc
-echo "source-file $script_dir/tmux/tmux.conf" > ~/.tmux.conf
-echo "source ~/.vimrc" > ~/.ideavimrc
+echo "source $script_dir/zsh/zshrc_manager.sh" > "$HOME"/.zshrc
+echo "source $script_dir/vim/vimrc.vim" > "$HOME"/.vimrc
+echo "source-file $script_dir/tmux/tmux.conf" > "$HOME"/.tmux.conf
+echo "source "$HOME"/.vimrc" > "$HOME"/.ideavimrc
 
 # Install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 
 # Install oh-my-zsh plugins
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/themes/powerlevel10k
-git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k
+git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
 
 # i3 does not allow to source config files, thus we have to symlink it.
-mkdir -p ~/.config/i3
-ln -fs "$script_dir"/i3/config ~/.config/i3/config
+mkdir -p "$HOME"/.config/i3
+ln -fs "$script_dir"/i3/config "$HOME"/.config/i3/config
 
-# Load gnome terminal settings
-dconf reset -f /org/gnome/terminal/
-dconf load /org/gnome/terminal/ < "$script_dir"/terminal/gnome_terminal_settings.txt
+if [ "$OSTYPE" == "linux-gnu" ]; then
+  # Load gnome terminal settings
+  dconf reset -f /org/gnome/terminal/
+  dconf load /org/gnome/terminal/ < "$script_dir"/terminal/gnome_terminal_settings.txt
+fi
 
 # Install plugin manager vim-plug.
 curl -fLo "$script_dir"/vim/vim_plug/autoload/plug.vim --create-dirs \
