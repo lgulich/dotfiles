@@ -41,3 +41,5 @@ source "$script_dir"/keybindings.zsh
 
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export CXX=/usr/bin/g++-8

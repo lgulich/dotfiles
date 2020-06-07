@@ -150,8 +150,8 @@ exec --no-startup-id gnome-sound-applet
 
 
 ## STARTUP OPTIONS
-set $display1 DP-4-1
-set $display2 DP-4-8
+set $display1 DP-2-8
+set $display2 DP-1
 workspace 1 output $display1
 workspace 2 output $display2
 workspace 3 output $display1

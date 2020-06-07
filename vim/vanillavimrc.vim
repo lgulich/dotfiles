@@ -18,6 +18,12 @@ set incsearch " Search as characters are entered.
 " Backspace key
 set backspace=indent,eol,start
 "" }}}
+"" Folding {{{
+set foldenable " Enable folding.
+set foldlevelstart=10 " Default fold all above level 10.
+set foldnestmax=10 " Maximum number of nested folds.
+set foldmethod=indent " Fold based on indent level.
+"" }}}
 "" Appearance {{{
 " Change carret shape to I-beam in insert mode.
 if has("autocmd")
@@ -47,13 +53,13 @@ command MakeTags !ctags -R .<CR>
 "" }}}
 "" Remappings {{{
 " Exit insert mode.
-inoremap jj <ESC> 
+inoremap jj <ESC>
 
 " Replace all occurrences of word under carret.
-nmap <Leader>s :%s/\<<C-r><C-w>\>/ 
+nmap <Leader>s :%s/\<<C-r><C-w>\>/
 
 " Toggle fold around current block.
-nnoremap <space> za 
+nnoremap <space> za
 
 " Move vertically by visual line.
 nnoremap j gj
