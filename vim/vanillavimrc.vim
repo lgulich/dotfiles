@@ -4,12 +4,15 @@ set autoread " Detect when a file has changed
 set noswapfile " Disable swap files
 
 " Indentation and text width
-set tabstop=2
-set shiftwidth=2
-set shiftround
-set expandtab
-set autoindent
-set textwidth=80
+set tabstop=2 " Number of spaces a tab accounts for
+set shiftwidth=2 
+set shiftround " Round indent to multiples of tab width
+set expandtab " Use spaces instead of tabs
+set autoindent " Copy indent from current line when starting new line
+set textwidth=80 " Auto wrap lines after this width
+
+" Disable auto-line-wrapping for shell scripts
+autocmd FileType sh,bash,zsh setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
