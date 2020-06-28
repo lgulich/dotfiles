@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'joshdick/onedark.vim'
 
 " General plugins
-" Plug 'ycm-core/YouCompleteMe', {'do': './install.py --clangd-completer'}
 Plug '907th/vim-auto-save'
 Plug 'chiel92/vim-autoformat'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -23,6 +22,8 @@ Plug 'tpope/vim-surround'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 Plug 'ericcurtin/CurtineIncSw.vim' " Switch between header and src.
+
+Plug 'taketwo/vim-ros'
 
 call plug#end()
 "" }}}
@@ -181,5 +182,23 @@ endfunction
 " Remap for switching between header / src file.
 map <F5> :call CurtineIncSw()<CR>
 "" }}}
+"" Plugin vim-commentary {{{
+" Set comment style for c / cpp
+autocmd FileType c,cpp setlocal commentstring=//\ %s
+"" }}}
+"" Plugin vim-ros {{{
+let g:ros_build_system="catkin-tools"
+
+command! CatkinBuildThis execute ":sp term://cd $(dirname %) && catkin build --this --no-deps"
+command! CatkinBuildFromThis execute ":sp term://cd $(dirname %) && catkin build --start-with-this"
+command! CatkinBuildAll execute ":sp term://cd $(dirname %) && catkin build --this"
+command! CatkinTestThis execute ":sp term://cd $(dirname %) && catkin run_tests --this --no-deps"
+command! -nargs=+ CatkinBuild execute ":sp term://cd $(dirname %) && catkin build --no-deps " . <f-args>
+command! -nargs=+ CatkinBuildWithDeps execute ":sp term://cd $(dirname %) && catkin build " . <f-args>
+nmap <leader>bt :CatkinBuildThis<CR>
+nmap <leader>ba :CatkinBuildAll<CR>
+nmap <leader>tt :CatkinTestThis<CR>" Plugin vim-ros {{{
+"" }}}
+
 
 " vim:foldmethod=marker:foldlevel=0

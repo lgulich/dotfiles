@@ -143,10 +143,11 @@ client.unfocused        #282C34 #282C34 #282C34 #61AFEF #282C34
 # Border layout
 for_window [class="^.*"] border pixel 3
 
-## VARIA
+## Startup Scripts
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
+exec --no-startup-id ~/dotfiles/i3/alternating_layouts.py
 
 
 ## STARTUP OPTIONS
@@ -176,7 +177,7 @@ assign [class="rqt_reconfigure"] 6
 
 # Start up programs
 exec i3-msg workspace 1
-exec gnome-terminal workspace 1
+exec alacritty workspace 1
 exec brave-browser workspace 2
 exec franz workspace 10
 

@@ -56,7 +56,7 @@ command MakeTags !ctags -R .<CR>
 "" }}}
 "" Remappings {{{
 " Exit insert mode.
-inoremap jj <ESC>
+inoremap jk <ESC>
 
 " Replace all occurrences of word under carret.
 nmap <Leader>s :%s/\<<C-r><C-w>\>/

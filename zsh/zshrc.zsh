@@ -39,7 +39,11 @@ source "$script_dir"/keybindings.zsh
 # Load Powerlevel10k config. To reconfigure run `p10k configure`
 [[ ! -f "$script_dir"/p10k.zsh ]] || source "$script_dir"/p10k.zsh
 
+# Keymap to exit vi-insert-mode.
+bindkey -e jk vi-cmd-mode 
+
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export CXX=/usr/bin/g++-8
+
