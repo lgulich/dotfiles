@@ -46,6 +46,7 @@ set number " show line numbers.
 set relativenumber " show relative line numbers.
 set showcmd " show command in bottom bar.
 set showmatch " highlight matching parentheses etc.
+set colorcolumn=+1 " show vbar at textwidth + 1
 
 " Minimal lines above and below caret
 set scrolloff=5
@@ -69,8 +70,8 @@ nnoremap j gj
 nnoremap k gk
 
 " Move to beginning / end of line
-nnoremap B ^
-nnoremap E $
+noremap B ^
+noremap E $
 
 " Copy / Paste from primary (selection) clipboard.
 noremap <Leader>y "*y
