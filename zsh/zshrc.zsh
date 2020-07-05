@@ -43,4 +43,9 @@ bindkey -e jk vi-cmd-mode
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Use g++8 as default.
 export CXX=/usr/bin/g++-8
+
+source /opt/ros/melodic/setup.zsh
+
+export PATH="/usr/lib/ccache:$PATH"
