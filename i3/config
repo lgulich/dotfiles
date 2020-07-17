@@ -178,7 +178,7 @@ assign [class="rqt_reconfigure"] 6
 # Start up programs
 exec i3-msg workspace 1
 exec alacritty workspace 1
-exec brave-browser workspace 2
+exec brave-browser-beta workspace 2
 exec franz workspace 10
 
 ## MEDIA BUTTONS
