@@ -26,7 +26,7 @@ plugins=(
 source "$ZSH"/oh-my-zsh.sh
 
 # Load custom helpers.
-source "$script_dir"/general_helpers.sh
+source "$script_dir"/general_helpers.zsh
 source "$script_dir"/catkin_helpers.sh
 source "$script_dir"/git_helpers.sh
 

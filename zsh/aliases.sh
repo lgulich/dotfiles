@@ -5,6 +5,9 @@ alias cc='cd ~/compp_core'
 alias cws='cd ~/compp_ws'
 alias kg="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient"
 
+# General aliases
+alias edf='edit_dotfile'
+
 # Git aliases
 alias nah='git reset --hard; git clean -df;'
 alias gch='git checkout'
