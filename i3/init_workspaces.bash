@@ -1,44 +1,29 @@
 #!/bin/bash -ex
 
-startup_apps=(
-  'alacritty'
-  'brave-browser-beta'
-  'franz'
-)
-
-# startup_apps=(
-#   ['1']=('alacritty')
-#   ['2']=('brave-browser-beta')
-#   ['3']=('franz')
-# )
-
-# Which workspace to assign your wanted App :
-workspaces=(
-  '1'
-  '2'
-  '10'
-)
+declare -A startup_apps
+startup_apps['1']='alacritty'
+startup_apps['2']='brave-browser-beta'
+startup_apps['10']='franz'
 
 startup_workspaces=(
-  '1'
   '2'
+  '1'
 )
 
-n_opened_windows=0
+n_expected_open_windows="$(wmctrl -l | wc -l)"
+for workspace in "${!startup_apps[@]}"; do
+  i3-msg workspace "${workspace}"
+  app="${startup_apps[$workspace]}"
+  "${app}" &
+  ((++n_expected_windows))
 
-for i in ${!startup_apps[*]}; do
-  # Wait before start other programs.
-  while [ "$n_opened_windows" -lt "$i" ]; do
-    # Update number of actual opened windows.
-    n_opened_windows=$(wmctrl -l | wc -l)
+  n_opened_windows="$(wmctrl -l | wc -l)"
+  while [ "$n_opened_windows" -lt "$n_expected_open_windows" ]; do
+    sleep 0
   done
-
-  # Move to desired workspace and open app.
-  i3-msg workspace ${workspaces[$i]}
-  ${startup_apps[$i]} &
 done
 
-for i in ${!startup_workspaces[*]}; do
-  i3-msg workspace ${startup_workspaces[$i]}
+for workspace in "${startup_workspaces[@]}"; do
+  i3-msg workspace "${workspace}"
 done
 
