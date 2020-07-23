@@ -12,6 +12,7 @@ edit_dotfile() {
   # Add new config options here, path is from root of dotfiles repo.
   declare -A options
   options[alacritty]="alacritty/alacritty.yml"
+  options[compton]="compton/compton.conf"
   options[i3]="i3/config"
   options[tmux]="tmux/tmux.conf"
   options[vim-plugins]="vim/vimrc.vim"

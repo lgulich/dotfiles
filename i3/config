@@ -143,12 +143,6 @@ client.unfocused        #282C34 #282C34 #282C34 #61AFEF #282C34
 # Border layout
 for_window [class="^.*"] border pixel 3
 
-## Startup Scripts
-exec --no-startup-id gnome-settings-daemon
-exec --no-startup-id nm-applet
-exec --no-startup-id gnome-sound-applet
-exec --no-startup-id ~/dotfiles/i3/alternating_layouts.py
-exec --no-startup-id xrandr --output DP-2-8 --left-of DP-1
 
 ## STARTUP OPTIONS
 set $display1 DP-2-8
@@ -175,8 +169,18 @@ assign [class="gazebo"] 6
 assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
+# Set background image
+exec_always --no-startup-id feh --bg-fill ~/Pictures/background_big_sur_day.jpg
+
 # Start up programs
+exec --no-startup-id xrandr --output DP-2-8 --left-of DP-1
+exec --no-startup-id gnome-settings-daemon
+exec --no-startup-id nm-applet
+exec --no-startup-id gnome-sound-applet
+exec --no-startup-id compton
+exec --no-startup-id ~/dotfiles/i3/alternating_layouts.py
 exec --no-startup-id ~/dotfiles/i3/init_workspaces.bash
+
 
 ## MEDIA BUTTONS
 # Pulse Audio controls

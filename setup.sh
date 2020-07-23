@@ -61,6 +61,7 @@ ln -fs "$script_dir"/i3/config "$HOME"/.config/i3/config
 mkdir -p "$HOME"/.config/alacritty
 ln -fs "$script_dir"/alacritty/alacritty.yml "$HOME"/.config/alacritty/alacritty.yml
 
+ln -fs "$script_dir"/compton/compton.conf "$HOME"/.config/compton.conf
 
 if [ "$OSTYPE" == "linux-gnu" ]; then
   # Install MesloLGS Nerd Font
