@@ -148,7 +148,7 @@ exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
 exec --no-startup-id ~/dotfiles/i3/alternating_layouts.py
-
+exec --no-startup-id xrandr --output DP-2-8 --left-of DP-1
 
 ## STARTUP OPTIONS
 set $display1 DP-2-8
@@ -165,7 +165,7 @@ workspace 9 output $display1
 workspace 10 output $display2
 
 # Assign programs to workspaces
-assign [class="Brave-browser"] 2
+assign [class="Brave-browser-beta"] 2
 assign [class="Atom"] 3
 assign [class="Clion"] 5
 assign [class="Franz"] 10
@@ -176,10 +176,7 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Start up programs
-exec i3-msg workspace 1
-exec alacritty workspace 1
-exec brave-browser-beta workspace 2
-exec franz workspace 10
+exec --no-startup-id ~/dotfiles/i3/init_workspaces.bash
 
 ## MEDIA BUTTONS
 # Pulse Audio controls

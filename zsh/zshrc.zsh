@@ -46,6 +46,8 @@ bindkey -e jk vi-cmd-mode
 # Use g++8 as default.
 export CXX=/usr/bin/g++-8
 
+# Use ccache for faster builds
+export PATH="/usr/lib/ccache:$PATH"
+
 source /opt/ros/melodic/setup.zsh
 
-export PATH="/usr/lib/ccache:$PATH"
