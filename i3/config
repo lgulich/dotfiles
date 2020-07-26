@@ -145,8 +145,8 @@ for_window [class="^.*"] border pixel 3
 
 
 ## STARTUP OPTIONS
-set $display1 DP-2-8
-set $display2 DP-1
+set $display1 DP-6-8
+set $display2 DP-5
 workspace 1 output $display1
 workspace 2 output $display2
 workspace 3 output $display1
@@ -173,7 +173,7 @@ assign [class="rqt_reconfigure"] 6
 exec_always --no-startup-id feh --bg-fill ~/Pictures/background_big_sur_day.jpg
 
 # Start up programs
-exec --no-startup-id xrandr --output DP-2-8 --left-of DP-1
+exec --no-startup-id xrandr --output $display1 --left-of $display2 
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
