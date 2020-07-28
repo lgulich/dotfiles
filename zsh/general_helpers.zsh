@@ -19,12 +19,20 @@ edit_dotfile() {
   options[vim-vanilla]="vim/vimrc.vim"
   options[zsh]="zsh/zshrc.zsh"
 
-  # We convert the array to a newline separated list which can be read by dmenu.
-  options_string=""
-  for key in "${(@k)options}"; do
-    options_string="${options_string}${key}\n"
-  done
+  if [ -n "$1" ]; then
+    local choice="$1"
+    echo $choice
+  else
+    # We convert the array to a newline separated list which can be read by dmenu.
+    options_string=""
+    for key in "${(@k)options}"; do
+      options_string="${options_string}${key}\n"
+    done
 
-  local choice=$(echo -e "${options_string}" | dmenu)
+    # Get choice from dmenu.
+    local choice=$(echo -e "${options_string}" | dmenu)
+  fi
+
   [ "$?" = 0 ] && "${EDITOR}" "${repo_root}/${options[$choice]}"
 }
+

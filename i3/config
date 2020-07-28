@@ -9,46 +9,33 @@ font pango:SourceCodePro 8
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
-
-# kill focused window
-bindsym $mod+Shift+q kill
-
-# start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
-
-# change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-
-# alternatively, you can use the cursor keys:
+# Change focused container.
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
 
-# alternatively, you can use the cursor keys:
+# Move focused container.
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split in horizontal orientation
-bindsym $mod+| split h
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
-# split in vertical orientation
-bindsym $mod+- split v
+# Split focused container.
+bindsym $mod+| split h # Split horizontal
+bindsym $mod+- split v # Split vertical
 
-# enter fullscreen mode for the focused container
+# Enter fullscreen mode for the focused container.
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
@@ -89,11 +76,13 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# reload the configuration file
-bindsym $mod+Shift+c reload
-
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+# Special keybindings
+bindsym $mod+Shift+c reload # Reload the configuration file.
+bindsym $mod+Shift+r restart # Restart i3 inplace.
+bindsym $mod+Shift+q kill # Kill focused window.
+bindsym $mod+Return exec i3-sensible-terminal # Start a terminal.
+bindsym $mod+d exec dmenu_run # Start dmenu (a program launcher).
+bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh # Toggle background image. 
 
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
@@ -170,7 +159,7 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Set background image
-exec_always --no-startup-id feh --bg-fill ~/Pictures/background_big_sur_day.jpg
+exec_always --no-startup-id ~/dotfiles/i3/toggle_background.sh 
 
 # Start up programs
 exec --no-startup-id xrandr --output $display1 --left-of $display2 
