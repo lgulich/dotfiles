@@ -79,7 +79,8 @@ bindsym $mod+Shift+0 move container to workspace 10
 # Special keybindings
 bindsym $mod+Shift+c reload # Reload the configuration file.
 bindsym $mod+Shift+r restart # Restart i3 inplace.
-bindsym $mod+Shift+q kill # Kill focused window.
+# Kill focused window.
+bindsym $mod+Shift+q kill 
 bindsym $mod+Return exec i3-sensible-terminal # Start a terminal.
 bindsym $mod+d exec dmenu_run # Start dmenu (a program launcher).
 bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh # Toggle background image. 
