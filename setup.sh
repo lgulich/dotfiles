@@ -4,16 +4,19 @@ script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # Install dependencies
 if [[ "$OSTYPE" =~ "linux-gnu" ]]; then
-  sudo apt-get update && sudo apt-get install -y \
+  sudo apt-get update
+  sudo apt-get install -y \
     cmake \
+    compton \
     curl \
+    feh \
     git \
     i3 \
     nodejs \
     python3 \
     python3-pip \
-    vim \
     tmux \
+    vim \
     zsh
 elif [[ "$OSTYPE" =~ "darwin" ]]; then
   brew install \

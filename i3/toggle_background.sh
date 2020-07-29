@@ -8,10 +8,10 @@ fi
 
 if [ "$(cat "${config}")" = "color" ]; then
   echo "black" > "${config}"
-  feh --no-fehbg --bg-fill ~/Pictures/black.png
+  feh --no-fehbg --bg-fill ~/dotfiles/i3/black.png
 elif [ "$(cat "${config}")" = "black" ]; then
   echo "color" > "${config}"
-  feh --no-fehbg --bg-fill ~/Pictures/wave.jpg
+  feh --no-fehbg --bg-fill ~/dotfiles/i3/wave.jpg
 else
   echo "Unknown active background: $(cat "${config}")"
   exit 1
