@@ -1,14 +1,12 @@
+## MODIFIER KEYS
 # Modifier key
 # Mod1=alt, Mod4=cmd
 set $mod Mod4
 
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:SourceCodePro 8
-
-# Use Mouse+$mod to drag floating windows to their wanted position
+# Use Mouse+$mod to drag floating windows to their wanted position.
 floating_modifier $mod
 
+## BASIC KEYBINDINGS
 # Change focused container.
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
@@ -38,21 +36,21 @@ bindsym $mod+- split v # Split vertical
 # Enter fullscreen mode for the focused container.
 bindsym $mod+f fullscreen toggle
 
-# change container layout (stacked, tabbed, toggle split)
+# Change container layout (stacked, tabbed, toggle split).
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
+# Toggle tiling / floating.
 bindsym $mod+Shift+space floating toggle
 
-# change focus between tiling / floating windows
+# Change focus between tiling / floating windows.
 bindsym $mod+space focus mode_toggle
 
-# focus the parent container
+# Focus the parent container.
 bindsym $mod+a focus parent
 
-# switch to workspace
+# Switch to workspace.
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
@@ -64,7 +62,7 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-# move focused container to workspace
+# Move focused container to workspace.
 bindsym $mod+Shift+1 move container to workspace 1
 bindsym $mod+Shift+2 move container to workspace 2
 bindsym $mod+Shift+3 move container to workspace 3
@@ -76,46 +74,46 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# Special keybindings
+# Special keybindings.
 bindsym $mod+Shift+c reload # Reload the configuration file.
 bindsym $mod+Shift+r restart # Restart i3 inplace.
-# Kill focused window.
-bindsym $mod+Shift+q kill 
+bindsym $mod+Shift+q kill # Kill focused window.
 bindsym $mod+Return exec i3-sensible-terminal # Start a terminal.
 bindsym $mod+d exec dmenu_run # Start dmenu (a program launcher).
 bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh # Toggle background image. 
 
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# Exit i3 (log out of X session).
+bindsym $mod+Shift+e exec \
+  "i3-nagbar -t warning \
+  -m 'You pressed the exit shortcut. Do you really want to exit i3? This will \
+  end your X session.' \
+  -b 'Yes, exit i3' 'i3-msg exit'"
 
-# resize window (you can also use the mouse for that)
+# Resize window (you can also use the mouse for that).
+# These bindings trigger as soon as you enter the resize mode.
+bindsym $mod+r mode "resize"
 mode "resize" {
-  # These bindings trigger as soon as you enter the resize mode
-
-  # Pressing left will shrink the window’s width.
-  # Pressing right will grow the window’s width.
-  # Pressing up will shrink the window’s height.
-  # Pressing down will grow the window’s height.
   bindsym j resize shrink width 10 px or 10 ppt
   bindsym k resize grow height 10 px or 10 ppt
   bindsym l resize shrink height 10 px or 10 ppt
   bindsym semicolon resize grow width 10 px or 10 ppt
 
-  # same bindings, but for the arrow keys
   bindsym Left resize shrink width 10 px or 10 ppt
   bindsym Down resize grow height 10 px or 10 ppt
   bindsym Up resize shrink height 10 px or 10 ppt
   bindsym Right resize grow width 10 px or 10 ppt
 
-  # back to normal: Enter or Escape
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+## APPEARANCE
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font pango:SourceCodePro 8
+
+# Start i3bar to display a workspace bar.
 bar {
   status_command i3status
     colors {
@@ -124,19 +122,19 @@ bar {
     }
 }
 
-# Colors
+# Colors.
 client.focused          #98C379 #282C34 #282C34 #61AFEF #98C370 
 client.focused_inactive #282C34 #282C34 #282C34 #61AFEF #282C34 
 client.unfocused        #282C34 #282C34 #282C34 #61AFEF #282C34
 
 
-# Border layout
+# Border layout.
 for_window [class="^.*"] border pixel 3
 
 
-## STARTUP OPTIONS
-set $display1 DP-6-8
-set $display2 DP-5
+# Screen configuration.
+set $display1 DP-5-8
+set $display2 DP-6
 workspace 1 output $display1
 workspace 2 output $display2
 workspace 3 output $display1
@@ -148,7 +146,7 @@ workspace 8 output $display2
 workspace 9 output $display1
 workspace 10 output $display2
 
-# Assign programs to workspaces
+# Assign programs to workspaces.
 assign [class="Brave-browser-beta"] 2
 assign [class="Atom"] 3
 assign [class="Clion"] 5
@@ -159,10 +157,10 @@ assign [class="gazebo"] 6
 assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
-# Set background image
+# Set background image.
 exec_always --no-startup-id ~/dotfiles/i3/toggle_background.sh 
 
-# Start up programs
+# Start up programs.
 exec --no-startup-id xrandr --output $display1 --left-of $display2 
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
@@ -173,19 +171,21 @@ exec --no-startup-id ~/dotfiles/i3/init_workspaces.bash
 
 
 ## MEDIA BUTTONS
-# Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+# Pulse Audio controls:
+# Increase sound volume.
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% 
+# Decrease sound volume.
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% 
+# Mute sound.
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle 
 
-# Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+# Sreen brightness controls.
+# Increase screen brightness.
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 
+# Decrease screen brightness.
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 
 
-# Touchpad controls
-bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
-
-# Media player controls
+# Media player controls.
 bindsym XF86AudioPlay exec playerctl play
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
