@@ -101,7 +101,7 @@ map <F5> :call CurtineIncSw()<CR>
 
 "" Plugin fzf {{{
 " Remap to find files.
-map <C-t> :Files<CR> 
+map <C-t> :Files<CR>
 "" }}}
 
 "" Plugin nerdtree {{{
@@ -168,7 +168,7 @@ call NERDTreePreviewToggle()
 
 "" Plugin vim-auto-save {{{
 " Enable autosave on startup.
-let g:auto_save = 1 
+let g:auto_save = 1
 "" }}}
 
 "" Plugin vim-autoformat {{{

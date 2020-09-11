@@ -75,12 +75,14 @@ bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
 # Special keybindings.
-bindsym $mod+Shift+c reload # Reload the configuration file.
-bindsym $mod+Shift+r restart # Restart i3 inplace.
-bindsym $mod+Shift+q kill # Kill focused window.
-bindsym $mod+Return exec i3-sensible-terminal # Start a terminal.
-bindsym $mod+d exec dmenu_run # Start dmenu (a program launcher).
-bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh # Toggle background image. 
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+q kill
+bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh
+bindsym $mod+d exec dmenu_run
+bindsym $mod+p exec gnome-screenshot -a
+bindsym $mod+" exec brave-browser-beta
+bindsym $mod+Return exec i3-sensible-terminal
 
 # Exit i3 (log out of X session).
 bindsym $mod+Shift+e exec \
@@ -123,8 +125,8 @@ bar {
 }
 
 # Colors.
-client.focused          #98C379 #282C34 #282C34 #61AFEF #98C370 
-client.focused_inactive #282C34 #282C34 #282C34 #61AFEF #282C34 
+client.focused          #98C379 #282C34 #282C34 #61AFEF #98C370
+client.focused_inactive #282C34 #282C34 #282C34 #61AFEF #282C34
 client.unfocused        #282C34 #282C34 #282C34 #61AFEF #282C34
 
 
@@ -158,10 +160,10 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Set background image.
-exec_always --no-startup-id ~/dotfiles/i3/toggle_background.sh 
+exec_always --no-startup-id ~/dotfiles/i3/toggle_background.sh
 
 # Start up programs.
-exec --no-startup-id xrandr --output $display1 --left-of $display2 
+exec --no-startup-id xrandr --output $display1 --left-of $display2
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
@@ -173,17 +175,17 @@ exec --no-startup-id ~/dotfiles/i3/init_workspaces.bash
 ## MEDIA BUTTONS
 # Pulse Audio controls:
 # Increase sound volume.
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% 
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
 # Decrease sound volume.
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% 
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
 # Mute sound.
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle 
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
 
 # Sreen brightness controls.
 # Increase screen brightness.
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20
 # Decrease screen brightness.
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20
 
 # Media player controls.
 bindsym XF86AudioPlay exec playerctl play

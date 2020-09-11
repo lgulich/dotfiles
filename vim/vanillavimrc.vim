@@ -5,7 +5,7 @@ set noswapfile " Disable swap files
 
 " Indentation and text width
 set tabstop=2 " Number of spaces a tab accounts for
-set shiftwidth=2 
+set shiftwidth=2
 set shiftround " Round indent to multiples of tab width
 set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
@@ -21,12 +21,14 @@ set incsearch " Search as characters are entered.
 " Backspace key
 set backspace=indent,eol,start
 "" }}}
+
 "" Folding {{{
 set foldenable " Enable folding.
 set foldlevelstart=10 " Default fold all above level 10.
 set foldnestmax=10 " Maximum number of nested folds.
 set foldmethod=indent " Fold based on indent level.
 "" }}}
+
 "" Appearance {{{
 " Change carret shape to I-beam in insert mode.
 if has("autocmd")
@@ -51,10 +53,23 @@ set colorcolumn=+1 " show vbar at textwidth + 1
 " Minimal lines above and below caret
 set scrolloff=5
 "" }}}
+
 "" New commands {{{
-"Create tags in current directory.
+" Create tags in current directory.
 command MakeTags !ctags -R .<CR>
+
+" Remove trailing whitespaces.
+fun! RemoveWhiteSpace()
+  let l:save = winsaveview()
+  keeppatterns %s/\s\+$//e
+  call winrestview(l:save)
+endfun
+" Make the function a command (so we can call it without :call).
+command! RemoveWhiteSpace call RemoveWhiteSpace()
+" Automatically remove white space on file save.
+autocmd BufWritePre * :call RemoveWhiteSpace()
 "" }}}
+
 "" Remappings {{{
 " Exit insert mode.
 inoremap jk <ESC>
@@ -81,6 +96,7 @@ noremap <Leader>p "*p
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
 "" }}}
+
 "" Color Setup {{{
 if (empty($TMUX))
   if (has("termguicolors"))
@@ -91,6 +107,7 @@ endif
 " Turn on syntax highlighting
 syntax on
 "" }}}
+
 "" ROS configuration {{{
 autocmd BufRead,BufNewFile *.launch setfiletype xml
 autocmd BufRead,BufNewFile *.cfg setfiletype python
