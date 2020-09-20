@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -e
 
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
 
@@ -19,10 +21,19 @@ if [[ "$OSTYPE" =~ "linux-gnu" ]]; then
     vim \
     zsh
 elif [[ "$OSTYPE" =~ "darwin" ]]; then
+  brew install koekeishiya/formulae/yabai
+  sudo yabai --install-sa
+  brew services start yabai
+  killall Dock
+
+  brew install koekeishiya/formulae/skhd
+  brew services start skhd
+
   brew install \
     cmake \
     curl \
     git \
+    nodejs \
     nodejs \
     tmux \
     vim \
@@ -56,17 +67,15 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k || true
 git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions || true
 
-# i3 does not allow to source config files, thus we have to symlink it.
-mkdir -p "$HOME"/.config/i3
-ln -fs "$script_dir"/i3/config "$HOME"/.config/i3/config
 
-# Same goes for alacrittys yaml config file.
-mkdir -p "$HOME"/.config/alacritty
-ln -fs "$script_dir"/alacritty/alacritty.yml "$HOME"/.config/alacritty/alacritty.yml
 
-ln -fs "$script_dir"/compton/compton.conf "$HOME"/.config/compton.conf
+if [[ "$OSTYPE" =~ "linux-gnu" ]]; then
+  # i3 does not allow to source config files, thus we have to symlink it.
+  mkdir -p "$HOME"/.config/i3
+  ln -fs "$script_dir"/i3/config "$HOME"/.config/i3/config
 
-if [ "$OSTYPE" == "linux-gnu" ]; then
+  ln -fs "$script_dir"/compton/compton.conf "$HOME"/.config/compton.conf
+
   # Install MesloLGS Nerd Font
   mkdir -p ~/.fonts
   cp "$script_dir"/terminal/fonts/* ~/.fonts
@@ -74,7 +83,14 @@ if [ "$OSTYPE" == "linux-gnu" ]; then
   # Load gnome terminal settings
   dconf reset -f /org/gnome/terminal/
   dconf load /org/gnome/terminal/ < "$script_dir"/terminal/gnome_terminal_settings.txt
+elif [[ "$OSTYPE" =~ "darwin" ]]; then
+  ln -fs "$script_dir"/yabai/yabairc "$HOME"/.config/yabairc
+  ln -fs "$script_dir"/skhd/skhdrc "$HOME"/.config/skhdrc
 fi
+
+# Same goes for alacrittys yaml config file.
+mkdir -p "$HOME"/.config/alacritty
+ln -fs "$script_dir"/alacritty/alacritty.yml "$HOME"/.config/alacritty/alacritty.yml
 
 # Install plugin manager vim-plug.
 curl -fLo "$script_dir"/vim/vim_plug/autoload/plug.vim --create-dirs \

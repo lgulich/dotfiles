@@ -49,5 +49,5 @@ export CXX=/usr/bin/g++-8
 # Use ccache for faster builds
 export PATH="/usr/lib/ccache:$PATH"
 
-source /opt/ros/melodic/setup.zsh
+[ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
 
