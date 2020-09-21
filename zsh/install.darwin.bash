@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -ex
 
-sudo apt-get install -y zsh
+brew install zsh || brew upgrade zsh
 
 # Check that zsh is used.
 if [[ ! "$SHELL" =~ .*zsh.* ]]; then
@@ -14,3 +14,5 @@ if [[ ! "$SHELL" =~ .*zsh.* ]]; then
   fi
 fi
 
+"${DOTFILES}"/zsh/install_oh_my_zsh.sh
+"${DOTFILES}"/zsh/install_fonts.sh
