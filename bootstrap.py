@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.8
 
 import os
 from pathlib import Path
@@ -9,8 +9,8 @@ import yaml
 def create_symbolic_links():
     dotfiles = Path(os.environ['DOTFILES'])
     for child in dotfiles.iterdir():
-        if child.is_dir() and (child/'symlink.yaml').exists():
-            with open(child/'symlink.yaml') as file:
+        if child.is_dir() and (child / 'symlink.yaml').exists():
+            with open(child / 'symlink.yaml') as file:
                 symlinks = yaml.load(file, Loader=yaml.FullLoader)
                 for source, destination in symlinks.items():
                     source_path = child / source
@@ -22,13 +22,10 @@ def create_symbolic_links():
 
                     os.symlink(source_path, destination_path)
                     print(f'Created symlink from {source_path} to '
-                            f'{destination_path}.')
+                          f'{destination_path}.')
 
     print('Successfully installed symlinks to all dotfiles.')
 
 
 if __name__ == '__main__':
     create_symbolic_links()
-
-
-
