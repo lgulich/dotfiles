@@ -1,4 +1,6 @@
-#!/bin/sh -ex
+#!/bin/sh
+
+set -ex
 
 sudo apt-get install -y apt-transport-https curl
 

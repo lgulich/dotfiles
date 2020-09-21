@@ -67,7 +67,7 @@ endfun
 " Make the function a command (so we can call it without :call).
 command! RemoveWhiteSpace call RemoveWhiteSpace()
 " Automatically remove white space on file save.
-autocmd BufWritePre * :call RemoveWhiteSpace()
+" autocmd BufWritePre * :call RemoveWhiteSpace()
 "" }}}
 
 "" Remappings {{{

@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+set -ex
+
 declare -A startup_apps
 startup_apps['1']='alacritty'
 startup_apps['2']='brave-browser-beta'
