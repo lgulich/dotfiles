@@ -16,7 +16,7 @@ edit_dotfile() {
   options[i3]="i3/config"
   options[tmux]="tmux/tmux.conf"
   options[vim-plugins]="vim/vimrc.vim"
-  options[vim-vanilla]="vim/vimrc.vim"
+  options[vim-vanilla]="vim/vanillavimrc.vim"
   options[zsh]="zsh/zshrc.zsh"
 
   if [ -n "$1" ]; then

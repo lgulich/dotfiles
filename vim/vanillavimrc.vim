@@ -77,6 +77,9 @@ inoremap jk <ESC>
 " Replace all occurrences of word under carret.
 nmap <Leader>s :%s/\<<C-r><C-w>\>/
 
+" Start global project-wide search.
+nmap <C-F> :grep -r -F "
+
 " Toggle fold around current block.
 nnoremap <space> za
 

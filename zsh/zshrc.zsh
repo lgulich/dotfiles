@@ -50,8 +50,9 @@ source "${DOTFILES}"/zsh/keybindings.zsh
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Use g++8 as default.
-export CXX=/usr/bin/g++-8
+# Use g++9 as default.
+export CXX=/usr/bin/g++-9
+
 export COMPP_CORE_PATH=~/compp_core
 
 # Use ccache for faster builds
