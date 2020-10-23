@@ -2,9 +2,9 @@
 
 # Run tmux if exists.
 if command -v tmux>/dev/null; then
-	[ -z "$TMUX" ] && exec tmux
+  [ -z "$TMUX" ] && exec tmux
 else
-	echo "tmux not installed, could not autostart tmux."
+  echo "tmux not installed, could not autostart tmux."
 fi
 
 # Load .profile
@@ -30,6 +30,9 @@ plugins=(
   zsh-autosuggestions
 )
 source "${ZSH}"/oh-my-zsh.sh
+
+# More complex configurations which are too long to put here:
+source "${DOTFILES}"/zsh/vi_mode_configuration.zsh
 
 # Load custom helpers.
 source "${DOTFILES}"/git/git_helpers.sh
@@ -60,3 +63,4 @@ export PATH="/usr/lib/ccache:$PATH"
 
 # Load ROS.
 [ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
+
