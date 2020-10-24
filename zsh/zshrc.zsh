@@ -57,10 +57,10 @@ source "${DOTFILES}"/zsh/keybindings.zsh
 export CXX=/usr/bin/g++-9
 
 export COMPP_CORE_PATH=~/compp_core
+export COMPP_WS_PATH=~/compp_ws
 
 # Use ccache for faster builds
 export PATH="/usr/lib/ccache:$PATH"
 
 # Load ROS.
 [ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
-
