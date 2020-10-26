@@ -56,8 +56,8 @@ source "${DOTFILES}"/zsh/keybindings.zsh
 # Use g++9 as default.
 export CXX=/usr/bin/g++-9
 
-export COMPP_CORE_PATH=~/compp_core
-export COMPP_WS_PATH=~/compp_ws
+export ARC_CORE_PATH=~/arc_core
+export ARC_WS_PATH=~/arc_ws
 
 # Use ccache for faster builds
 export PATH="/usr/lib/ccache:$PATH"
