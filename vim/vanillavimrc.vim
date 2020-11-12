@@ -11,8 +11,8 @@ set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
 set textwidth=80 " Auto wrap lines after this width
 
-" Disable auto-line-wrapping for shell scripts
-autocmd FileType sh,bash,zsh setlocal textwidth=0
+" Disable auto-line-wrapping for shell scripts and javascript
+autocmd FileType sh,bash,zsh,js setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
@@ -67,7 +67,7 @@ endfun
 " Make the function a command (so we can call it without :call).
 command! RemoveWhiteSpace call RemoveWhiteSpace()
 " Automatically remove white space on file save.
-autocmd BufWritePre * :call RemoveWhiteSpace()
+" autocmd BufWritePre * :call RemoveWhiteSpace()
 "" }}}
 
 "" Remappings {{{
@@ -76,6 +76,9 @@ inoremap jk <ESC>
 
 " Replace all occurrences of word under carret.
 nmap <Leader>s :%s/\<<C-r><C-w>\>/
+
+" Start global project-wide search.
+nmap <C-F> :grep -r -F "
 
 " Toggle fold around current block.
 nnoremap <space> za

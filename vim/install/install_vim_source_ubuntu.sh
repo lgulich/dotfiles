@@ -1,4 +1,6 @@
-#!/bin/sh -ex
+#!/bin/sh
+
+set -ex
 
 sudo apt-get install -y \
   checkinstall \
@@ -20,12 +22,12 @@ sudo apt-get install -y \
   python3-dev \
   ruby-dev
 
-sudo apt-get remove \
+sudo apt-get remove -y \
   vim \
   vim-runtime \
   gvim
 
-cd "$(mktemp)"
+cd "$(mktemp -d)"
 git clone https://github.com/vim/vim.git
 cd vim
 ./configure \

@@ -81,7 +81,6 @@ bindsym $mod+Shift+q kill
 bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh
 bindsym $mod+d exec dmenu_run
 bindsym $mod+p exec gnome-screenshot -a
-bindsym $mod+" exec brave-browser-beta
 bindsym $mod+Return exec i3-sensible-terminal
 
 # Exit i3 (log out of X session).

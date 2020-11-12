@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -ex
 
 sudo add-apt-repository ppa:jonathonf/vim
 sudo apt-get update
