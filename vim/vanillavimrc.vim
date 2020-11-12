@@ -11,8 +11,8 @@ set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
 set textwidth=80 " Auto wrap lines after this width
 
-" Disable auto-line-wrapping for shell scripts
-autocmd FileType sh,bash,zsh setlocal textwidth=0
+" Disable auto-line-wrapping for shell scripts and javascript
+autocmd FileType sh,bash,zsh,js setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
