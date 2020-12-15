@@ -25,7 +25,7 @@ set backspace=indent,eol,start
 "" Folding {{{
 set foldenable " Enable folding.
 set foldlevelstart=10 " Default fold all above level 10.
-set foldnestmax=10 " Maximum number of nested folds.
+set foldnestmax=1 " Maximum number of nested folds.
 set foldmethod=indent " Fold based on indent level.
 "" }}}
 
