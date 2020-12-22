@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-create_catkin_compile_commands() {
+catkin_create_compile_commands() {
   cd "$(catkin locate --workspace "$(pwd)")" || exit 1
 
   # shellcheck disable=SC2086

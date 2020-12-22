@@ -2,7 +2,7 @@
 
 set -ex
 
-brew install jq 
+brew install jq
 
 brew install koekeishiya/formulae/yabai
 sudo yabai --install-sa

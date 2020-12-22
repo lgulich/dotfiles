@@ -11,8 +11,8 @@ set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
 set textwidth=80 " Auto wrap lines after this width
 
-" Disable auto-line-wrapping for shell scripts
-autocmd FileType sh,bash,zsh setlocal textwidth=0
+" Disable auto-line-wrapping for shell scripts and javascript
+autocmd FileType sh,bash,zsh,js setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
@@ -25,7 +25,7 @@ set backspace=indent,eol,start
 "" Folding {{{
 set foldenable " Enable folding.
 set foldlevelstart=10 " Default fold all above level 10.
-set foldnestmax=10 " Maximum number of nested folds.
+set foldnestmax=1 " Maximum number of nested folds.
 set foldmethod=indent " Fold based on indent level.
 "" }}}
 
@@ -76,6 +76,9 @@ inoremap jk <ESC>
 
 " Replace all occurrences of word under carret.
 nmap <Leader>s :%s/\<<C-r><C-w>\>/
+
+" Start global project-wide search.
+nmap <C-F> :grep -r -F "
 
 " Toggle fold around current block.
 nnoremap <space> za

@@ -18,5 +18,5 @@ sudo apt-get install -y \
   build-essential \
   python-catkin-tools
 
-sudo rosdep init
+sudo rosdep init || true
 rosdep update

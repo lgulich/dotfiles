@@ -8,7 +8,7 @@ fi
 
 if [ "$(cat "${config}")" = "color" ]; then
   echo "black" > "${config}"
-  feh --no-fehbg --bg-fill ~/dotfiles/i3/black.png
+  feh --no-fehbg --bg-fill ~/dotfiles/i3/black.jpg
 elif [ "$(cat "${config}")" = "black" ]; then
   echo "color" > "${config}"
   feh --no-fehbg --bg-fill ~/dotfiles/i3/wave.jpg

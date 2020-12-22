@@ -2,9 +2,9 @@
 
 # Run tmux if exists.
 if command -v tmux>/dev/null; then
-	[ -z "$TMUX" ] && exec tmux
+  [ -z "$TMUX" ] && exec tmux
 else
-	echo "tmux not installed, could not autostart tmux."
+  echo "tmux not installed, could not autostart tmux."
 fi
 
 # Load .profile
@@ -31,6 +31,9 @@ plugins=(
 )
 source "${ZSH}"/oh-my-zsh.sh
 
+# More complex configurations which are too long to put here:
+source "${DOTFILES}"/zsh/vi_mode_configuration.zsh
+
 # Load custom helpers.
 source "${DOTFILES}"/git/git_helpers.sh
 source "${DOTFILES}"/ros/catkin_helpers.sh
@@ -50,8 +53,11 @@ source "${DOTFILES}"/zsh/keybindings.zsh
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Use g++8 as default.
-export CXX=/usr/bin/g++-8
+# Use g++9 as default.
+export CXX=/usr/bin/g++-9
+
+export ARC_CORE_PATH=~/arc_core
+export ARC_WS_PATH=~/arc_ws
 
 # Use ccache for faster builds
 export PATH="/usr/lib/ccache:$PATH"

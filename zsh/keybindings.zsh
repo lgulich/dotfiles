@@ -50,4 +50,4 @@ if [[ "${terminfo[kcud1]}" != "" ]]; then
 fi
 
 # Keymap to exit vi-insert-mode.
-bindkey -e jk vi-cmd-mode
+bindkey "jk" vi-cmd-mode

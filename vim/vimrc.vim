@@ -22,6 +22,7 @@ Plug 'tpope/vim-surround'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 Plug 'ericcurtin/CurtineIncSw.vim' " Switch between header and src.
+Plug 'preservim/tagbar'
 
 Plug 'taketwo/vim-ros'
 
