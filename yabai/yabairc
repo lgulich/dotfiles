@@ -42,4 +42,16 @@ while [ "$(yabai -m query --spaces | jq length)" -lt ${num_spaces} ]; do
   yabai -m space --create
 done
 
+yabai -m space 1 --label term
+yabai -m space 2 --label browser
+yabai -m space 3 --label code
+yabai -m space 4 --label varia1
+yabai -m space 5 --label varia2
+yabai -m space 6 --label chat
+
+yabai -m rule --add app=Brave space=browser
+yabai -m rule --add app=Atom space=code
+yabai -m rule --add app=Franz space=chat
+yabai -m rule --add app=Ferdi space=chat
+
 echo "yabai configuration loaded..."
