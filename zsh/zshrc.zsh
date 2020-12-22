@@ -64,3 +64,5 @@ export PATH="/usr/lib/ccache:$PATH"
 
 # Load ROS.
 [ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
+
+export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1

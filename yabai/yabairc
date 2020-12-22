@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 # global settings
 yabai -m config window_placement             second_child
@@ -36,7 +36,22 @@ yabai -m config left_padding                 1
 yabai -m config right_padding                1
 yabai -m config window_gap                   1
 
-yabai -m space --create
+num_spaces=6
 
+while [ "$(yabai -m query --spaces | jq length)" -lt ${num_spaces} ]; do
+  yabai -m space --create
+done
 
-echo "yabai configuration loaded.."
+yabai -m space 1 --label term
+yabai -m space 2 --label browser
+yabai -m space 3 --label code
+yabai -m space 4 --label varia1
+yabai -m space 5 --label varia2
+yabai -m space 6 --label chat
+
+yabai -m rule --add app=Brave space=browser
+yabai -m rule --add app=Atom space=code
+yabai -m rule --add app=Franz space=chat
+yabai -m rule --add app=Ferdi space=chat
+
+echo "yabai configuration loaded..."
