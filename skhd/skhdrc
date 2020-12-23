@@ -34,3 +34,4 @@ cmd - 6 : yabai -m space --focus 6
 
 cmd - return : open -a Alacritty --new
 cmd - f : yabai -m window --toggle zoom-fullscreen
+shift + cmd - f : yabai -m window --toggle float
