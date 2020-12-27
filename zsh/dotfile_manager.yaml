@@ -1,0 +1,9 @@
+symlink:
+  zshrc.zsh: ~/.zshrc
+
+source:
+  - vi_mode_configuration.zsh
+  - aliases.sh
+  - helpers.zsh
+  - keybindings.zsh
+  - p10k.zsh

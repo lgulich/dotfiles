@@ -1,0 +1,6 @@
+symlinks:
+  gitconfig: ~/.gitconfig
+
+source: 
+  - aliases.sh
+  - helpers.sh

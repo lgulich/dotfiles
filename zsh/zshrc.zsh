@@ -17,9 +17,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-export VISUAL=vim
-export EDITOR=vim
-export DOTFILES=~/dotfiles
 
 # Oh my zsh configuration
 export ZSH="${HOME}/.oh-my-zsh"
@@ -31,38 +28,24 @@ plugins=(
 )
 source "${ZSH}"/oh-my-zsh.sh
 
-# More complex configurations which are too long to put here:
-source "${DOTFILES}"/zsh/vi_mode_configuration.zsh
+# Often used directories. 
+export DOTFILES=~/dotfiles
+export ARC_CORE_PATH=~/arc_core
+export ARC_WS_PATH=~/arc_ws
+# Default UNIX env variables:
+export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
+export PATH="${DOTFILES}/generated/bin:${PATH}"
+export CXX=/usr/bin/g++-9
+export VISUAL=vim
+export EDITOR=vim
+# SSL
+export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1
 
-# Load custom helpers.
-source "${DOTFILES}"/git/git_helpers.sh
-source "${DOTFILES}"/ros/catkin_helpers.sh
-source "${DOTFILES}"/zsh/general_helpers.zsh
-
-# Custom aliases.
-source "${DOTFILES}"/git/aliases.sh
-source "${DOTFILES}"/ros/aliases.sh
-source "${DOTFILES}"/zsh/aliases.sh
-
-# Custom keybindings.
-source "${DOTFILES}"/zsh/keybindings.zsh
-
-# Load Powerlevel10k config. To reconfigure run `p10k configure`
-[[ ! -f "${DOTFILES}"/zsh/p10k.zsh ]] || source "${DOTFILES}"/zsh/p10k.zsh
+source "${DOTFILES}"/generated/sources.zsh
 
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Use g++9 as default.
-export CXX=/usr/bin/g++-9
-
-export ARC_CORE_PATH=~/arc_core
-export ARC_WS_PATH=~/arc_ws
-
-# Use ccache for faster builds
-export PATH="/usr/lib/ccache:$PATH"
-
 # Load ROS.
 [ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
 
-export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1

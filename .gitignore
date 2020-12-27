@@ -1,3 +1,4 @@
 vim/vim_plug
 *.swp
 .DS_Store
+generated/
