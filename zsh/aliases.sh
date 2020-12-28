@@ -3,7 +3,7 @@
 alias dot='~/dotfiles'
 
 # General aliases
-alias edf='edit_dotfile'
+alias edf='edit_dotfile.zsh'
 
 # File browsing aliases
 alias ll='ls -alF'

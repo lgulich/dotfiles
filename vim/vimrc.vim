@@ -17,6 +17,8 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-abolish'
 
 " C-style languages plugins
 Plug 'bfrg/vim-cpp-modern'
@@ -184,8 +186,8 @@ autocmd FileType c,cpp setlocal commentstring=//\ %s
 
 "" Plugin vim-fugitive {{{
 nnoremap <leader>gd :Gvdiff<CR>
-nnoremap gdh :diffget //2<CR>
-nnoremap gdl :diffget //3<CR>
+nnoremap dgh :diffget //2<CR>
+nnoremap dgl :diffget //3<CR>
 "" }}}
 
 "" Plugin vim-headerguard {{{

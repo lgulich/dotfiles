@@ -78,7 +78,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+q kill
-bindsym $mod+t exec ~/dotfiles/i3/toggle_background.sh
+bindsym $mod+t exec ~/dotfiles/i3/helpers/toggle_background.sh
 bindsym $mod+d exec dmenu_run
 bindsym $mod+p exec gnome-screenshot -a
 bindsym $mod+Return exec i3-sensible-terminal
@@ -134,8 +134,8 @@ for_window [class="^.*"] border pixel 3
 
 
 # Screen configuration.
-set $display1 DP-5-8
-set $display2 DP-6
+set $display1 eDP
+set $display2 DisplayPort-2
 workspace 1 output $display1
 workspace 2 output $display2
 workspace 3 output $display1
@@ -159,7 +159,7 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Set background image.
-exec_always --no-startup-id ~/dotfiles/i3/toggle_background.sh
+exec_always --no-startup-id ~/dotfiles/i3/helpers/toggle_background.sh
 
 # Start up programs.
 exec --no-startup-id xrandr --output $display1 --left-of $display2
@@ -167,8 +167,8 @@ exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
 exec --no-startup-id compton
-exec --no-startup-id ~/dotfiles/i3/alternating_layouts.py
-exec --no-startup-id ~/dotfiles/i3/init_workspaces.bash
+exec --no-startup-id ~/dotfiles/i3/helpers/alternating_layouts.py
+exec --no-startup-id ~/dotfiles/i3/helpers/init_workspaces.bash
 
 
 ## MEDIA BUTTONS

@@ -4,6 +4,6 @@ symlink:
 source:
   - vi_mode_configuration.zsh
   - aliases.sh
-  - helpers.zsh
+  - helpers.sh
   - keybindings.zsh
   - p10k.zsh

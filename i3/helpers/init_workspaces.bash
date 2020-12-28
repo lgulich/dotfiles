@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash
 
 set -ex
 
@@ -12,6 +12,7 @@ startup_workspaces=(
   '1'
 )
 
+# Start the startup apps.
 n_expected_open_windows="$(wmctrl -l | wc -l)"
 for workspace in "${!startup_apps[@]}"; do
   i3-msg workspace "${workspace}"
@@ -25,6 +26,7 @@ for workspace in "${!startup_apps[@]}"; do
   done
 done
 
+# Go to the startup workspaces.
 for workspace in "${startup_workspaces[@]}"; do
   i3-msg workspace "${workspace}"
 done
