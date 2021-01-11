@@ -4,14 +4,14 @@ set -e
 
 # Add new config options here, path is from root of dotfiles repo.
 declare -A config_paths
-config_paths[alacritty]="alacritty/alacritty.yml"
-config_paths[compton]="compton/compton.conf"
-config_paths[i3]="i3/config"
-config_paths[tmux]="tmux/tmux.conf"
-config_paths[vim]="vim/vanillavimrc.vim"
-config_paths[vim-plugins]="vim/vimrc.vim"
-config_paths[vim-vanilla]="vim/vanillavimrc.vim"
-config_paths[zsh]="zsh/zshrc.zsh"
+config_paths[alacritty]='alacritty/alacritty.yml'
+config_paths[compton]='compton/compton.conf'
+config_paths[i3]='i3/config'
+config_paths[tmux]='tmux/tmux.conf'
+config_paths[vim]='vim/raw_rc.vim'
+config_paths[vim-raw]='vim/raw_rc.vim'
+config_paths[vim-plugins]='vim/plugin_rc.vim'
+config_paths[zsh]='zsh/zshrc.zsh'
 
 if [ -n "$1" ]; then
   choice="$1"

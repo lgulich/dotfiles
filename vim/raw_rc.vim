@@ -59,26 +59,35 @@ set scrolloff=5
 command MakeTags !ctags -R .<CR>
 
 " Remove trailing whitespaces.
-fun! RemoveWhiteSpace()
+fun! TrimWhiteSpace()
   let l:save = winsaveview()
   keeppatterns %s/\s\+$//e
   call winrestview(l:save)
 endfun
-" Make the function a command (so we can call it without :call).
-command! RemoveWhiteSpace call RemoveWhiteSpace()
-" Automatically remove white space on file save.
-" autocmd BufWritePre * :call RemoveWhiteSpace()
+"" }}}
+
+"" Autocommands {{{
+augroup lgulich_autocommands
+  autocmd!
+  " Automatically remove white space on file save.
+  autocmd BufWritePre * :call TrimWhiteSpace()
+augroup end
+"
 "" }}}
 
 "" Remappings {{{
 " Exit insert mode.
 inoremap jk <ESC>
 
-" Replace all occurrences of word under carret.
-nmap <Leader>s :%s/\<<C-r><C-w>\>/
+" Search and replace word under carret.
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+" Search and replace WORD under carret.
+nnoremap <Leader>S :%s/<C-r><C-W>/
+" Search and replace visual selection.
+vnoremap <Leader>s :<C-u>%s/<C-r>*/
 
 " Start global project-wide search.
-nmap <C-F> :grep -r -F "
+noremap <C-F> :grep -r -F "
 
 " Toggle fold around current block.
 nnoremap <space> za
@@ -91,13 +100,19 @@ nnoremap k gk
 noremap B ^
 noremap E $
 
-" Copy / Paste from primary (selection) clipboard.
-noremap <Leader>y "*y
-noremap <Leader>p "*p
+" Copy / Paste from primary (X11) clipboard.
+nnoremap <Leader>y "*y
+vnoremap <Leader>y "*y
+nnoremap <Leader>p "*p
 
 " Copy / Paste from clipboard (ctrl-c) clipboard.
-noremap <Leader>Y "+y
-noremap <Leader>P "+p
+nnoremap <Leader>Y "+y
+vnoremap <Leader>Y "+y
+nnoremap <Leader>P "+p
+
+" Move visual selecion up / down.
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 "" }}}
 
 "" Color Setup {{{
