@@ -134,18 +134,19 @@ for_window [class="^.*"] border pixel 3
 
 
 # Screen configuration.
-set $display1 eDP
-set $display2 DisplayPort-2
-workspace 1 output $display1
-workspace 2 output $display2
-workspace 3 output $display1
-workspace 4 output $display2
-workspace 5 output $display1
-workspace 6 output $display2
-workspace 7 output $display1
-workspace 8 output $display2
-workspace 9 output $display1
-workspace 10 output $display2
+set $main_display DisplayPort-0
+set $backup_display eDP
+
+workspace 1 output $main_display
+workspace 2 output $backup_display
+workspace 3 output $main_display
+workspace 4 output $backup_display
+workspace 5 output $main_display
+workspace 6 output $backup_display
+workspace 7 output $main_display
+workspace 8 output $backup_display
+workspace 9 output $main_display
+workspace 10 output $backup_display
 
 # Assign programs to workspaces.
 assign [class="Brave-browser-beta"] 2
@@ -162,7 +163,7 @@ assign [class="rqt_reconfigure"] 6
 exec_always --no-startup-id ~/dotfiles/i3/helpers/toggle_background.sh
 
 # Start up programs.
-exec --no-startup-id xrandr --output $display1 --left-of $display2
+exec --no-startup-id xrandr --output $main_display --left-of $backup_display
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
