@@ -31,7 +31,8 @@ set foldmethod=indent " Fold based on indent level.
 
 "" Appearance {{{
 " Change carret shape to I-beam in insert mode.
-if has("autocmd")
+augroup carret_mode_shape_changer
+  au!
   au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
   au InsertEnter,InsertChange *
         \ if v:insertmode == 'i' |
@@ -40,7 +41,11 @@ if has("autocmd")
         \   silent execute '!echo -ne "\e[4 q"' | redraw! |
         \ endif
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
-endif
+
+  " Add a cursor line in insert mode.
+  autocmd InsertEnter * set cul
+  autocmd InsertLeave * set nocul
+augroup end
 
 " Line numbering
 set ruler " show cursor position in bottom bar.
@@ -50,8 +55,17 @@ set showcmd " show command in bottom bar.
 set showmatch " highlight matching parentheses etc.
 set colorcolumn=+1 " show vbar at textwidth + 1
 
-" Minimal lines above and below caret
+" Minimal lines above and below caret.
 set scrolloff=5
+
+" Turn on syntax highlighting.
+syntax on
+
+if (empty($TMUX))
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
 "" }}}
 
 "" New commands {{{
@@ -113,17 +127,6 @@ nnoremap <Leader>P "+p
 " Move visual selecion up / down.
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-"" }}}
-
-"" Color Setup {{{
-if (empty($TMUX))
-  if (has("termguicolors"))
-    set termguicolors
-  endif
-endif
-
-" Turn on syntax highlighting
-syntax on
 "" }}}
 
 "" ROS configuration {{{

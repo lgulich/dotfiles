@@ -68,7 +68,7 @@ colors:
     cyan:    '#5b7d78'
     white:   '#828482'
 
-background_opacity: 0.5
+background_opacity: 0.8
 
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"

@@ -108,6 +108,7 @@ map <C-t> :GitFiles<CR>
 "" Plugin nerdtree {{{
 " Remap for toggling tree.
 map <C-n> :NERDTreeToggle<CR>
+map <leader>f :NERDTreeFind<CR>
 
 " Show file previews in NERDTree
 let g:nerd_preview_enabled = 0
