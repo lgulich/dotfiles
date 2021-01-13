@@ -134,8 +134,8 @@ for_window [class="^.*"] border pixel 3
 
 
 # Screen configuration.
-set $main_display DisplayPort-0
-set $backup_display eDP
+set $main_display DP-5-8
+set $backup_display DP-6
 
 workspace 1 output $main_display
 workspace 2 output $backup_display

@@ -34,8 +34,7 @@ def create_symbolic_links(dotfiles: Path) -> None:
 
 
 def create_bin(dotfiles: Path, destination: Path) -> None:
-    assert destination.is_dir(), destination
-    shutil.rmtree(destination)
+    shutil.rmtree(destination, ignore_errors=True)
     destination.mkdir(parents=True)
     for child in dotfiles.iterdir():
         if child.is_dir() and (child / 'dotfile_manager.yaml').exists():
