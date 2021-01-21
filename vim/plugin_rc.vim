@@ -102,7 +102,7 @@ map <F5> :call CurtineIncSw()<CR>
 
 "" Plugin fzf {{{
 " Remap to find files.
-map <C-t> :GitFiles<CR>
+map <C-t> :Files<CR>
 "" }}}
 
 "" Plugin nerdtree {{{
