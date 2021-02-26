@@ -13,4 +13,4 @@ cat ./build/**/compile_commands.json > compile_commands.json \
 compdb -p . list > compile_commands_extended.json
 
 rm ~/compile_commands.json || true
-ln -s compile_commands_extended.json ~/compile_commands.json
+cp compile_commands_extended.json ~/compile_commands.json

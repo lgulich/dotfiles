@@ -17,12 +17,16 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
+Plug 'vim-airline/vim-airline'
 
 " C-style languages plugins
 Plug 'bfrg/vim-cpp-modern'
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
-Plug 'ericcurtin/CurtineIncSw.vim' " Switch between header and src.
+" Switch between header and source file.
+Plug 'ericcurtin/CurtineIncSw.vim'
 Plug 'preservim/tagbar'
+Plug 'clangd/coc-clangd'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 Plug 'taketwo/vim-ros'
 
@@ -39,7 +43,7 @@ catch /^Vim\%((\a\+)\)\=:E185/
 endtry
 "" }}}
 
-"" Plugin coc {{{
+"" Plugin CoC {{{
 "
 " Set internal encoding of vim(not needed on neovim)
 set encoding=utf-8
@@ -69,6 +73,9 @@ if has("patch-8.1.1564")
 else
   set signcolumn=yes
 endif
+
+" Else we have issue with coc lists.
+let g:coc_disable_transparent_cursor = 1
 
 " Use tab for trigger completion with characters ahead and navigate.
 inoremap <silent><expr> <TAB>
@@ -119,7 +126,6 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
 "" }}}
 
 "" Plugin CurtineIncSw {{{
