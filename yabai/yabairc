@@ -16,7 +16,7 @@ yabai -m config normal_window_opacity        0.90
 # borders
 yabai -m config window_border                on
 yabai -m config window_border_width          5
-yabai -m config active_window_border_color   0x8098c379 
+yabai -m config active_window_border_color   0x8098c379
 yabai -m config normal_window_border_color   0x80555555
 yabai -m config insert_feedback_color        0xffd75f5f
 
@@ -77,6 +77,7 @@ yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Franz space=chat
 yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=Spotify space=chat
+yabai -m rule --add app=Alacritty space=term
 
 yabai -m space --focus chat
 yabai -m space --focus term
