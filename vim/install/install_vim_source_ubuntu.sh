@@ -40,4 +40,4 @@ cd vim
   --prefix=/usr/local
 
 make
-sudo checkinstall
+sudo make install

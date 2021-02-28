@@ -123,10 +123,6 @@ nnoremap <Leader>p "*p
 nnoremap <Leader>Y "+y
 vnoremap <Leader>Y "+y
 nnoremap <Leader>P "+p
-
-" Move visual selecion up / down.
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
 "" }}}
 
 "" ROS configuration {{{
