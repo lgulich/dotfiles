@@ -28,7 +28,7 @@ plugins=(
 )
 source "${ZSH}"/oh-my-zsh.sh
 
-# Often used directories. 
+# Often used directories.
 export DOTFILES=~/dotfiles
 export ARC_CORE_PATH=~/arc_core
 export ARC_WS_PATH=~/arc_ws
@@ -38,6 +38,7 @@ export PATH="${DOTFILES}/generated/bin:${PATH}"
 export CXX=/usr/bin/g++-9
 export VISUAL=vim
 export EDITOR=vim
+
 # SSL
 export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1
 
