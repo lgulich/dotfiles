@@ -36,40 +36,47 @@ yabai -m config left_padding                 5
 yabai -m config right_padding                5
 yabai -m config window_gap                   5
 
-main_display=2
-support_display=1
+num_displays=$(yabai -m query --displays | jq '. | length')
+num_spaces=$(yabai -m query --spaces | jq '. | length')
 
-yabai -m display --focus "${main_display}"
-for i in {0..10}; do
-  yabai -m space --destroy
-done
+if [ "$num_displays" -eq "2" ]; then
+  main_display=2
+  support_display=1
+elif [ "$num_displays" -eq "1" ]; then
+  main_display=1
+  support_display=1
+fi
 
-yabai -m display --focus "${support_display}"
-for i in {0..10}; do
-  yabai -m space --destroy
-done
+if [ "$num_spaces" -lt "10" ]; then
+  yabai -m display --focus "${main_display}"
+  for (( i=num_spaces; i<10; i++ )); do
+    echo "Creating space ${i}."
+    yabai -m space --create
+  done
+fi
 
-yabai -m display --focus "${main_display}"
-for i in {1..4}; do
-  yabai -m space --create
-done
+if [ "$num_spaces" -gt "10" ]; then
+  yabai -m display --focus "${main_display}"
+  for (( i=10; i<num_spaces; i++ )); do
+    echo "Destroying space ${i}."
+    yabai -m space --destroy
+  done
+fi
 
-yabai -m display --focus "${support_display}"
-for i in {1..4}; do
-  yabai -m space --create
-done
-
-
+yabai -m space 1 --label varia2
+yabai -m space 2 --label varia3
+yabai -m space 3 --label varia4
+yabai -m space 4 --label mail
+yabai -m space 5 --label chat
 yabai -m space 6 --label term
 yabai -m space 7 --label browser
 yabai -m space 8 --label code
-yabai -m space 9 --label varia1
-yabai -m space 10 --label varia2
-yabai -m space 1 --label varia3
-yabai -m space 2 --label varia4
-yabai -m space 3 --label varia5
-yabai -m space 4 --label mail
-yabai -m space 5 --label chat
+yabai -m space 9 --label compile
+yabai -m space 10 --label varia1
+
+# We only want the initial terminals to be in space term.
+yabai -m rule --add app=Alacritty space=term label=terminal
+yabai -m rule --remove terminal
 
 yabai -m rule --add app=Brave space=browser
 yabai -m rule --add app=Atom space=code
@@ -77,7 +84,6 @@ yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Franz space=chat
 yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=Spotify space=chat
-yabai -m rule --add app=Alacritty space=term
 
 yabai -m space --focus chat
 yabai -m space --focus term
