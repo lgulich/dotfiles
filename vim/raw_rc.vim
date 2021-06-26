@@ -127,6 +127,7 @@ nnoremap <Leader>P "+p
 
 "" ROS configuration {{{
 autocmd BufRead,BufNewFile *.launch setfiletype xml
+autocmd BufRead,BufNewFile *.test setfiletype xml
 autocmd BufRead,BufNewFile *.cfg setfiletype python
 "" }}}
 
