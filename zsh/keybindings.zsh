@@ -51,3 +51,6 @@ fi
 
 # Keymap to exit vi-insert-mode.
 bindkey "jk" vi-cmd-mode
+
+# Partially complete suggestion by zsh-autosuggestions.
+bindkey '^ ' forward-word
