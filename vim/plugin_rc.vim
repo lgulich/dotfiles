@@ -28,7 +28,11 @@ Plug 'preservim/tagbar'
 Plug 'clangd/coc-clangd'
 Plug 'jackguo380/vim-lsp-cxx-highlight'
 
+" ROS Plugins
 Plug 'taketwo/vim-ros'
+
+" Latex plugins
+Plug 'lervag/vimtex'
 
 call plug#end()
 "" }}}
@@ -250,5 +254,12 @@ nmap <leader>ba :CatkinBuildAll<CR>
 nmap <leader>tt :CatkinTestThis<CR>"
 "" }}}
 
+"" Plugin vimtex {{{
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+set conceallevel=0
+let g:tex_conceal='abdmg'
+"" }}}
 
 " vim:foldmethod=marker:foldlevel=0

@@ -131,4 +131,11 @@ autocmd BufRead,BufNewFile *.test setfiletype xml
 autocmd BufRead,BufNewFile *.cfg setfiletype python
 "" }}}
 
+"" Spellcheck {{{
+setlocal spell
+set spelllang=nl,en_gb
+" Autocorrect the last spell error.
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+"" }}}
+
 " vim:foldmethod=marker:foldlevel=0
