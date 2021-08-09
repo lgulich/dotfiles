@@ -133,9 +133,15 @@ autocmd BufRead,BufNewFile *.cfg setfiletype python
 
 "" Spellcheck {{{
 setlocal spell
-set spelllang=nl,en_gb
+set spelllang=en
+set spellfile=${HOME}/dotfiles/vim/spell/en.utf-8.add
+
+" Automatically enable spellcheck for .tex files.
+autocmd BufRead,BufNewFile *.tex set spell
+
 " Autocorrect the last spell error.
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+nnoremap <C-l> 1z=1<CR>
 "" }}}
 
 " vim:foldmethod=marker:foldlevel=0
