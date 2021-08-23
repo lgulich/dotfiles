@@ -33,6 +33,7 @@ Plug 'taketwo/vim-ros'
 
 " Latex plugins
 Plug 'lervag/vimtex'
+Plug 'rhysd/vim-grammarous'
 
 call plug#end()
 "" }}}
