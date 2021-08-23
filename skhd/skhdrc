@@ -22,21 +22,15 @@ shift + cmd - 1 : yabai -m window --space term
 shift + cmd - 2 : yabai -m window --space browser
 shift + cmd - 3 : yabai -m window --space code
 shift + cmd - 4 : yabai -m window --space compile
-shift + cmd - 5 : yabai -m window --space varia1
-shift + cmd - 6 : yabai -m window --space varia2
-shift + cmd - 4 : yabai -m window --space varia3
-shift + cmd - 5 : yabai -m window --space varia4
-shift + cmd - 6 : yabai -m window --space mail
-shift + cmd - 6 : yabai -m window --space chat
+shift + cmd - 8 : yabai -m window --space varia
+shift + cmd - 9 : yabai -m window --space mail
+shift + cmd - 0 : yabai -m window --space chat
 
 cmd - 1 : yabai -m space --focus term
 cmd - 2 : yabai -m space --focus browser
 cmd - 3 : yabai -m space --focus code
 cmd - 4 : yabai -m space --focus compile
-cmd - 5 : yabai -m space --focus varia1
-cmd - 6 : yabai -m space --focus varia2
-cmd - 7 : yabai -m space --focus varia3
-cmd - 8 : yabai -m space --focus varia4
+cmd - 8 : yabai -m space --focus varia
 cmd - 9 : yabai -m space --focus mail
 cmd - 0 : yabai -m space --focus chat
 
