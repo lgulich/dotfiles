@@ -131,6 +131,10 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Disable CoC for latex files
+autocmd FileType tex,latex CocDisable
+
 "" }}}
 
 "" Plugin CurtineIncSw {{{

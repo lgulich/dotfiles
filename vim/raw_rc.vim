@@ -137,7 +137,7 @@ set spelllang=en
 set spellfile=${HOME}/dotfiles/vim/spell/en.utf-8.add
 
 " Automatically enable spellcheck for .tex files.
-autocmd BufRead,BufNewFile *.tex set spell
+autocmd Filetype tex,latex set spell
 
 " Autocorrect the last spell error.
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
