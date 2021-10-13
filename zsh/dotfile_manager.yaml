@@ -1,4 +1,4 @@
-symlink:
+symlinks:
   zshrc.zsh: ~/.zshrc
 
 source:

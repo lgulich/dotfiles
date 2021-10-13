@@ -29,9 +29,10 @@ plugins=(
 source "${ZSH}"/oh-my-zsh.sh
 
 # Often used directories.
-export DOTFILES=~/dotfiles
+export DOTFILES=~/Documents/dotfiles
 export ARC_CORE_PATH=~/arc_core
 export ARC_WS_PATH=~/arc_ws
+
 # Default UNIX env variables:
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="${DOTFILES}/generated/bin:${PATH}"

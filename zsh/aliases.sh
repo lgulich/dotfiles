@@ -1,6 +1,6 @@
 # shellcheck shell=sh
 
-alias dot='~/dotfiles'
+alias dot='${DOTFILES}'
 
 # General aliases
 alias edf='edit_dotfile.zsh'
