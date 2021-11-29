@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 brew install zsh || brew upgrade zsh
 
@@ -14,5 +14,6 @@ if [[ ! "$SHELL" =~ .*zsh.* ]]; then
   fi
 fi
 
-"${DOTFILES}"/zsh/install/install_oh_my_zsh.sh
-"${DOTFILES}"/zsh/install/install_fonts.sh
+SCRIPT_PATH=$(dirname $(realpath -s $0))
+"${SCRIPT_PATH}"/install/install_oh_my_zsh.sh
+"${SCRIPT_PATH}"/install/install_fonts.sh

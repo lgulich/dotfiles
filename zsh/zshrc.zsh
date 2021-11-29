@@ -43,7 +43,7 @@ export EDITOR=vim
 # SSL
 export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1
 
-source "${DOTFILES}"/generated/sources.zsh
+source "${DOTFILES:?}"/generated/sources.zsh
 
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
