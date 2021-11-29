@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 sudo add-apt-repository ppa:jonathonf/vim
 sudo apt-get update

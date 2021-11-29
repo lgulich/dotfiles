@@ -9,10 +9,10 @@ if [[ ! "$SHELL" =~ .*zsh.* ]]; then
   read -rp "Default shell is not zsh, do you want to change? (Y/n)"
   echo
   if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-    chsh -s "$(which zsh)"
+    sudo chsh -s "$(which zsh)"
     echo "Log out for actions to take change!"
   fi
 fi
 
-"${DOTFILES}"/zsh/install_oh_my_zsh.sh
-"${DOTFILES}"/zsh/install_fonts.sh
+"${DOTFILES}"/zsh/install/install_oh_my_zsh.sh
+"${DOTFILES}"/zsh/install/install_fonts.sh
