@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 # Install MesloLGS Nerd Font
 mkdir -p ~/.fonts
