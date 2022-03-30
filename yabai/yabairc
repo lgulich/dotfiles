@@ -1,34 +1,38 @@
 #!/bin/bash
 
-# global settings
+# Automatically load scripting addition.
+sudo yabai --load-sa
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+
+# Global settings
 yabai -m config window_placement             second_child
 yabai -m config window_topmost               on
 yabai -m config split_ratio                  0.50
 yabai -m config auto_balance                 off
 
-# appearance
+# Appearance
 yabai -m config window_shadow                on
 yabai -m config window_opacity               off
 yabai -m config window_opacity_duration      0.0
 yabai -m config active_window_opacity        1.0
 yabai -m config normal_window_opacity        0.90
 
-# borders
-yabai -m config window_border                on
+# Borders
+yabai -m config window_border                off
 yabai -m config window_border_width          5
 yabai -m config active_window_border_color   0x8098c379
 yabai -m config normal_window_border_color   0x80555555
 yabai -m config insert_feedback_color        0xffd75f5f
 
-# mouse
+# Mouse
 yabai -m config mouse_follows_focus          on
-yabai -m config focus_follows_mouse          off
-yabai -m config mouse_modifier               alt
+yabai -m config focus_follows_mouse          on
+yabai -m config mouse_modifier               fn
 yabai -m config mouse_action1                move
 yabai -m config mouse_action2                resize
 yabai -m config mouse_drop_action            swap
 
-# general space settings
+# General space settings
 yabai -m config layout                       bsp
 yabai -m config top_padding                  5
 yabai -m config bottom_padding               5
@@ -78,9 +82,11 @@ yabai -m rule --add app=Alacritty space=term label=terminal
 yabai -m rule --remove terminal
 
 yabai -m rule --add app=Brave space=browser
-yabai -m rule --add app=Brave Browser Beta space=browser
+yabai -m rule --add app='Brave Browser Beta' space=browser
 yabai -m rule --add app=Atom space=code
+yabai -m rule --add app=Code space=code
 yabai -m rule --add app=Mail space=mail
+yabai -m rule --add app=Spark space=mail
 yabai -m rule --add app=Franz space=chat
 yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=Spotify space=chat

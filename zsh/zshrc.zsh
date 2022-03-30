@@ -30,13 +30,13 @@ source "${ZSH}"/oh-my-zsh.sh
 
 # Often used directories.
 export DOTFILES=~/Documents/dotfiles
-export ARC_CORE_PATH=~/arc_core
+export ARC_CORE_PATH=~/Documents/code/ascento/arc_core/
 export ARC_WS_PATH=~/arc_ws
 
 # Default UNIX env variables:
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="${DOTFILES}/generated/bin:${PATH}"
-export CXX=/usr/bin/g++-9
+export CXX=/usr/bin/g++-11
 export VISUAL=vim
 export EDITOR=vim
 
@@ -51,3 +51,8 @@ source "${DOTFILES:?}"/generated/sources.zsh
 # Load ROS.
 [ -f /opt/ros/melodic/setup.zsh ] && source /opt/ros/melodic/setup.zsh
 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/lionelgulich/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/lionelgulich/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/lionelgulich/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/lionelgulich/google-cloud-sdk/completion.zsh.inc'; fi

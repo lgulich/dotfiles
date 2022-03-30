@@ -2,3 +2,5 @@
 	name = lgulich
 	email = lgulich@ethz.ch
 
+[init]
+	defaultBranch = master
