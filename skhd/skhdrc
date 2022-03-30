@@ -1,7 +1,10 @@
 cmd - h : yabai -m window --focus west
 cmd - j : yabai -m window --focus south
 cmd - k : yabai -m window --focus north
-cmd - l : yabai -m window --focus east
+cmd - l [
+  "Brave Browser" ~
+  *     : yabai -m window --focus east
+]
 
 cmd - left : yabai -m window --focus west
 cmd - down : yabai -m window --focus south
