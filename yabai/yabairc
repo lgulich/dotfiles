@@ -89,6 +89,8 @@ yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Spark space=mail
 yabai -m rule --add app=Franz space=chat
 yabai -m rule --add app=Ferdi space=chat
+yabai -m rule --add app=WhatsApp space=chat
+yabai -m rule --add app=Signal space=chat
 yabai -m rule --add app=Spotify space=chat
 
 yabai -m space --focus chat
