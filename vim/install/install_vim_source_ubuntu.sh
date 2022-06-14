@@ -6,10 +6,7 @@ sudo apt-get install -y \
   checkinstall \
   git \
   libatk1.0-dev \
-  libbonoboui2-dev \
   libcairo2-dev  \
-  libgnome2-dev \
-  libgnomeui-dev \
   libgtk2.0-dev \
   liblua5.1-dev \
   libncurses5-dev \
