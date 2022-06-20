@@ -36,6 +36,7 @@ export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="${DOTFILES}/generated/bin:${PATH}"
 export VISUAL=vim
 export EDITOR=vim
+export BROWSER=brave
 
 # SSL
 export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1

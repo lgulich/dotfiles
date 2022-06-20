@@ -136,26 +136,29 @@ for_window [class="^.*"] border pixel 3
 
 
 # Screen configuration.
-set $main_display DP-5-8
-set $backup_display DP-6
+set $main_display DP-2
 
 workspace 1 output $main_display
-workspace 2 output $backup_display
+workspace 2 output $main_display
 workspace 3 output $main_display
-workspace 4 output $backup_display
+workspace 4 output $main_display
 workspace 5 output $main_display
-workspace 6 output $backup_display
+workspace 6 output $main_display
 workspace 7 output $main_display
-workspace 8 output $backup_display
+workspace 8 output $main_display
 workspace 9 output $main_display
-workspace 10 output $backup_display
+workspace 10 output $main_display
 
 # Assign programs to workspaces.
 assign [class="Brave-browser-beta"] 2
 assign [class="Brave-browser"] 2
 assign [class="Atom"] 3
-assign [class="Clion"] 5
+assign [class="Code"] 3
+assign [class="Clion"] 3
 assign [class="Franz"] 10
+assign [class="Slack"] 10
+assign [class="Microsoft Teams - Preview"] 10
+assign [class="Prospect Mail"] 10
 for_window [class="Spotify"] move to workspace 10
 
 assign [class="gazebo"] 6
@@ -163,16 +166,15 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Set background image.
-exec_always --no-startup-id ~/dotfiles/i3/helpers/toggle_background.sh
+exec_always --no-startup-id ~/Documents/dotfiles/i3/helpers/toggle_background.sh
 
 # Start up programs.
-exec --no-startup-id xrandr --output $main_display --left-of $backup_display
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
 exec --no-startup-id compton
-exec --no-startup-id ~/dotfiles/i3/helpers/alternating_layouts.py
-exec --no-startup-id ~/dotfiles/i3/helpers/init_workspaces.bash
+exec --no-startup-id ~/Documents/dotfiles/i3/helpers/alternating_layouts.py
+exec --no-startup-id ~/Documents/dotfiles/i3/helpers/init_workspaces.bash
 
 
 ## MEDIA BUTTONS

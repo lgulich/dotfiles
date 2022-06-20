@@ -9,7 +9,7 @@ set shiftwidth=2
 set shiftround " Round indent to multiples of tab width
 set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
-set textwidth=80 " Auto wrap lines after this width
+set textwidth=100 " Auto wrap lines after this width
 
 " Disable auto-line-wrapping for shell scripts and javascript
 autocmd FileType sh,bash,zsh,js setlocal textwidth=0

@@ -240,11 +240,12 @@ nnoremap dgl :diffget //3<CR>
 
 "" Plugin vim-headerguard {{{
 function! g:HeaderguardName()
-  let project_name = expand('%:p:gs@.*include/\(.*\)/.*@\1@g')
+  let prefix = 'NVIDIA_ISAAC'
+  let project_name = expand('%:p:gs@.*sdk/\(.*\)/.*@\1@g')
   let project_name = substitute(project_name, '[^0-9a-zA-Z_]', '_', 'g')
   let project_name = toupper(project_name)
   let file_name = toupper(expand('%:t:gs/[^0-9a-zA-Z_]/_/g'))
-  return project_name . "_" . file_name . "_"
+  return prefix . "_" . project_name . "_" . file_name . "_"
 endfunction
 
 function! g:HeaderguardLine3()
