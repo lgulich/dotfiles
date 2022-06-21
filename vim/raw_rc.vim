@@ -78,6 +78,13 @@ fun! TrimWhiteSpace()
   keeppatterns %s/\s\+$//e
   call winrestview(l:save)
 endfun
+command TrimWhiteSpace call TrimWhiteSpace()
+
+fun! InsertUuid()
+  let foo = system("printf '0x%s\n' $(uuidgen -r | tr -d '-' | cut -b 1-16)")
+  :put =foo
+endfun
+command InsertUuid call InsertUuid()
 "" }}}
 
 "" Autocommands {{{
@@ -145,3 +152,4 @@ nnoremap <C-l> 1z=1<CR>
 "" }}}
 
 " vim:foldmethod=marker:foldlevel=0
+
