@@ -72,7 +72,7 @@ yabai -m space 1 --label term
 yabai -m space 2 --label browser
 yabai -m space 3 --label code
 yabai -m space 4 --label compile
-yabai -m space 5 --label varia
+yabai -m space 5 --label organisation
 yabai -m space 6 --label mail
 yabai -m space 7 --label chat
 
@@ -85,8 +85,13 @@ yabai -m rule --add app=Brave space=browser
 yabai -m rule --add app='Brave Browser Beta' space=browser
 yabai -m rule --add app=Atom space=code
 yabai -m rule --add app=Code space=code
+yabai -m rule --add app=Reminders space=organisation
+yabai -m rule --add app=Notes space=organisation
+yabai -m rule --add app=OneNote space=organisation
 yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Spark space=mail
+yabai -m rule --add app=Outlook space=mail
+yabai -m rule --add app='Microsoft Teams' space=mail
 yabai -m rule --add app=Franz space=chat
 yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=WhatsApp space=chat
