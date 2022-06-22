@@ -17,3 +17,4 @@ export DOTFILES="$(pwd)"/dotfiles
 dotfile_manager install
 dotfile_manager setup
 ```
+

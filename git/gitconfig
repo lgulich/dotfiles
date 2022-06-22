@@ -1,6 +1,11 @@
 [user]
 	name = lgulich
-	email = lgulich@ethz.ch
+	email = lionel.gulich@gmail.com
 
 [init]
 	defaultBranch = master
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

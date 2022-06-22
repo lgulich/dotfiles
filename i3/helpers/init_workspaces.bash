@@ -5,7 +5,8 @@ set -ex
 declare -A startup_apps
 startup_apps['1']='alacritty'
 startup_apps['2']='brave-browser'
-startup_apps['10']='franz'
+startup_apps['10']='slack'
+startup_apps['10']='prospect-mail'
 
 startup_workspaces=(
   '2'
