@@ -29,8 +29,7 @@ Plug 'vim-airline/vim-airline'
 " C-style languages plugins
 Plug 'bfrg/vim-cpp-modern'
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
-" Switch between header and source file.
-Plug 'ericcurtin/CurtineIncSw.vim'
+Plug 'lgulich/toggle-header-source.vim'
 Plug 'preservim/tagbar'
 Plug 'clangd/coc-clangd'
 Plug 'jackguo380/vim-lsp-cxx-highlight'
@@ -144,9 +143,9 @@ autocmd FileType tex,latex CocDisable
 
 "" }}}
 
-"" Plugin CurtineIncSw {{{
+"" Plugin toggle-header-source {{{
 " Remap for switching between header / src file.
-map <F5> :call CurtineIncSw()<CR>
+map <F5> :call ToggleHeaderSource()<CR>
 "" }}}
 
 "" Plugin fzf {{{
