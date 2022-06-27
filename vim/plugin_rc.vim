@@ -25,6 +25,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
+Plug 'bkad/CamelCaseMotion'
 
 " C-style languages plugins
 Plug 'bfrg/vim-cpp-modern'
@@ -151,6 +152,18 @@ map <F5> :call ToggleHeaderSource()<CR>
 "" Plugin fzf {{{
 " Remap to find files.
 map <C-t> :Files<CR>
+"" }}}
+
+"" Plugin CamelCaseMotion {{{
+" Remap to move in word.
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+map <silent> ge <Plug>CamelCaseMotion_ge
+sunmap w
+sunmap b
+sunmap e
+sunmap ge
 "" }}}
 
 "" Plugin nerdtree {{{

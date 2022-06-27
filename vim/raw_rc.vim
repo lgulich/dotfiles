@@ -16,10 +16,12 @@ autocmd FileType sh,bash,zsh,js setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
-" set hlsearch " Highlight matches.
 
 " Backspace key
 set backspace=indent,eol,start
+
+set iskeyword+=_
+
 "" }}}
 
 "" Folding {{{
