@@ -151,7 +151,7 @@ map <F5> :call ToggleHeaderSource()<CR>
 
 "" Plugin fzf {{{
 " Remap to find files.
-map <C-t> :Files<CR>
+map <C-p> :Files<CR>
 "" }}}
 
 "" Plugin CamelCaseMotion {{{
@@ -263,20 +263,6 @@ endfunction
 function! g:HeaderguardLine3()
   return "#endif  // " . g:HeaderguardName() . ""
 endfunction
-"" }}}
-
-"" Plugin vim-ros {{{
-let g:ros_build_system="catkin-tools"
-
-command! CatkinBuildThis execute ":! cd $(dirname %) && catkin build --this --no-deps"
-command! CatkinBuildFromThis execute ":! cd $(dirname %) && catkin build --start-with-this"
-command! CatkinBuildAll execute ":! cd $(dirname %) && catkin build --this"
-command! CatkinTestThis execute ":! cd $(dirname %) && catkin run_tests --this --no-deps"
-command! -nargs=+ CatkinBuild execute ":! cd $(dirname %) && catkin build --no-deps " . <f-args>
-command! -nargs=+ CatkinBuildWithDeps execute ":! cd $(dirname %) && catkin build " . <f-args>
-nmap <leader>bt :CatkinBuildThis<CR>
-nmap <leader>ba :CatkinBuildAll<CR>
-nmap <leader>tt :CatkinTestThis<CR>"
 "" }}}
 
 "" Plugin vimtex {{{

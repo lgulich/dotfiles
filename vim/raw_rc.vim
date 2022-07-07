@@ -22,6 +22,9 @@ set backspace=indent,eol,start
 
 set iskeyword+=_
 
+" For neovim we wet the python exectuable because neovim does not have python support by default.
+let g:python3_host_prog="/usr/bin/python3"
+
 "" }}}
 
 "" Folding {{{
