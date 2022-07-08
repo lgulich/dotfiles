@@ -7,7 +7,7 @@ to organize the dotfiles. Make sure you install it first. (Pip installs
 executables to `~/.local/bin`, make sure this is part of your $PATH)
 ```sh
 sudo apt-get update
-sudo apt-get install python3.8
+sudo apt-get install python3.8 git
 python3.8 -m pip install dotfile-manager
 export PATH="~/.local/bin:$PATH"
 ```
