@@ -2,6 +2,6 @@
 
 set -ex
 
-"${DOTFILES}"/vim/install/install_vim_source_ubuntu.sh
+"${DOTFILES}"/vim/install/install_neovim_ubuntu.sh
 "${DOTFILES}"/vim/install/install_plugins.sh
 

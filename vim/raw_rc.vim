@@ -9,17 +9,22 @@ set shiftwidth=2
 set shiftround " Round indent to multiples of tab width
 set expandtab " Use spaces instead of tabs
 set autoindent " Copy indent from current line when starting new line
-set textwidth=80 " Auto wrap lines after this width
+set textwidth=100 " Auto wrap lines after this width
 
 " Disable auto-line-wrapping for shell scripts and javascript
 autocmd FileType sh,bash,zsh,js setlocal textwidth=0
 
 " Searching
 set incsearch " Search as characters are entered.
-" set hlsearch " Highlight matches.
 
 " Backspace key
 set backspace=indent,eol,start
+
+set iskeyword+=_
+
+" For neovim we wet the python exectuable because neovim does not have python support by default.
+let g:python3_host_prog="/usr/bin/python3"
+
 "" }}}
 
 "" Folding {{{

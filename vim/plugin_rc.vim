@@ -25,6 +25,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
+Plug 'bkad/CamelCaseMotion'
 
 " C-style languages plugins
 Plug 'bfrg/vim-cpp-modern'
@@ -150,7 +151,19 @@ map <F5> :call ToggleHeaderSource()<CR>
 
 "" Plugin fzf {{{
 " Remap to find files.
-map <C-t> :Files<CR>
+map <C-p> :Files<CR>
+"" }}}
+
+"" Plugin CamelCaseMotion {{{
+" Remap to move in word.
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+map <silent> ge <Plug>CamelCaseMotion_ge
+sunmap w
+sunmap b
+sunmap e
+sunmap ge
 "" }}}
 
 "" Plugin nerdtree {{{
@@ -239,30 +252,17 @@ nnoremap dgl :diffget //3<CR>
 
 "" Plugin vim-headerguard {{{
 function! g:HeaderguardName()
-  let project_name = expand('%:p:gs@.*include/\(.*\)/.*@\1@g')
+  let prefix = 'NVIDIA_ISAAC'
+  let project_name = expand('%:p:gs@.*sdk/\(.*\)/.*@\1@g')
   let project_name = substitute(project_name, '[^0-9a-zA-Z_]', '_', 'g')
   let project_name = toupper(project_name)
   let file_name = toupper(expand('%:t:gs/[^0-9a-zA-Z_]/_/g'))
-  return project_name . "_" . file_name . "_"
+  return prefix . "_" . project_name . "_" . file_name . "_"
 endfunction
 
 function! g:HeaderguardLine3()
   return "#endif  // " . g:HeaderguardName() . ""
 endfunction
-"" }}}
-
-"" Plugin vim-ros {{{
-let g:ros_build_system="catkin-tools"
-
-command! CatkinBuildThis execute ":! cd $(dirname %) && catkin build --this --no-deps"
-command! CatkinBuildFromThis execute ":! cd $(dirname %) && catkin build --start-with-this"
-command! CatkinBuildAll execute ":! cd $(dirname %) && catkin build --this"
-command! CatkinTestThis execute ":! cd $(dirname %) && catkin run_tests --this --no-deps"
-command! -nargs=+ CatkinBuild execute ":! cd $(dirname %) && catkin build --no-deps " . <f-args>
-command! -nargs=+ CatkinBuildWithDeps execute ":! cd $(dirname %) && catkin build " . <f-args>
-nmap <leader>bt :CatkinBuildThis<CR>
-nmap <leader>ba :CatkinBuildAll<CR>
-nmap <leader>tt :CatkinTestThis<CR>"
 "" }}}
 
 "" Plugin vimtex {{{
