@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 sudo apt-get install -y tmux

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 # Load gnome terminal settings.
 dconf reset -f /org/gnome/terminal/

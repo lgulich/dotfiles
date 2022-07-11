@@ -1,6 +1,12 @@
+install_ubuntu:
+  - install_ubuntu.sh
+
+install_macos:
+  - install_macos.sh
+
 symlinks:
   gitconfig: ~/.gitconfig
 
-source: 
+source:
   - aliases.sh
   - helpers.sh

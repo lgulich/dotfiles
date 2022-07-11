@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 sudo snap install code --classic

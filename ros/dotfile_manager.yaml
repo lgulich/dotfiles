@@ -1,3 +1,8 @@
+disable: True
+
+install_ubuntu:
+  - install_ubuntu.sh
+
 source:
   - aliases.sh
 
