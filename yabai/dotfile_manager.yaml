@@ -1,2 +1,5 @@
+install_macos:
+  - install_macos.sh
+
 symlinks:
   yabairc: ~/.config/yabai/yabairc

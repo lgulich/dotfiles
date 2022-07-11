@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 sudo apt-get install -y apt-transport-https curl
 

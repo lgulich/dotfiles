@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 sudo snap install spotify
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 declare -A startup_apps
 startup_apps['1']='alacritty'

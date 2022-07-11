@@ -1,3 +1,15 @@
+install_ubuntu:
+  - install/install_ubuntu.sh
+  - install/change_default_shell.bash
+  - install/install_fonts.sh
+  - install/install_oh_my_zsh.sh
+
+install_macos:
+  - install/install_macos.sh
+  - install/change_default_shell.bash
+  - install/install_fonts.sh
+  - install/install_oh_my_zsh.sh
+
 symlinks:
   zshrc.zsh: ~/.zshrc
 

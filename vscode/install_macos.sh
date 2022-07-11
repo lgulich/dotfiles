@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 brew install vscode || brew update vscode

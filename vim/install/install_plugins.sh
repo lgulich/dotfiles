@@ -2,4 +2,4 @@
 
 set -e
 
-vim +PlugInstall +qall
+nvim +PlugInstall +qall

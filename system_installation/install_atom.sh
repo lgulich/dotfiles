@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 cd "$(mktemp -d)"
 wget -O atom-amd64.deb https://atom.io/download/deb
