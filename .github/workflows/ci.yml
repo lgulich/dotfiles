@@ -21,8 +21,6 @@ jobs:
           export PATH="~/.local/bin:$PATH"
       - name: Install dotfiles
         run: |
-          pwd
-          ls
           export DOTFILES="$(pwd)"
           dotfile_manager install
       - name: Setup dotfiles
