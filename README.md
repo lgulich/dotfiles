@@ -1,4 +1,4 @@
-# Dotfiles
+# Dotfiles [![CI](https://github.com/lgulich/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/lgulich/dotfiles/actions/workflows/ci.yml)
 My dotfiles. Feel free to inspire yourself and use whatever you like.
 
 ## Installation
