@@ -23,7 +23,7 @@ jobs:
         run: |
           pwd
           ls
-          export DOTFILES="$(pwd)"/dotfiles
+          export DOTFILES="$(pwd)"
           dotfile_manager install
       - name: Setup dotfiles
         run: dotfile_manager setup
