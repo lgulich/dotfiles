@@ -35,9 +35,6 @@ Plug 'preservim/tagbar'
 Plug 'clangd/coc-clangd'
 Plug 'jackguo380/vim-lsp-cxx-highlight'
 
-" ROS Plugins
-Plug 'taketwo/vim-ros'
-
 " Latex plugins
 Plug 'lervag/vimtex'
 Plug 'rhysd/vim-grammarous'

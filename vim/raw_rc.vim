@@ -98,7 +98,8 @@ augroup lgulich_autocommands
   " Automatically remove white space on file save.
   autocmd BufWritePre * :call TrimWhiteSpace()
 augroup end
-"
+
+au BufNewFile,BufRead *.jenkinsfile setf groovy
 "" }}}
 
 "" Remappings {{{
