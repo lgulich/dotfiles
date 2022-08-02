@@ -30,7 +30,7 @@ sunmap e
 sunmap ge
 "" }}}
 
-"" Plugin nerdtree {{{
+"" Plugin NERDTree {{{
 " Remap for toggling tree.
 map <C-n> :NERDTreeToggle<CR>
 map <leader>f :NERDTreeFind<CR>
