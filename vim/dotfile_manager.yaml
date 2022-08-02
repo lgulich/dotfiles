@@ -7,6 +7,5 @@ install_macos:
   - install/install_plugins.sh
 
 symlinks:
-  vimrc.vim: ~/.vimrc
-  vimrc.vim: ~/.config/nvim/init.vim
-  # init.lua: ~/.config/nvim/init.lua
+  init.vim: ~/.vimrc
+  init.lua: ~/.config/nvim/init.lua
