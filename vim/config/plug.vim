@@ -16,7 +16,6 @@ Plug '907th/vim-auto-save'
 Plug 'chiel92/vim-autoformat'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': { -> coc#util#install()}}
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -27,12 +26,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'bkad/CamelCaseMotion'
 
 " C-style languages plugins
-Plug 'bfrg/vim-cpp-modern'
 Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 Plug 'lgulich/toggle-header-source.vim'
-Plug 'preservim/tagbar'
-Plug 'clangd/coc-clangd'
-Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " Latex plugins
 Plug 'lervag/vimtex'
