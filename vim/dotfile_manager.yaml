@@ -9,4 +9,4 @@ install_macos:
 symlinks:
   vimrc.vim: ~/.vimrc
   vimrc.vim: ~/.config/nvim/init.vim
-  init.lua: ~/.config/nvim/init.lua
+  # init.lua: ~/.config/nvim/init.lua

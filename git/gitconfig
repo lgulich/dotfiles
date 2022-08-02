@@ -4,8 +4,17 @@
 
 [init]
 	defaultBranch = master
+
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[alias]
+	last = log -1 HEAD
+	unstage = reset HEAD --
+	uncommit = reset --soft HEAD~1 --mixed
+  branch = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+  reset-to-master = reset --hard origin/master
+
