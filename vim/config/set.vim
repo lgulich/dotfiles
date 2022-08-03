@@ -1,5 +1,6 @@
 " General
-let g:python3_host_prog="/usr/bin/python3" " Set python path for neovim
+let g:python3_host_prog="/usr/bin/python3.6" " Set python path for neovim
+
 set nocompatible " To be safe
 set autoread " Detect when a file has changed
 set noswapfile " Disable swap files
@@ -59,4 +60,3 @@ au InsertLeave * set nocul
 " Automatically remove white space on file save.
 au BufWritePre * :call TrimWhiteSpace()
 au BufNewFile,BufRead *.jenkinsfile setf groovy
-
