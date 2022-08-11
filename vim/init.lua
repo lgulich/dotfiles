@@ -6,3 +6,4 @@ vim.cmd('source $DOTFILES/vim/config/plugins.vim')
 
 -- LSP Setup (move to own file when becomes to big)
 require('lspconfig').clangd.setup{}
+require('lspconfig').rust_analyzer.setup{}
