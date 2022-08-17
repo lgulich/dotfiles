@@ -1,5 +1,6 @@
 " General
-let g:python3_host_prog="/usr/bin/python3" " Set python path for neovim
+let g:python3_host_prog="/usr/bin/python3.6" " Set python path for neovim
+
 set nocompatible " To be safe
 set autoread " Detect when a file has changed
 set noswapfile " Disable swap files
@@ -60,3 +61,7 @@ au InsertLeave * set nocul
 au BufWritePre * :call TrimWhiteSpace()
 au BufNewFile,BufRead *.jenkinsfile setf groovy
 
+" Setup make for bazel and gcc
+set makeprg=bazel\ build
+set errorformat^=%*[^:]:\ %f:%l:%*[^:]:%m " match libc assert
+let &efm .= ',%+GIn file included from %f:%l%*[\,:]'

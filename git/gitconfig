@@ -18,3 +18,5 @@
   branch = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
   reset-to-master = reset --hard origin/master
 
+[core]
+	editor = nvim
