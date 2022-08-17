@@ -6,7 +6,7 @@ yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 
 # Global settings
 yabai -m config window_placement             second_child
-yabai -m config window_topmost               on
+yabai -m config window_topmost               off
 yabai -m config split_ratio                  0.50
 yabai -m config auto_balance                 off
 
@@ -40,7 +40,7 @@ yabai -m config left_padding                 5
 yabai -m config right_padding                5
 yabai -m config window_gap                   5
 
-num_spaces=7
+num_spaces=10
 num_displays=$(yabai -m query --displays | jq '. | length')
 num_existing_spaces=$(yabai -m query --spaces | jq '. | length')
 
@@ -52,6 +52,7 @@ elif [ "$num_displays" -eq "1" ]; then
   support_display=1
 fi
 
+# Set up the correct amount of spaces.
 if [ "$num_existing_spaces" -lt "$num_spaces" ]; then
   yabai -m display --focus "${main_display}"
   for (( i=num_existing_spaces; i<num_spaces; i++ )); do
@@ -68,13 +69,17 @@ if [ "$num_existing_spaces" -gt "$num_spaces" ]; then
   done
 fi
 
+# Label the spaces.
 yabai -m space 1 --label term
 yabai -m space 2 --label browser
 yabai -m space 3 --label code
 yabai -m space 4 --label compile
-yabai -m space 5 --label varia
-yabai -m space 6 --label mail
-yabai -m space 7 --label chat
+yabai -m space 5 --label varia1
+yabai -m space 6 --label varia2
+yabai -m space 7 --label calendar
+yabai -m space 8 --label organisation
+yabai -m space 9 --label mail
+yabai -m space 10 --label chat
 
 
 # We only want the initial terminals to be in space term.
@@ -92,6 +97,10 @@ yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=WhatsApp space=chat
 yabai -m rule --add app=Signal space=chat
 yabai -m rule --add app=Spotify space=chat
+yabai -m rule --add app=Teams space=calendar
+yabai -m rule --add app=Calendar space=calendar
+yabai -m rule --add app=Reminders space=organisation
+yabai -m rule --add app=Notes space=organisation
 
 yabai -m space --focus chat
 yabai -m space --focus term
