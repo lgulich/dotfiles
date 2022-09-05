@@ -1,0 +1,8 @@
+install_macos:
+  - macos/install_utils.sh
+
+install_ubuntu:
+  - ubuntu/install_utils.sh
+  - install_brave_browser.sh
+  - install_spotify.sh
+  - install_atom.sh
