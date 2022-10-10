@@ -1,0 +1,2 @@
+bin:
+  - bazel_gdb.sh
