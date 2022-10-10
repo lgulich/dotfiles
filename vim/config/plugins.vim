@@ -90,7 +90,7 @@ function! NERDTreePreviewToggle()
   endif
 endfunction
 
-call NERDTreePreviewToggle()
+" call NERDTreePreviewToggle()
 "" }}}
 
 "" Plugin vim-auto-save {{{

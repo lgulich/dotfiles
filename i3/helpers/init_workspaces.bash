@@ -3,10 +3,10 @@
 set -e
 
 declare -A startup_apps
-startup_apps['1']='alacritty'
-startup_apps['2']='brave-browser'
-startup_apps['10']='slack'
-startup_apps['10']='prospect-mail'
+startup_apps['alacritty']='1'
+startup_apps['brave']='2'
+startup_apps['slack']='10'
+startup_apps['prospect-mail']='10'
 
 startup_workspaces=(
   '2'
@@ -15,9 +15,9 @@ startup_workspaces=(
 
 # Start the startup apps.
 n_expected_open_windows="$(wmctrl -l | wc -l)"
-for workspace in "${!startup_apps[@]}"; do
+for app in "${!startup_apps[@]}"; do
+  workspace="${startup_apps[$app]}"
   i3-msg workspace "${workspace}"
-  app="${startup_apps[$workspace]}"
   "${app}" &
   ((++n_expected_windows))
 
