@@ -21,17 +21,17 @@ shift + cmd - down : yabai -m window --warp south
 shift + cmd - up : yabai -m window --warp north
 shift + cmd - right : yabai -m window --warp east
 
-shift + cmd - 1 : yabai -m space --focus term
-shift + cmd - 2 : yabai -m space --focus browser
-shift + cmd - 3 : yabai -m space --focus code
-shift + cmd - 4 : yabai -m space --focus compile
+shift + cmd - 1 : yabai -m window --space term
+shift + cmd - 2 : yabai -m window --space browser
+shift + cmd - 3 : yabai -m window --space code
+shift + cmd - 4 : yabai -m window --space compile
 # The keybinding is already used by screenshot utility on macos:
-# shift + cmd - 5 : yabai -m space --focus varia1
-shift + cmd - 6 : yabai -m space --focus varia2
-shift + cmd - 7 : yabai -m space --focus calendar
-shift + cmd - 8 : yabai -m space --focus organisation
-shift + cmd - 9 : yabai -m space --focus mail
-shift + cmd - 0 : yabai -m space --focus chat
+# shift + cmd - 5 : yabai -m window --space varia1
+shift + cmd - 6 : yabai -m window --space calendar
+shift + cmd - 7 : yabai -m window --space varia2
+shift + cmd - 8 : yabai -m window --space organisation
+shift + cmd - 9 : yabai -m window --space mail
+shift + cmd - 0 : yabai -m window --space chat
 
 cmd - 1 : yabai -m space --focus term
 cmd - 2 : yabai -m space --focus browser
@@ -47,3 +47,6 @@ cmd - 0 : yabai -m space --focus chat
 cmd - return : open -a Alacritty --new
 cmd - f : yabai -m window --toggle zoom-fullscreen
 shift + cmd - t : /Users/lionelgulich/Documents/dotfiles/generated/bin/toggle_keyboard.sh
+cmd - b : yabai -m window --toggle float
+
+cmd - i : yabai -m window --toggle topmost; yabai -m window --toggle topmost
