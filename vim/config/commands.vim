@@ -15,3 +15,6 @@ fun! InsertUuid()
   :put =foo
 endfun
 command InsertUuid call InsertUuid()
+
+" Clang-format the selection
+command ClangFormat !clang-format | == <CR>

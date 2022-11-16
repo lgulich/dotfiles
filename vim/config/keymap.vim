@@ -35,3 +35,6 @@ nnoremap <Leader>P "+p
 " Autocorrect the last spell error.
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 nnoremap <C-l> 1z=1<CR>
+
+" Reformat the selection
+vnoremap <F4> :!clang-format
