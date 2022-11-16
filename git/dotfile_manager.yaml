@@ -10,3 +10,6 @@ symlinks:
 source:
   - aliases.sh
   - helpers.sh
+
+bin:
+  - git_ammend_to.sh

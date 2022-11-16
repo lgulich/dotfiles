@@ -20,3 +20,7 @@ git_clean_up_branches(){
 git_go_to_repo_root() {
   cd "$(git rev-parse --show-toplevel || echo ".")" || exit 1
 }
+
+git_ammend_to() {
+  git_ammend_to.sh $1
+}
