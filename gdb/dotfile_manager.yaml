@@ -1,2 +1,2 @@
 bin:
-  - bazel_gdb.sh
+  - gdb_bazel.sh
