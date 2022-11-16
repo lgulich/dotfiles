@@ -12,4 +12,5 @@ source:
   - helpers.sh
 
 bin:
-  - git_ammend_to.sh
+  - git_amend_to.sh
+  - git_select_commit.sh
