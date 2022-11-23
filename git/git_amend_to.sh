@@ -3,28 +3,27 @@
 set -e
 
 # Select the commit interactively.
-HISTORY_SIZE=${HISTORY_SIZE:-9}
+HISTORY_SIZE=${HISTORY_SIZE:-12}
 
 IFS=$'\n'
 HASHES=($(git log --pretty=format:"%h" -n $HISTORY_SIZE))
 TITLES=($(git log --pretty=format:"%s" -n $HISTORY_SIZE))
 
-echo "Select a commit:"
-for ((i=0; $i<$HISTORY_SIZE; i++)); do
-  echo "  $((i+1)). ${HASHES[i]} ${TITLES[i]}"
+PS3="Select a commit: "
+select TITLE in ${TITLES[@]}; do
+  CHOICE=$((${REPLY}-1))
+  if (($CHOICE>=$HISTORY_SIZE)); then
+    echo "Error: Please select a commit in the displayed range."
+    continue
+  fi
+  break
 done
 
-read -p "Enter commit [1-$HISTORY_SIZE] > "
-CHOICE=$((${REPLY}-1))
-
-if (($CHOICE>=$HISTORY_SIZE)); then
-  echo "Error: Please select a commit in the displayed range."
-  exit 1
-fi
+COMMIT="${HASHES[$CHOICE]}"
+echo "You selected commit \"$COMMIT - $TITLE\"."
 
 # Amend to commit.
-COMMIT="${HASHES[$CHOICE]}"
-echo "Amending to commit $COMMIT"
+echo "Amending to commit $COMMIT."
 git commit --fixup=$COMMIT
 STASH_NAME="autostash-for-amend-to-$COMMIT"
 git stash push --keep-index --include-untracked --message "$STASH_NAME"
