@@ -79,8 +79,8 @@ yabai -m space 2 --label browser
 yabai -m space 3 --label code
 yabai -m space 4 --label compile
 yabai -m space 5 --label varia1
-yabai -m space 6 --label calendar
-yabai -m space 7 --label varia2
+yabai -m space 6 --label varia2
+yabai -m space 7 --label calendar
 yabai -m space 8 --label organisation
 yabai -m space 9 --label mail
 yabai -m space 10 --label chat
