@@ -3,6 +3,6 @@ install_macos:
 
 install_ubuntu:
   - ubuntu/install_utils.sh
-  - install_brave_browser.sh
-  - install_spotify.sh
-  - install_atom.sh
+  - ubuntu/install_brave_browser.sh
+  - ubuntu/install_spotify.sh
+  - ubuntu/install_atom.sh
