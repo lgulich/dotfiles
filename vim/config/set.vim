@@ -1,5 +1,11 @@
 " General
-let g:python3_host_prog="/usr/bin/python3.6" " Set python path for neovim
+
+" Set python path for neovim"
+if has("mac")
+  let g:python3_host_prog="/usr/local/bin/python3"
+else
+  let g:python3_host_prog="/usr/bin/python3.6"
+endif
 
 set nocompatible " To be safe
 set autoread " Detect when a file has changed
