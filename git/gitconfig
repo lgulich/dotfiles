@@ -19,6 +19,7 @@
   reset-to-master = reset --hard origin/master
 	count-lines = "! git_count_lines.sh"
 	amend-to = "! git_amend_to.sh"
+  append-to = "! git_append_to.sh"
 
 [core]
 	editor = nvim

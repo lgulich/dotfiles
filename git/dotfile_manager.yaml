@@ -13,4 +13,6 @@ source:
 
 bin:
   - git_amend_to.sh
+  - git_append_to.sh
+  - git_count_lines.sh
   - git_select_commit.sh
