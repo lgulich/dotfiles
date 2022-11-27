@@ -12,7 +12,8 @@ source:
   - helpers.sh
 
 bin:
-  - git_amend_to.sh
-  - git_append_to.sh
-  - git_count_lines.sh
-  - git_select_commit.sh
+  - helpers/git_amend_to.sh
+  - helpers/git_append_to.sh
+  - helpers/git_count_lines.sh
+  - helpers/git_select_commit.sh
+  - helpers/git_reset_to_origin.sh

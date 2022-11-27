@@ -7,19 +7,21 @@
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+	smudge = git-lfs smudge -- %f
 
 [alias]
-	last = log -1 HEAD
-	unstage = reset HEAD --
-	uncommit = reset --soft HEAD~1 --mixed
   branch = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+	last = log -1 HEAD
+	uncommit = reset --soft HEAD~1 --mixed
+	unstage = reset HEAD --
   reset-to-master = reset --hard origin/master
-	count-lines = "! git_count_lines.sh"
+  reset-to-origin = "! git_reset_to_origin.sh"
 	amend-to = "! git_amend_to.sh"
   append-to = "! git_append_to.sh"
+	count-lines = "! git_count_lines.sh"
+	publish = "! git_publish_branch.sh"
 
 [core]
 	editor = nvim
