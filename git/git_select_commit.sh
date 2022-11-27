@@ -22,4 +22,5 @@ select title in ${titles[@]}; do
 done
 
 commit="${hashes[$choice]}"
+echo "You selected commit '$title' - '$commit'." >&2
 echo "$commit"
