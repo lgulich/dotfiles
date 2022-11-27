@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Reset a branch to its counterpart on remote "origin".
+
 set -e
 
 git fetch origin

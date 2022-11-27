@@ -1,10 +1,7 @@
 #!/bin/sh
 
-git_get_head() {
-  local status="$(git status)"
-  local regex="^(On branch |HEAD detached at )(.*)$"
-  [[ $status =~ $regex ]]; echo "${BASH_REMATCH[1]}"
-}
+# Commit the current stashed changes to the passed branch and rebase the current
+# branch to include the changes.
 
 set -ex
 trap read debug

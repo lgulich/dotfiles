@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Counts the contributions of an author in a git repository.
+
 set -e
 
 author="${1:?}"
