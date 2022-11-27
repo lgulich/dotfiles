@@ -3,3 +3,6 @@ install_ubuntu:
 
 install_macos:
   - install_ubuntu.sh
+
+source:
+  - helpers.sh
