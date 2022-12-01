@@ -13,10 +13,15 @@ replace_path() {
   name_old="${1:?}"
   name_new="${2:?}"
   directory="${3:?}"
-  num_repetitions="${4:?}"
-  command="mv "\$1" "\${1//${name_old}/${name_new}}""
-  for i in {1..num_repetitions}; do
-    find "${directory}" -name "*${name_old}*" -exec bash -c "${command}" -- {} \; || true
+
+  files="$(find ${directory} | grep ${name_old})"
+  new_files="$(echo $files | sed s/${name_old}/${name_new}/g)"
+  files=($files)
+  new_files=($new_files)
+
+  for ((i=0; i<${#files[@]}; i++)); do
+    mkdir -p "$(dirname $new_files)"
+    mv "${files[i]}" "${new_files[i]}"
   done
 }
 
@@ -36,10 +41,58 @@ convert_to_CAPITAL_CASE() {
  echo "${1:?}" | tr [a-z] [A-Z]
 }
 
+set -eo pipefail
 
-from="${1:?}"
-to="${2:?}"
-directory="${3:?}"
+print_usage() {
+  echo "Renames a substring in all contained directories recursively in both"
+  echo "file paths and file contents."
+  echo ""
+  echo "Usage: $0 --from <from> --to <to> [-repetitions=<repetitions>] <path>"
+  echo "  -f,--from         old substring, in snake case"
+  echo "  -t,--to           new substring, in snake case"
+  echo "  -r,--repetitions  number of repetitions to perform on path replaceements"
+  echo "  -h,--help         show this help message"
+}
+
+short="f:,t:,r:,h"
+long="from:,to:,repetitions:,help"
+arguments=$(getopt -a -n rename --options $short --longoptions $long -- "$@")
+eval set -- "$arguments"
+while :
+do
+  case "$1" in
+    -f | --from )
+      from="${2:?}"
+      shift 2
+      ;;
+    -t | --to )
+      to="${2:?}"
+      shift 2
+      ;;
+    -r | --repetitions )
+      repetitions="${2:?}"
+      shift 2
+      ;;
+    -h | --help)
+      print_usage
+      exit 0
+      ;;
+    --)
+      shift;
+      break
+      ;;
+    *)
+      echo "Unexpected option: $1"
+      print_usage
+      exit 1
+      ;;
+  esac
+done
+
+# Set repetitions to default if not already set by cli args.
+repetitions=${repetitions:-10}
+
+directory="${1:?}"
 
 name_old="$(convert_to_snake_case "${from}")"
 NAME_OLD="$(convert_to_CAPITAL_CASE "${name_old}")"
@@ -56,7 +109,7 @@ replace_content "${NAME_OLD}" "${NAME_NEW}" "${directory}"
 replace_content "${NameOld}" "${NameNew}" "${directory}"
 replace_content "${nameOld}" "${nameNew}" "${directory}"
 
-replace_path "${name_old}" "${name_new}" "${directory}" 10
-replace_path "${NAME_OLD}" "${NAME_NEW}" "${directory}" 10
-replace_path "${NameOld}" "${NameNew}" "${directory}" 10
-replace_path "${nameOld}" "${nameNew}" "${directory}" 10
+replace_path "${name_old}" "${name_new}" "${directory}" "${repetitions}"
+replace_path "${NAME_OLD}" "${NAME_NEW}" "${directory}" "${repetitions}"
+replace_path "${NameOld}" "${NameNew}" "${directory}" "${repetitions}"
+replace_path "${nameOld}" "${nameNew}" "${directory}" "${repetitions}"

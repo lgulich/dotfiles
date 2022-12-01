@@ -55,3 +55,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Bazel autocomplete, caches bazel's options:
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# Load OSMO
+export OSMO_PATH="/home/lgulich/Documents/osmo"
+export PATH=$PATH:$OSMO_PATH
