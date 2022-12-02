@@ -11,6 +11,7 @@ IFS=$'\n'  # Needed to make every new line a new entry in the bash array
 hashes=($(git log --pretty=format:"%h" -n $history_size))
 titles=($(git log --pretty=format:"%s" -n $history_size))
 
+COLUMNS=20  # Force select to use only a single column
 PS3="Select a commit: "
 select title in ${titles[@]}; do
   choice=$((${REPLY}-1))
