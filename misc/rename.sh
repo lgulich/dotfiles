@@ -50,12 +50,11 @@ print_usage() {
   echo "Usage: $0 --from <from> --to <to> [-repetitions=<repetitions>] <path>"
   echo "  -f,--from         old substring, in snake case"
   echo "  -t,--to           new substring, in snake case"
-  echo "  -r,--repetitions  number of repetitions to perform on path replaceements"
   echo "  -h,--help         show this help message"
 }
 
-short="f:,t:,r:,h"
-long="from:,to:,repetitions:,help"
+short="f:,t:,h"
+long="from:,to:,help"
 arguments=$(getopt -a -n rename --options $short --longoptions $long -- "$@")
 eval set -- "$arguments"
 while :
@@ -67,10 +66,6 @@ do
       ;;
     -t | --to )
       to="${2:?}"
-      shift 2
-      ;;
-    -r | --repetitions )
-      repetitions="${2:?}"
       shift 2
       ;;
     -h | --help)
@@ -89,9 +84,6 @@ do
   esac
 done
 
-# Set repetitions to default if not already set by cli args.
-repetitions=${repetitions:-10}
-
 directory="${1:?}"
 
 name_old="$(convert_to_snake_case "${from}")"
@@ -109,7 +101,7 @@ replace_content "${NAME_OLD}" "${NAME_NEW}" "${directory}"
 replace_content "${NameOld}" "${NameNew}" "${directory}"
 replace_content "${nameOld}" "${nameNew}" "${directory}"
 
-replace_path "${name_old}" "${name_new}" "${directory}" "${repetitions}"
-replace_path "${NAME_OLD}" "${NAME_NEW}" "${directory}" "${repetitions}"
-replace_path "${NameOld}" "${NameNew}" "${directory}" "${repetitions}"
-replace_path "${nameOld}" "${nameNew}" "${directory}" "${repetitions}"
+replace_path "${name_old}" "${name_new}" "${directory}"
+replace_path "${NAME_OLD}" "${NAME_NEW}" "${directory}"
+replace_path "${NameOld}" "${NameNew}" "${directory}"
+replace_path "${nameOld}" "${nameNew}" "${directory}"
