@@ -101,6 +101,7 @@ yabai -m rule --add app=Ferdi space=chat
 yabai -m rule --add app=WhatsApp space=chat
 yabai -m rule --add app=Signal space=chat
 yabai -m rule --add app=Spotify space=chat
+yabai -m rule --add app=Slack space=chat
 yabai -m rule --add app=Teams space=calendar
 yabai -m rule --add app=Calendar space=calendar
 yabai -m rule --add app=Reminders space=organisation
