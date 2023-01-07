@@ -47,6 +47,3 @@ cmd - 0 : yabai -m space --focus chat
 cmd - return : open -a Alacritty --new
 cmd - f : yabai -m window --toggle zoom-fullscreen
 shift + cmd - t : /Users/lionelgulich/Documents/dotfiles/generated/bin/toggle_keyboard.sh
-cmd - b : yabai -m window --toggle float
-
-cmd - i : yabai -m window --toggle topmost; yabai -m window --toggle topmost

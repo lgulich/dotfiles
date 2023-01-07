@@ -15,5 +15,7 @@ bin:
   - git_amend_to.sh
   - git_append_to.sh
   - git_count_lines.sh
-  - git_select_commit.sh
+  - git_fzf_diff.sh
+  - git_publish_branch.sh
   - git_reset_to_origin.sh
+  - git_select_commit.sh
