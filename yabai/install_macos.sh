@@ -5,6 +5,6 @@ set -e
 brew install jq
 
 brew install koekeishiya/formulae/yabai
-sudo yabai --install-sa
+sudo yabai --load-sa
 brew services start yabai
 killall Dock
