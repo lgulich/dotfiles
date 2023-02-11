@@ -22,7 +22,7 @@ elif [ "$os" == "Linux" ]; then
   install_dependencies_linux
 fi
 
-if [ "$1" == "--only-install-dependencies" ]; then
+if [ "$1" == "--only-deps" ]; then
   exit 0
 fi
 

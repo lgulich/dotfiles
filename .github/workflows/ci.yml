@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: ./install.sh --only-install-dependencies.sh
+        run: ./install.sh --only-deps
       - name: Install dotfiles
         run: export DOTFILES="$(pwd)" && dotfile_manager install
       - name: Setup dotfiles
