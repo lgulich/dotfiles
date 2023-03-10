@@ -38,3 +38,4 @@ nnoremap <C-l> 1z=1<CR>
 
 " Reformat the selection
 vnoremap <F4> :!clang-format
+nnoremap <F6> :%!pandoc -s --from markdown --to rst <CR>
