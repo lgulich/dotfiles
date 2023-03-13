@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Amend the current stashed changes to a specific commit.
+# Amend the current staged changes to a specific commit.
 
 set -e
 
