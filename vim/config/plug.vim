@@ -46,4 +46,10 @@ Plug 'rhysd/vim-grammarous'
 " Bazel plugins
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
+
+" Documentation plugins
+Plug 'godlygeek/tabular' " Needs to be loaded before preservim/vim-markdown
+Plug 'preservim/vim-markdown'
+Plug 'habamax/vim-rst'
+
 call plug#end()
