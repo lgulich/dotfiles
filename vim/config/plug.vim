@@ -25,6 +25,7 @@ Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
 Plug 'bkad/CamelCaseMotion'
 Plug 'github/copilot.vim'
+Plug 'APZelos/blamer.nvim'
 
 " LSP plugins
 Plug 'neovim/nvim-lspconfig'

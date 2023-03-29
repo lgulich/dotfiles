@@ -148,4 +148,8 @@ nnoremap <silent> <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 " nnoremap <silent> <C-p> <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 "" }}}
 
+"" Plugin Blamer {{{
+let g:blamer_enabled = 1
+"" }}}
+
 " vim:foldmethod=marker:foldlevel=0
