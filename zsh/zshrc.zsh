@@ -59,3 +59,4 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 # Load OSMO
 export OSMO_PATH="/home/lgulich/Documents/osmo"
 export PATH=$PATH:$OSMO_PATH
+export ISAAC_DEV_BAZEL=bazel
