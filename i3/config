@@ -78,7 +78,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+q kill
-bindsym $mod+t exec ~/dotfiles/i3/helpers/toggle_background.sh
+bindsym $mod+t exec ~/Documents/dotfiles/i3/helpers/add_selection_to_todo.sh
 bindsym $mod+d exec dmenu_run
 bindsym $mod+p exec gnome-screenshot -a
 bindsym $mod+Return exec i3-sensible-terminal

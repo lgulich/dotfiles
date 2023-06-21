@@ -4,6 +4,7 @@ alias dot='${DOTFILES:?}'
 
 # General aliases
 alias edf='edit_dotfile.zsh'
+alias todo='vim ~/tasks.todo'
 
 # File browsing aliases
 alias ll='ls -alF'
@@ -17,3 +18,4 @@ alias cdis='cd ~/Documents/isaac/sdk'
 
 # Vim
 alias vim='nvim'
+
