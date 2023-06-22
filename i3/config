@@ -78,7 +78,7 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+q kill
-bindsym $mod+t exec ~/Documents/dotfiles/i3/helpers/add_selection_to_todo.sh
+bindsym $mod+t exec ~/Code/dotfiles/i3/helpers/add_selection_to_todo.sh
 bindsym $mod+d exec dmenu_run
 bindsym $mod+p exec gnome-screenshot -a
 bindsym $mod+Return exec i3-sensible-terminal
@@ -166,15 +166,15 @@ assign [class="rviz"] 6
 assign [class="rqt_reconfigure"] 6
 
 # Set background image.
-exec_always --no-startup-id ~/Documents/dotfiles/i3/helpers/toggle_background.sh
+exec_always --no-startup-id ~/Code/dotfiles/i3/helpers/toggle_background.sh
 
 # Start up programs.
 exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id nm-applet
 exec --no-startup-id gnome-sound-applet
 exec --no-startup-id compton
-exec --no-startup-id ~/Documents/dotfiles/i3/helpers/alternating_layouts.py
-exec --no-startup-id ~/Documents/dotfiles/i3/helpers/init_workspaces.bash
+exec --no-startup-id ~/Code/dotfiles/i3/helpers/alternating_layouts.py
+exec --no-startup-id ~/Code/dotfiles/i3/helpers/init_workspaces.bash
 
 
 ## MEDIA BUTTONS

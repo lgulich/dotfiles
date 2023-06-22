@@ -29,7 +29,7 @@ plugins=(
 source "${ZSH}"/oh-my-zsh.sh
 
 # Often used directories.
-export DOTFILES=~/Documents/dotfiles
+export DOTFILES=~/Code/dotfiles
 
 # Default UNIX env variables:
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
@@ -57,6 +57,6 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
 # Load OSMO
-export OSMO_PATH="/home/lgulich/Documents/osmo"
+export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
 export ISAAC_DEV_BAZEL=bazel

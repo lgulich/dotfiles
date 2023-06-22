@@ -7,4 +7,4 @@ set -e
 
 metapackage="$1"
 rm -rf ~/clion_ws/ && \
-  python ~/Documents/editor_tools/init_clion.py -c ~/ -n ~/clion_ws -w ~/catkin_ws "$metapackage"
+  python ~/Code/editor_tools/init_clion.py -c ~/ -n ~/clion_ws -w ~/catkin_ws "$metapackage"

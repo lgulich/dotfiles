@@ -1,6 +1,7 @@
 # shellcheck shell=sh
 
 alias dot='${DOTFILES:?}'
+alias doc='${~/Documents/}'
 
 # General aliases
 alias edf='edit_dotfile.zsh'
@@ -12,9 +13,9 @@ alias la='ls -A'
 alias l='ls -CF'
 alias cd='cd_and_ls'
 
-# Isaac developement
-alias cdi='cd ~/Documents/isaac/'
-alias cdis='cd ~/Documents/isaac/sdk'
+# Isaac development
+alias cdi='cd ~/Code/isaac/'
+alias cdis='cd ~/Code/isaac/sdk'
 
 # Vim
 alias vim='nvim'

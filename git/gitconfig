@@ -2,8 +2,8 @@
 	name = lgulich
 	email = lionel.gulich@gmail.com
 
-[includeIf "gitdir:/home/lgulich/Documents"]
-  path = /home/lgulich/Documents/.gitconfig
+[includeIf "gitdir:/home/lgulich/Code"]
+  path = /home/lgulich/Code/.gitconfig
 
 [init]
 	defaultBranch = master
