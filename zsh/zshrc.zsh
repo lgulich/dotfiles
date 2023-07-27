@@ -60,3 +60,8 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
 export ISAAC_DEV_BAZEL=bazel
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
+
+# History setup
+PROMPT_COMMAND='history -a'
+HISTTIMEFORMAT="%F %T "
