@@ -1,2 +1,5 @@
 source:
   - helpers.sh
+
+bin:
+  - bazel_regex.sh
