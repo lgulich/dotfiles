@@ -56,6 +56,9 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
+# Directory used for DAZEL cache
+DAZEL_CACHE_ROOT=/media/lgulich/dazel-cache
+
 # Load OSMO
 export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH

@@ -35,3 +35,5 @@
 
 [interactive]
 	diffFilter = diff-so-fancy --patch
+[diff]
+	noprefix = false
