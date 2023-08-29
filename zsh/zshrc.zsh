@@ -62,7 +62,7 @@ DAZEL_CACHE_ROOT=/media/lgulich/dazel-cache
 # Load OSMO
 export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
-export ISAAC_DEV_BAZEL=bazel
+export ISAAC_DEV_BAZEL=dazel
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
 
 # History setup
