@@ -1,0 +1,2 @@
+bin:
+  - run_as_cron.sh
