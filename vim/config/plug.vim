@@ -53,4 +53,7 @@ Plug 'godlygeek/tabular' " Needs to be loaded before preservim/vim-markdown
 Plug 'preservim/vim-markdown'
 Plug 'habamax/vim-rst'
 
+" Protobuf plugins
+Plug 'uarun/vim-protobuf'
+
 call plug#end()
