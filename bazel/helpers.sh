@@ -1,9 +1,9 @@
 #!/bin/sh
 
 bazel_regex() {
-  bazel_regex.sh --bazel bazel $@
+  bazel_regex.sh $@ --bazel bazel
 }
 
 dazel_regex() {
-  bazel_regex.sh --bazel dazel $@
+  bazel_regex.sh $@ --bazel dazel
 }
