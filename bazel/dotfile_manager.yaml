@@ -3,3 +3,4 @@ source:
 
 bin:
   - bazel_regex.sh
+  - bazel_cleanup_cache.sh
