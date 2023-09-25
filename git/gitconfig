@@ -25,6 +25,7 @@
   append-to = "! git_append_to.sh"
 	count-lines = "! git_count_lines.sh"
 	publish = "! git_publish_branch.sh"
+	commit-nolint = "! SKIP_PRE_COMMIT_HOOK=true git commit"
 
 [core]
 	editor = nvim
