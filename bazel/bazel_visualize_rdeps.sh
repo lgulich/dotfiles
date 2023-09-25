@@ -7,11 +7,10 @@ set -e
 # Change to bazel workspace root dir if this script is run from bazel
 cd "${BUILD_WORKING_DIRECTORY:-.}"
 
-depth=2
-
 bazel=auto
 workspace='.'
-search_path='//...'
+depth=2
+in='//...'
 
 # get command line arguments
 while [ $# -gt 0 ]; do
@@ -25,10 +24,12 @@ while [ $# -gt 0 ]; do
       shift 2
       ;;
     --of)
-      rdeps_of="$2"
+      # The rdeps of this target will be visualized.
+      of="$2"
       shift 2
       ;;
     --in)
+      # Only the rdeps in this target's closure will be visualized.
       in="$2"
       shift 2
       ;;
@@ -57,9 +58,8 @@ fi
 
 cd $workspace
 
-
 echo "Querying the graph..."
-graph_description=$($bazel cquery "rdeps($in, $rdeps_of, $depth)" --notool_deps --noimplicit_deps --keep_going --output=graph)
+graph_description=$($bazel cquery "rdeps($in, $of, $depth)" --notool_deps --noimplicit_deps --keep_going --output=graph)
 echo "Visualizing the graph..."
 echo $graph_description | "dot" -Tsvg > rdeps.svg
 echo "To visualize the graph, open 'file:///$(pwd)/rdeps.svg' in your browser."
