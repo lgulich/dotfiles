@@ -6,3 +6,8 @@ docker_stop_all() {
 docker_kill_all() {
   docker kill $(docker ps -q)
 }
+
+docker_cleanup() {
+  # Prune images and containers that were created more than 10 days ago.
+  docker system prune -a --filter "until=240h"
+}

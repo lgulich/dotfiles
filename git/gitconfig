@@ -38,3 +38,5 @@
 	diffFilter = diff-so-fancy --patch
 [diff]
 	noprefix = false
+[credential]
+	helper = store

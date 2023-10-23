@@ -24,8 +24,9 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
 Plug 'bkad/CamelCaseMotion'
-Plug 'github/copilot.vim'
-Plug 'APZelos/blamer.nvim'
+" Plug 'github/copilot.vim'
+Plug 'APZelos/blamer.nvim' " To see inline git blames
+Plug 'huggingface/llm.nvim' " For AI codecompletion
 
 " LSP plugins
 Plug 'neovim/nvim-lspconfig'

@@ -49,9 +49,6 @@ source "${DOTFILES:?}"/generated/sources.sh
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-# Load ROS.
-[ -f /opt/ros/foxy/setup.zsh ] && source /opt/ros/foxy/setup.zsh
-
 # Bazel autocomplete, caches bazel's options:
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
@@ -68,3 +65,7 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site
 # History setup
 PROMPT_COMMAND='history -a'
 HISTTIMEFORMAT="%F %T "
+
+# Load google cloud stuff
+if [ -f '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc'; fi

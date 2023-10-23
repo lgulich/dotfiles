@@ -18,3 +18,6 @@ command InsertUuid call InsertUuid()
 
 " Clang-format the selection
 command ClangFormat !clang-format | == <CR>
+
+" Write with sudo even when vim was not opened with sudo
+command WriteWithSudo w !sudo tee %
