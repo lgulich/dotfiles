@@ -25,3 +25,6 @@ alias vim='nvim'
 
 # Kubernetes
 alias kc='kubectl'
+
+# General linux
+alias untar='tar -xf'

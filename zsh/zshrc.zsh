@@ -54,7 +54,7 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
 # Directory used for DAZEL cache
-DAZEL_CACHE_ROOT=/media/lgulich/dazel-cache
+# export DAZEL_CACHE_ROOT=/media/lgulich/dazel-cache
 
 # Load OSMO
 export OSMO_PATH="/home/lgulich/Code/osmo"
