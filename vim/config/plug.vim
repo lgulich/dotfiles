@@ -27,6 +27,7 @@ Plug 'bkad/CamelCaseMotion'
 " Plug 'github/copilot.vim'
 Plug 'APZelos/blamer.nvim' " To see inline git blames
 Plug 'huggingface/llm.nvim' " For AI codecompletion
+Plug 'earthly/earthly.vim', { 'branch': 'main' } " For earthly syntax highlighting
 
 " LSP plugins
 Plug 'neovim/nvim-lspconfig'

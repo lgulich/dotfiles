@@ -4,7 +4,7 @@
 if has("mac")
   let g:python3_host_prog="/usr/local/bin/python3"
 else
-  let g:python3_host_prog="/usr/bin/python3.6"
+  let g:python3_host_prog="/usr/bin/python3"
 endif
 
 set nocompatible " To be safe
