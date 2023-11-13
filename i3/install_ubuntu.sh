@@ -2,4 +2,4 @@
 
 set -e
 
-sudo apt-get install -y i3 compton feh
+sudo apt-get install -y i3 compton feh vorbis-tools
