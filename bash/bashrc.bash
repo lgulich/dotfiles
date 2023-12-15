@@ -128,5 +128,5 @@ alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
-# export ROS_DOMAIN_ID=33
+export ROS_DOMAIN_ID=33
 source /opt/ros/humble/setup.bash

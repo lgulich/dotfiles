@@ -3,7 +3,9 @@
 function source_ros() {
   [ -f /opt/ros/humble/setup.zsh ] && source /opt/ros/humble/setup.zsh
   source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.zsh
-  source ~/workspaces/IsaacSim-ros_workspaces/humble_ws/install/setup.zsh
+  export ROS_DOMAIN_ID=33
+  export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+  export CYCLONEDDS_URI=/home/lgulich/Documents/config/cyclone_unicast_profile.xml
 }
 
 # For isaac sim:
