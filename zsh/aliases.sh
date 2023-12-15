@@ -17,8 +17,6 @@ alias cd='cd_and_ls'
 alias cdi='cd ~/Code/isaac/'
 alias cdis='cd ~/Code/isaac/sdk'
 alias cdg='cd ~/Code/gxf/'
-alias cdws='cd ~/workspaces/isaac_ros-dev'
-alias cdwss='cd ~/workspaces/isaac_ros-dev/src'
 
 # Vim
 alias vim='nvim'

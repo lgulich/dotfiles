@@ -26,6 +26,8 @@
 	count-lines = "! git_count_lines.sh"
 	publish = "! git_publish_branch.sh"
 	commit-nolint = "! SKIP_PRE_COMMIT_HOOK=true git commit"
+	ignore = update-index --assume-unchanged
+	stop-ignore = update-index --no-assume-unchanged
 
 [core]
 	editor = nvim

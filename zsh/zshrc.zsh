@@ -25,8 +25,13 @@ plugins=(
   vi-mode
   git
   zsh-autosuggestions
+  ssh-agent
 )
 source "${ZSH}"/oh-my-zsh.sh
+
+# Enable autocomplete for bash autocomplete definitions.
+autoload -U +X compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
 
 # Often used directories.
 export DOTFILES=~/Code/dotfiles
@@ -46,7 +51,7 @@ source "${DOTFILES:?}"/generated/sources.sh
 
 # Load fzf fuzzyfinder.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Bazel autocomplete, caches bazel's options:
@@ -61,6 +66,7 @@ export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
 export ISAAC_DEV_BAZEL=dazel
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
+if [ -f /home/lgulich/Code/osmo/osmo/autocomplete.bash ]; then . '/home/lgulich/Code/osmo/osmo/autocomplete.bash'; fi
 
 # History setup
 PROMPT_COMMAND='history -a'
@@ -69,3 +75,4 @@ HISTTIMEFORMAT="%F %T "
 # Load google cloud stuff
 if [ -f '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc'; fi
 if [ -f '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc'; fi
+

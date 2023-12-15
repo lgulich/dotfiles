@@ -28,5 +28,3 @@ function setup_ros_local() {
   # export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 }
 
-source_ros
-setup_ros_local
