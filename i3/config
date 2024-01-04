@@ -161,9 +161,14 @@ assign [class="Microsoft Teams - Preview"] 10
 assign [class="Prospect Mail"] 10
 for_window [class="Spotify"] move to workspace 10
 
+# All visualization stuff is on 6
+assign [class="foxglove studio"] 6
+assign [class="foxglove"] 6
 assign [class="gazebo"] 6
-assign [class="rviz"] 6
+assign [class="rqt"] 6
+assign [class="rqt_graph"] 6
 assign [class="rqt_reconfigure"] 6
+assign [class="rviz"] 6
 
 # Set background image.
 exec_always --no-startup-id ~/Code/dotfiles/i3/helpers/toggle_background.sh
