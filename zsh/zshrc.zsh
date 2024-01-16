@@ -76,3 +76,5 @@ HISTTIMEFORMAT="%F %T "
 if [ -f '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc'; fi
 if [ -f '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc'; fi
 
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

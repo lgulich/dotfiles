@@ -1,3 +1,4 @@
 bin:
   - rename.sh
   - edit_dotfile.zsh
+  - view_image_sequence.py
