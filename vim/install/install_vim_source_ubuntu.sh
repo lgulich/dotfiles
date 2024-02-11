@@ -25,6 +25,8 @@ sudo apt-get remove -y \
   gvim
 
 cd "$(mktemp -d)"
+echo "Installing in '${pwd}'."
+
 git clone https://github.com/vim/vim.git
 cd vim
 ./configure \

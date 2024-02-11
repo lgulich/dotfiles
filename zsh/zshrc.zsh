@@ -39,8 +39,8 @@ export DOTFILES=~/Code/dotfiles
 # Default UNIX env variables:
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="${DOTFILES:?}/generated/bin:${PATH}"
-export VISUAL=vim
-export EDITOR=vim
+export VISUAL=nvim
+export EDITOR=nvim
 export BROWSER=brave-browser
 
 # SSL
