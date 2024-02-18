@@ -1,9 +1,7 @@
 disable: False
-
 source:
   - aliases.sh
   - setup_ros.zsh
-
 bin:
   - catkin_create_compile_commands.sh
   - catkin_combine_compile_commands.sh

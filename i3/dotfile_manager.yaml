@@ -1,6 +1,4 @@
 install_ubuntu:
   - install_ubuntu.sh
-
 symlinks:
   config: ~/.config/i3/config
-

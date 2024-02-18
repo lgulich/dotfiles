@@ -1,8 +1,6 @@
 install_ubuntu:
   - install_ubuntu.sh
-
 install_macos:
   - install_ubuntu.sh
-
 source:
   - helpers.sh

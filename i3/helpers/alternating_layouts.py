@@ -40,7 +40,7 @@ def set_layout():
     for win in current_win:
         parent = find_parent(win['id'])
 
-        if (parent and "rect" in parent and parent['layout'] != 'tabbed' and
+        if (parent and 'rect' in parent and parent['layout'] != 'tabbed' and
                 parent['layout'] != 'stacked'):
             height = parent['rect']['height']
             width = parent['rect']['width']
@@ -55,7 +55,7 @@ def set_layout():
 
 def print_help():
     usage = f"""Usage: {sys.argv[0]} [-p path/to/pid.file]
-    
+
     Options:
         -p path/to/pid.file    Saves the PID for this program in the file.
 
@@ -72,10 +72,10 @@ def main():
     opt_list, _ = getopt.getopt(sys.argv[1:], 'hp:')
     pid_file = None
     for opt in opt_list:
-        if opt[0] == "-h":
+        if opt[0] == '-h':
             print_help()
             sys.exit(1)
-        if opt[0] == "-p":
+        if opt[0] == '-p':
             pid_file = opt[1]
 
     if pid_file:
@@ -87,7 +87,7 @@ def main():
                                stderr=subprocess.PIPE)
     regex = re.compile(b'^_NET_CLIENT_LIST_STACKING|^_NET_ACTIVE_WINDOW')
 
-    last_line = ""
+    last_line = ''
     while True:
         line = process.stdout.readline()
         if line == b'':  #X is dead
@@ -102,5 +102,5 @@ def main():
     sys.exit()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

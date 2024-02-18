@@ -3,4 +3,3 @@
 set -e
 
 sudo snap install spotify
-

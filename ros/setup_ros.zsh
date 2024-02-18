@@ -29,4 +29,3 @@ function setup_ros_local() {
   # export ROS_DOMAIN_ID=0
   # export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 }
-

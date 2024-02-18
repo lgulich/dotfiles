@@ -1,11 +1,9 @@
 install_ubuntu:
   - install/install_neovim_ubuntu.sh
   - install/install_plugins.sh
-
 install_macos:
   - install/install_neovim_macos.sh
   - install/install_plugins.sh
-
 symlinks:
   init.vim: ~/.vimrc
   init.lua: ~/.config/nvim/init.lua

@@ -1,16 +1,12 @@
 install_ubuntu:
   - install_ubuntu.sh
-
 install_macos:
   - install_macos.sh
-
 symlinks:
   gitconfig: ~/.gitconfig
-
 source:
   - aliases.sh
   - helpers.sh
-
 bin:
   - helpers/git_amend_to.sh
   - helpers/git_append_to.sh

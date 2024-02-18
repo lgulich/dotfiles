@@ -2,8 +2,6 @@
 
 import argparse
 import os
-import sys
-import time
 
 import cv2
 
@@ -26,10 +24,11 @@ def view_images(folder):
 
 def main():
     parser = argparse.ArgumentParser(description='View PNG images in a folder.')
-    parser.add_argument('folder', help='Path to the folder containing PNG images.')
+    parser.add_argument('folder',
+                        help='Path to the folder containing PNG images.')
     args = parser.parse_args()
     view_images(args.folder)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

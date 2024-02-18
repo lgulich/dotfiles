@@ -1,8 +1,6 @@
 install_macos:
   - install_macos.sh
-
 symlinks:
   skhdrc: ~/.config/skhd/skhdrc
-
 bin:
   - toggle_keyboard.sh

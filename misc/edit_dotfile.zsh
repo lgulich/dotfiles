@@ -1,4 +1,4 @@
-#!/bin/zsh 
+#!/bin/zsh
 
 set -e
 
@@ -27,4 +27,3 @@ else
 fi
 
 [ "$?" = 0 ] && "${EDITOR:?}" "${DOTFILES:?}/${config_paths[$choice]}"
-

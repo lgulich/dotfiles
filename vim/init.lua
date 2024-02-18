@@ -48,4 +48,3 @@ require('llm').setup({
   enable_suggestions_on_startup = true,
   enable_suggestions_on_files = "*",
 })
-

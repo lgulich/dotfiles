@@ -3,7 +3,6 @@ scrolling:
   # Specifying '0' will disable scrolling.
   history: 0
   multiplier: 10
-
 font:
   size: 12.0
   normal:
@@ -18,64 +17,53 @@ font:
   bold_italic:
     family: MesloLGS NF
     style: Bold Italic
-
 colors:
   primary:
     background: '#282c34'
     foreground: '#abb2bf'
     dim_foreground: '#828482'
     bright_foreground: '#eaeaea'
-
   cursor:
     text: '#000000'
     cursor: '#ffffff'
-
   vi_mode_cursor:
     text: '#000000'
     cursor: '#ffffff'
-
   selection:
     text: '#eaeaea'
     background: '#404040'
-
   normal:
-    black:   '#2e3436'
-    red:     '#cc0000'
-    green:   '#4e9a06'
-    yellow:  '#c4a000'
-    blue:    '#3465a4'
+    black: '#2e3436'
+    red: '#cc0000'
+    green: '#4e9a06'
+    yellow: '#c4a000'
+    blue: '#3465a4'
     magenta: '#c678dd'
-    cyan:    '#06989a'
-    white:   '#d3d7cf'
-
+    cyan: '#06989a'
+    white: '#d3d7cf'
   bright:
-    black:   '#666666'
-    red:     '#d54e53'
-    green:   '#b9ca4a'
-    yellow:  '#e7c547'
-    blue:    '#7aa6da'
+    black: '#666666'
+    red: '#d54e53'
+    green: '#b9ca4a'
+    yellow: '#e7c547'
+    blue: '#7aa6da'
     magenta: '#c397d8'
-    cyan:    '#70c0b1'
-    white:   '#eaeaea'
-
+    cyan: '#70c0b1'
+    white: '#eaeaea'
   dim:
-    black:   '#131415'
-    red:     '#864343'
-    green:   '#777c44'
-    yellow:  '#9e824c'
-    blue:    '#556a7d'
+    black: '#131415'
+    red: '#864343'
+    green: '#777c44'
+    yellow: '#9e824c'
+    blue: '#556a7d'
     magenta: '#75617b'
-    cyan:    '#5b7d78'
-    white:   '#828482'
-
+    cyan: '#5b7d78'
+    white: '#828482'
 background_opacity: 0.8
-
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
   save_to_clipboard: false
-
 cursor:
   style: Beam
   vi_mode_style: Block
-
 live_config_reload: true

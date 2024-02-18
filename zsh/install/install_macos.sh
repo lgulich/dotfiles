@@ -3,4 +3,3 @@
 set -e
 
 brew install zsh || brew upgrade zsh
-

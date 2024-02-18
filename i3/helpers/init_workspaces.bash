@@ -31,4 +31,3 @@ done
 for workspace in "${startup_workspaces[@]}"; do
   i3-msg workspace "${workspace}"
 done
-
