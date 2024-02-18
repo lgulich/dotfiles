@@ -1,0 +1,9 @@
+
+install_macos:
+  - install_macos.sh
+install_ubuntu:
+  - install_ubuntu.sh
+symlinks:
+  config/yapf.style: ~/.yapf.style
+  config/pylintrc: ~/.pylintrc
+  config/clang-format: ~/.clang-format
