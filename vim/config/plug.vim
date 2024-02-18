@@ -58,4 +58,7 @@ Plug 'habamax/vim-rst'
 " Protobuf plugins
 Plug 'uarun/vim-protobuf'
 
+" Beancount plugins
+Plug 'nathangrigg/vim-beancount'
+
 call plug#end()
