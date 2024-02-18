@@ -6,8 +6,8 @@ install_dependencies_macos(){
 
 install_dependencies_linux(){
   sudo apt-get update
-  sudo apt-get install python3.8 python3-pip git
-  python3.8 -m pip install dotfile-manager
+  sudo apt-get install python3 python3-pip git
+  python3 -m pip install dotfile-manager
   export PATH="~/.local/bin:$PATH"
 }
 
