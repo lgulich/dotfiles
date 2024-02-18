@@ -38,28 +38,6 @@ disable=
   import-error,
 
 
-[REPORTS]
-
-# Set the output format. Available formats are text, parseable, colorized, msvs
-# (visual studio) and html
-output-format=text
-
-# Put messages in a separate file for each module / package specified on the
-# command line instead of printing them on stdout. Reports (if any) will be
-# written in a file name "pylint_global.[txt|html]".
-files-output=no
-
-# Tells whether to display a full report or only the messages
-reports=yes
-
-# Python expression which should return a note less than 10 (10 is the highest
-# note). You have access to the variables errors warning, statement which
-# respectively contain the number of errors / warnings messages and the total
-# number of statements analyzed. This is used by the global evaluation report
-# (R0004).
-evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
-
-
 [VARIABLES]
 
 # Tells whether we should check for unused import in __init__ files.
@@ -74,9 +52,6 @@ additional-builtins=
 
 
 [BASIC]
-
-# List of builtins function names that should not be used, separated by a comma
-bad-functions=map,filter,apply,input
 
 # Regular expression which should only match correct module names
 module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
@@ -179,9 +154,6 @@ max-locals=15
 
 # Maximum number of return / yield for function / method body
 max-returns=6
-
-# Maximum number of branch for function / method body
-max-branchs=12
 
 # Maximum number of statements in function / method body
 max-statements=50
