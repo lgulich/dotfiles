@@ -30,5 +30,5 @@ fi
 
 script_path=$(dirname "$0")
 export DOTFILES="$script_path"
-dotfile_manager install -v
+dotfile_manager install --verbose
 dotfile_manager setup

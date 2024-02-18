@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+View all images in a folder as an animated sequence.
+"""
 
 import argparse
 import os
@@ -23,7 +26,7 @@ def view_images(folder):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='View PNG images in a folder.')
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('folder',
                         help='Path to the folder containing PNG images.')
     args = parser.parse_args()

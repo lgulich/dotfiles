@@ -20,6 +20,6 @@ jobs:
       - name: Install dependencies
         run: ./install.sh --only-deps
       - name: Install dotfiles
-        run: export DOTFILES="$(pwd)" && dotfile_manager install
+        run: export DOTFILES="$(pwd)" && dotfile_manager install --verbose
       - name: Setup dotfiles
         run: dotfile_manager setup
