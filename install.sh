@@ -5,12 +5,14 @@ install_dependencies_macos(){
 }
 
 install_dependencies_linux(){
+  if ! command -v sudo &>/dev/null; then
+      apt-get update && apt-get install -y sudo
+  fi
   sudo apt-get update
-  sudo apt-get install python3 python3-pip git
+  sudo apt-get install -y python3 python3-pip git software-properties-common curl wget
   python3 -m pip install dotfile-manager
   export PATH="~/.local/bin:$PATH"
 }
-
 
 set -e
 
@@ -28,5 +30,5 @@ fi
 
 script_path=$(dirname "$0")
 export DOTFILES="$script_path"
-dotfile_manager install
+dotfile_manager install -v
 dotfile_manager setup

@@ -6,24 +6,18 @@ set -e
 cd /tmp
 
 # Install app.
-curl -sSO https://downloads.1password.com/linux/tar/stable/x86_64/1password-latest.tar.gz
-tar -xf 1password-latest.tar.gz
-sudo rm -rf /opt/1Password
-sudo mkdir -p /opt/1Password
-sudo mv -f 1password-*/* /opt/1Password
-sudo /opt/1Password/after-install.sh
-1password --version  # To verify installation
+curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+  sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main' | sudo tee /etc/apt/sources.list.d/1password.list
+sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | \
+  sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+curl -sS https://downloads.1password.com/linux/keys/1password.asc | \
+  sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+sudo apt-get update
+sudo apt-get install -y 1password 1password-cli
 
-# Install cli.
-arch="amd64"
-version="v2.7.3"
-url="https://cache.agilebits.com/dist/1P/op2/pkg/${version}/op_linux_${arch}_${version}.zip"
-wget "${url}" -O op.zip
-unzip -d op op.zip
-sudo mv -f op/op /usr/local/bin
-rm -r op.zip op
-op --version  # To verify installation
-
-sudo groupadd onepassword-cli || true
-sudo chown root:onepassword-cli /usr/local/bin/op
-sudo chmod g+s /usr/local/bin/op
+# Verify installation
+1password --version --no-sandbox
+op --version
