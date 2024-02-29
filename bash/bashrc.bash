@@ -120,9 +120,47 @@ fi
 
 EDITOR=vim
 
+function find_content {
+        search_path=${1:?}
+        pattern=${2:?}
+        find ${search_path} -type f -exec grep -Hn "${pattern}" {} +
+}
+
+function find_file {
+        search_path=${1:?}
+        pattern=${2:?}
+        find ${search_path} -type f -name "${pattern}"
+}
+
+
 # Colcon
 alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
+alias cbs='colcon build --symlink-install --packages-select'
+alias ct='colcon test --return-code-on-test-failure --packages-up-to'
+alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --output-on-failure --packages-select'
 alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
+
+# Git
+alias gs='git status'
+alias ga='git add'
+alias gf='git fetch'
+alias gp='git push'
+alias gpf='git push --force'
+alias gpr='git pull --rebase'
+alias gc='git commit'
+alias gca='git commit --amend'
+
+git_submodule_reset() {
+  path=${1:-.}
+  git submodule deinit -f ${path}
+  git submodule update --recursive --init
+}
+
+git_submodule_bump() {
+  git submodule update --recursive --remote
+}
+
+
 
 # Autocomplete with up key.
 bind '"\e[A": history-search-backward'

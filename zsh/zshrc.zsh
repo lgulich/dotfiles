@@ -26,6 +26,15 @@ plugins=(
   git
   zsh-autosuggestions
   ssh-agent
+  command-not-found
+  1password
+  ag
+  bazel
+  colorize
+  colored-man-pages
+  docker
+  docker-compose
+  zsh-syntax-highlighting
 )
 source "${ZSH}"/oh-my-zsh.sh
 
@@ -75,6 +84,5 @@ HISTTIMEFORMAT="%F %T "
 # Load google cloud stuff
 if [ -f '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc'; fi
 if [ -f '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc'; fi
-
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

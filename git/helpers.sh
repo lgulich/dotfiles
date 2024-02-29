@@ -11,3 +11,13 @@ git_clean_up_branches() {
 git_go_to_repo_root() {
   cd "$(git rev-parse --show-toplevel || echo ".")" || exit 1
 }
+
+git_submodule_reset() {
+  path=${1:-.}
+  git submodule deinit -f ${path}
+  git submodule update --recursive --init
+}
+
+git_submodule_bump() {
+  git submodule update --recursive --remote
+}
