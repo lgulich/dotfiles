@@ -24,8 +24,8 @@ ros2() {
     for arg in "$@"; do
         if [[ "$arg" == "t" ]]; then
             args+=("topic")
-        elif [[ "$arg" == "node" ]]; then
-            args+=("n")
+        elif [[ "$arg" == "n" ]]; then
+            args+=("node")
         elif [[ "$arg" == "ls" ]]; then
             args+=("list")
         elif [[ "$arg" == "i" ]]; then
