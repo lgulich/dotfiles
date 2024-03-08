@@ -2,5 +2,6 @@
 
 set -e
 
+skhd --stop-services || true
 brew install koekeishiya/formulae/skhd
-brew services start skhd
+skhd --start-service

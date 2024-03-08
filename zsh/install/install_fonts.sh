@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
+script_path=$(dirname $(realpath $0))
+cd ${script_path}
+
 # Install MesloLGS Nerd Font
 mkdir -p ~/.fonts
-SCRIPT_PATH=$(dirname $(realpath -s $0))
-cp "${SCRIPT_PATH}"/../fonts/* ~/.fonts
+cp ../fonts/* ~/.fonts

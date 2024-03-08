@@ -2,9 +2,6 @@
 
 set -e
 
-brew install jq
-
+yabai --stop-service || true
 brew install koekeishiya/formulae/yabai
-sudo yabai --load-sa
-brew services start yabai
-killall Dock
+yabai --start-service

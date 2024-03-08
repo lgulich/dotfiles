@@ -1,0 +1,83 @@
+live_config_reload = true
+
+[colors.bright]
+black = "#666666"
+blue = "#7aa6da"
+cyan = "#70c0b1"
+green = "#b9ca4a"
+magenta = "#c397d8"
+red = "#d54e53"
+white = "#eaeaea"
+yellow = "#e7c547"
+
+[colors.cursor]
+cursor = "#ffffff"
+text = "#000000"
+
+[colors.dim]
+black = "#131415"
+blue = "#556a7d"
+cyan = "#5b7d78"
+green = "#777c44"
+magenta = "#75617b"
+red = "#864343"
+white = "#828482"
+yellow = "#9e824c"
+
+[colors.normal]
+black = "#2e3436"
+blue = "#3465a4"
+cyan = "#06989a"
+green = "#4e9a06"
+magenta = "#c678dd"
+red = "#cc0000"
+white = "#d3d7cf"
+yellow = "#c4a000"
+
+[colors.primary]
+background = "#282c34"
+bright_foreground = "#eaeaea"
+dim_foreground = "#828482"
+foreground = "#abb2bf"
+
+[colors.selection]
+background = "#404040"
+text = "#eaeaea"
+
+[colors.vi_mode_cursor]
+cursor = "#ffffff"
+text = "#000000"
+
+[cursor]
+style = "Beam"
+vi_mode_style = "Block"
+
+[window]
+opacity = 0.8
+
+[font]
+size = 12.0
+
+[font.bold]
+family = "MesloLGS NF"
+style = "Bold"
+
+[font.bold_italic]
+family = "MesloLGS NF"
+style = "Bold Italic"
+
+[font.italic]
+family = "MesloLGS NF"
+style = "Italic"
+
+[font.normal]
+family = "MesloLGS NF"
+style = "Regular"
+
+[scrolling]
+history = 0
+multiplier = 10
+
+[selection]
+save_to_clipboard = false
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"

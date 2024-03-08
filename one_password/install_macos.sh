@@ -2,6 +2,11 @@
 
 set -e
 
-brew install --cask 1password/tap/1password-cli
+brew install mas
+mas install 1569813296  # 1Password for Safari
 
-op --version  # To verify installation
+brew install --cask 1password
+brew install 1password-cli
+
+# Verify installation
+op --version
