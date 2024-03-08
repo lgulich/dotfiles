@@ -1,5 +1,5 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# se /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
 # If not running interactively, don't do anything
@@ -141,14 +141,19 @@ alias cts='colcon test --return-code-on-test-failure --event-handlers console_di
 alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
 
 # Git
-alias gs='git status'
 alias ga='git add'
+alias gc='git commit'
+alias gca='git commit --amend'
+alias gch='git checkout'
+alias gd='git diff --color'
 alias gf='git fetch'
+alias gl='git log --oneline'
 alias gp='git push'
 alias gpf='git push --force'
 alias gpr='git pull --rebase'
-alias gc='git commit'
-alias gca='git commit --amend'
+alias grc='git rebase --continue'
+alias gs='git status'
+alias nah='git reset --hard && git clean -df;'
 
 git_submodule_reset() {
   path=${1:-.}
@@ -160,11 +165,17 @@ git_submodule_bump() {
   git submodule update --recursive --remote
 }
 
-
-
 # Autocomplete with up key.
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
 export ROS_DOMAIN_ID=33
 source /opt/ros/humble/setup.bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
