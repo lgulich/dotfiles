@@ -25,7 +25,10 @@ Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
 Plug 'bkad/CamelCaseMotion'
 Plug 'APZelos/blamer.nvim' " To see inline git blames
-Plug 'earthly/earthly.vim', { 'branch': 'main' } " For earthly syntax highlighting
+Plug 'earthly/earthly.vim' " For earthly syntax highlighting
+Plug 'nosduco/remote-sshfs.nvim' " For remote development
+Plug 'nvim-lua/plenary.nvim' " Needed for telescope
+Plug 'nvim-telescope/telescope.nvim' " Needed for remote-sshfs
 
 " AI plugins
 Plug 'ssh://git@gitlab-master.nvidia.com:12051/asubramaniam/gp.nvim.git'

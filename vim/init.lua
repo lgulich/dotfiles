@@ -18,3 +18,16 @@ require('gp').setup{
     openai_api_key = os.getenv("NVCF_API_KEY"),
     openai_api_endpoint = 'https://api.nvcf.nvidia.com/v2/nvcf/pexec/functions/8f4118ba-60a8-4e6b-8574-e38a4067a4a3',
 }
+
+require('remote-sshfs').setup({
+  connections = {
+    sshfs_args = {
+      "-o reconnect",
+      "-o ConnectTimeout=5",
+      "-o cache=yes",
+      "-o kernel_cache",
+      "-o auto_cache",
+    },
+  },
+})
+require('telescope').load_extension 'remote-sshfs'

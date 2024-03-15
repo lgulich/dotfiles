@@ -34,6 +34,6 @@ ros2() {
             args+=("${arg}")
         fi
     done
-    echo "Running command 'ros ${args[@]}'."
+    echo "Running command 'ros2 ${args[@]}'."
     command ros2 "${args[@]}"
 }
