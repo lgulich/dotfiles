@@ -7,3 +7,5 @@ symlinks:
   config/pylintrc: ~/.pylintrc
   config/clang-format: ~/.clang-format
   config/yamlfmt.yaml: ~/.yamlfmt
+source:
+  - helpers.sh
