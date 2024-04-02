@@ -29,6 +29,7 @@ Plug 'earthly/earthly.vim' " For earthly syntax highlighting
 Plug 'nosduco/remote-sshfs.nvim' " For remote development
 Plug 'nvim-lua/plenary.nvim' " Needed for telescope
 Plug 'nvim-telescope/telescope.nvim' " Needed for remote-sshfs
+Plug 'ActivityWatch/aw-watcher-vim' " To track activity of vim
 
 " AI plugins
 Plug 'ssh://git@gitlab-master.nvidia.com:12051/asubramaniam/gp.nvim.git'
