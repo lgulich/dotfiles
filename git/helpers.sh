@@ -13,8 +13,8 @@ git_go_to_repo_root() {
 }
 
 git_submodule_reset() {
-  path=${1:-.}
-  git submodule deinit -f ${path}
+  submodule_path=${1:-.}
+  git submodule deinit -f ${submodule_path}
   git submodule update --recursive --init
 }
 

@@ -180,6 +180,7 @@ exec --no-startup-id gnome-sound-applet
 exec --no-startup-id compton
 exec --no-startup-id ~/Code/dotfiles/i3/helpers/alternating_layouts.py
 exec --no-startup-id ~/Code/dotfiles/i3/helpers/init_workspaces.bash
+exec --no-startup-id ~/Code/installed/activitywatch/aw-qt
 
 
 ## MEDIA BUTTONS
