@@ -21,3 +21,10 @@ git_submodule_reset() {
 git_submodule_bump() {
   git submodule update --recursive --remote
 }
+
+git_rebase_with_stash() {
+  git add .
+  git stash
+  git pull --rebase
+  git stash apply
+}
