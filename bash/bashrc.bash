@@ -132,16 +132,9 @@ function find_file {
         find ${search_path} -type f -name "${pattern}"
 }
 
-
-# Colcon
-alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
-alias cbs='colcon build --symlink-install --packages-select'
-alias ct='colcon test --return-code-on-test-failure --packages-up-to'
-alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --output-on-failure --packages-select'
-alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
-
 # Git
 alias ga='git add'
+alias gb='git branch'
 alias gc='git commit'
 alias gca='git commit --amend'
 alias gch='git checkout'
@@ -156,18 +149,49 @@ alias gs='git status'
 alias nah='git reset --hard && git clean -df;'
 
 git_submodule_reset() {
-  path=${1:-.}
-  git submodule deinit -f ${path}
-  git submodule update --recursive --init
+  submodule_path=${1:-.}
+  git submodule deinit -f ${submodule_path}
+  git submodule update --recursive --init --jobs 20
 }
 
 git_submodule_bump() {
-  git submodule update --recursive --remote
+  submodule_path=${1:-.}
+  git submodule deinit -f ${submodule_path}
+  git submodule update --recursive --remote --jobs 20
+}
+
+git_clean_up_branches() {
+  git fetch -p
+  for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == "[gone]" {sub("refs/heads/", "", $1); print $1}'); do
+    git branch -D "$branch"
+  done
 }
 
 # Autocomplete with up key.
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
-export ROS_DOMAIN_ID=33
+# Colcon
+alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
+alias cbs='colcon build --symlink-install --packages-select'
+alias ct='colcon test --return-code-on-test-failure --packages-up-to'
+alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --ctest-args -R 'v' --output-on-failure --packages-select'
+alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
+alias cbi='colcon build --continue-on-error --packages-up-to'
+
+# Carter
+CARTER_DEV_REPO='/mnt/nova_ssd/workspaces/carter-dev-lgulich'
+CARTER_DEV_WS="${CARTER_DEV_REPO:?}/ros_ws/"
+CONFIG_CONTAINER_NAME_SUFFIX='lgulich'
+DOCKER_ARGS=(
+  "-e CYCLONEDDS_URI=/usr/local/share/middleware_profiles/cyclone_unicast_profile.xml"
+)
+alias cdc='cd /mnt/nova_ssd/workspaces/carter-dev'
+alias cdcs='cd /mnt/nova_ssd/workspaces/carter-dev/ros_ws/src'
+alias cdlg='cd /mnt/nova_ssd/workspaces/carter-dev-lgulich'
+alias run_dev='cdlg && ${CARTER_DEV_REPO:?}/scripts/run_dev.sh ${CARTER_DEV_WS:?}'
+
 source /opt/ros/humble/setup.bash
+
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"

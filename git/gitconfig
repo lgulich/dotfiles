@@ -38,7 +38,15 @@
 
 [interactive]
 	diffFilter = diff-so-fancy --patch
+
 [diff]
 	noprefix = false
+
 [credential]
 	helper = store
+
+[submodule]
+  fetchJobs = 20
+
+[fetch]
+  parallel = 20

@@ -19,7 +19,7 @@ alias cdc='cd ${CARTER_DEV_REPO:?}'
 alias cdcs='cd ${CARTER_DEV_WS:?}/src'
 alias run_carter_dev='(cd ${CARTER_DEV_REPO:?} && ./scripts/run_dev.sh ${CARTER_DEV_WS})'
 
-ros2() {
+ros() {
     local args=()
     for arg in "$@"; do
         if [[ "$arg" == "t" ]]; then

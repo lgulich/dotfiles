@@ -6,7 +6,6 @@ declare -A startup_apps
 startup_apps['alacritty']='1'
 startup_apps['brave']='2'
 startup_apps['slack']='10'
-startup_apps['prospect-mail']='10'
 
 startup_workspaces=(
   '2'
