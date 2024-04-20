@@ -78,7 +78,7 @@ export OSMO_PATH="/home/lgulich/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
 export ISAAC_DEV_BAZEL=dazel
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
-if [ -f /home/lgulich/Code/osmo/osmo/autocomplete.bash ]; then . '/home/lgulich/Code/osmo/osmo/autocomplete.bash'; fi
+[ -f /home/lgulich/Code/osmo/osmo/autocomplete.bash ] && source '/home/lgulich/Code/osmo/osmo/autocomplete.bash'
 
 # History setup
 HISTSIZE=10000000
@@ -99,12 +99,7 @@ setopt HIST_NO_STORE         # Don't store history commands
 setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
 HIST_STAMPS="yyyy-mm-dd"
 
-# Load google cloud stuff
-if [ -f '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/path.zsh.inc'; fi
-if [ -f '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/lgulich/Code/google-cloud-sdk/completion.zsh.inc'; fi
-
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-eval "$(atuin init zsh)"
+eval "$(atuin init zsh --disable-up-arrow)"
 # Has to follow after atuin init.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)

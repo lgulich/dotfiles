@@ -1,0 +1,5 @@
+show_preview=True
+keymap_mode=vim-normal
+
+[sync]
+records = true
