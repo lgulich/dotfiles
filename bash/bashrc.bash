@@ -195,3 +195,4 @@ source /opt/ros/humble/setup.bash
 
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
+. "$HOME/.cargo/env"

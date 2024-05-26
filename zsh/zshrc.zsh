@@ -21,19 +21,20 @@ fi
 export ZSH="${HOME}/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
-  vi-mode
-  git
-  fzf
-  zsh-autosuggestions
-  ssh-agent
-  command-not-found
   1password
   ag
   bazel
-  colorize
   colored-man-pages
+  colorize
+  command-not-found
   docker
   docker-compose
+  fzf
+  git
+  rust
+  ssh-agent
+  vi-mode
+  zsh-autosuggestions
   zsh-syntax-highlighting
 )
 source "${ZSH}"/oh-my-zsh.sh

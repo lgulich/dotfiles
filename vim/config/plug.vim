@@ -47,6 +47,9 @@ Plug 'drmikehenry/vim-headerguard', { 'for': ['cpp', 'c'] }
 Plug 'lgulich/toggle-header-source.vim'
 Plug 'bfrg/vim-cpp-modern' " Better syntax hightlighting
 
+" Rust language plugins
+Plug 'rust-lang/rust.vim'
+
 " Latex plugins
 Plug 'lervag/vimtex'
 Plug 'rhysd/vim-grammarous'
