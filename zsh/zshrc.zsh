@@ -84,7 +84,7 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site
 # History setup
 HISTSIZE=10000000
 SAVEHIST=10000000
-PROMPT_COMMAND='history -a'
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 HISTTIMEFORMAT="%F %T "
 HISTORY_IGNORE="(ls|pwd|exit)*"
 setopt EXTENDED_HISTORY      # Write the history file in the ':start:elapsed;command' format.

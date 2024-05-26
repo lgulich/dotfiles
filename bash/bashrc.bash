@@ -8,16 +8,12 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+# History setup.
+HISTCONTROL=ignoreboth # ignore duplicates and lines starting with space
+shopt -s histappend # Append to the history file
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND" # Write history immediately
+HISTSIZE=10000000
+HISTFILESIZE=10000000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -167,6 +163,17 @@ git_clean_up_branches() {
   done
 }
 
+serve_file() {
+  file_path="$(realpath ${1:?})"
+  file_parentdir="$(dirname ${file_path})"
+  file_basename="$(basename ${file_path})"
+
+  ip=$(hostname -I | awk '{print $1}')
+  port=8005
+  echo "See file at: 'http://${ip}:${port}/${file_basename}'"
+  python3 -m http.server ${port} --directory ${file_parentdir}
+}
+
 # Autocomplete with up key.
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
@@ -175,24 +182,24 @@ bind '"\e[B": history-search-forward'
 alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
 alias cbs='colcon build --symlink-install --packages-select'
 alias ct='colcon test --return-code-on-test-failure --packages-up-to'
-alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --ctest-args -R 'v' --output-on-failure --packages-select'
+alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --ctest-args --output-on-failure --packages-select'
 alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
 alias cbi='colcon build --continue-on-error --packages-up-to'
 
 # Carter
-CARTER_DEV_REPO='/mnt/nova_ssd/workspaces/carter-dev-lgulich'
-CARTER_DEV_WS="${CARTER_DEV_REPO:?}/ros_ws/"
-CONFIG_CONTAINER_NAME_SUFFIX='lgulich'
-DOCKER_ARGS=(
+export CARTER_DEV_REPO='/mnt/nova_ssd/workspaces/carter-dev-lgulich'
+export CARTER_DEV_WS="${CARTER_DEV_REPO:?}/ros_ws/"
+export CONFIG_CONTAINER_NAME_SUFFIX='lgulich'
+export DOCKER_ARGS=(
   "-e CYCLONEDDS_URI=/usr/local/share/middleware_profiles/cyclone_unicast_profile.xml"
+  "-v `realpath ~/.bashrc`:/home/admin/.bashrc"
 )
 alias cdc='cd /mnt/nova_ssd/workspaces/carter-dev'
 alias cdcs='cd /mnt/nova_ssd/workspaces/carter-dev/ros_ws/src'
 alias cdlg='cd /mnt/nova_ssd/workspaces/carter-dev-lgulich'
-alias run_dev='cdlg && ${CARTER_DEV_REPO:?}/scripts/run_dev.sh ${CARTER_DEV_WS:?}'
+alias run_dev='${CARTER_DEV_REPO:?}/scripts/run_dev.sh ${CARTER_DEV_WS:?}'
 
-source /opt/ros/humble/setup.bash
-
+[[ -f /opt/ros/humble/setup.bash ]] && source /opt/ros/humble/setup.bash
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
 . "$HOME/.cargo/env"
