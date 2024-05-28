@@ -39,6 +39,9 @@ plugins=(
 )
 source "${ZSH}"/oh-my-zsh.sh
 
+# Directory used for general autocompletions.
+fpath=($HOME/.zsh_completions $fpath)
+
 # Enable autocomplete for bash autocomplete definitions.
 autoload -U +X compinit && compinit
 autoload -U +X bashcompinit && bashcompinit

@@ -54,3 +54,16 @@ bindkey "jk" vi-cmd-mode
 
 # Partially complete suggestion by zsh-autosuggestions.
 bindkey '^ ' forward-word
+
+# Feed current buffer to sgpt.
+feed_buffer_to_sgpt() {
+  if [[ -n "$BUFFER" ]]; then
+      _sgpt_prev_cmd=$BUFFER
+      BUFFER+="⌛"
+      zle -I && zle redisplay
+      BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
+      zle end-of-line
+  fi
+}
+zle -N feed_buffer_to_sgpt
+bindkey ^o feed_buffer_to_sgpt

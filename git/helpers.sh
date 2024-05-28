@@ -22,7 +22,7 @@ git_submodule_bump() {
   git submodule update --recursive --remote
 }
 
-git_rebase_with_stash() {
+git_pull_with_stash() {
   git add .
   git stash
   git pull --rebase
