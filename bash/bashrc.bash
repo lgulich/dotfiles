@@ -144,26 +144,26 @@ alias grc='git rebase --continue'
 alias gs='git status'
 alias nah='git reset --hard && git clean -df;'
 
-git_submodule_reset() {
+function git_submodule_reset() {
   submodule_path=${1:-.}
   git submodule deinit -f ${submodule_path}
   git submodule update --recursive --init --jobs 20
 }
 
-git_submodule_bump() {
+function git_submodule_bump() {
   submodule_path=${1:-.}
   git submodule deinit -f ${submodule_path}
   git submodule update --recursive --remote --jobs 20
 }
 
-git_clean_up_branches() {
+function git_clean_up_branches() {
   git fetch -p
   for branch in $(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == "[gone]" {sub("refs/heads/", "", $1); print $1}'); do
     git branch -D "$branch"
   done
 }
 
-serve_file() {
+function serve_file() {
   file_path="$(realpath ${1:?})"
   file_parentdir="$(dirname ${file_path})"
   file_basename="$(basename ${file_path})"
@@ -179,10 +179,26 @@ bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
 # Colcon
+function colcon_test_packages_select {
+  package=${1:?}
+  if [ -n "$2" ]; then
+    # Test only tests matching regex pattern.
+    pattern=${2:?}
+    colcon test --packages-select ${package} \
+      --return-code-on-test-failure \
+      --ctest-args -R ${pattern} \
+      --event-handlers console_direct+
+  else
+    # Test entire package.
+    colcon test --return-code-on-test-failure --packages-select ${package} \
+      --event-handlers console_direct+
+  fi
+}
 alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
 alias cbs='colcon build --symlink-install --packages-select'
 alias ct='colcon test --return-code-on-test-failure --packages-up-to'
-alias cts='colcon test --return-code-on-test-failure --event-handlers console_direct+ --ctest-args --output-on-failure --packages-select'
+alias cts='colcon_test_packages_select'
+alias cts_show='colcon test --ctest-args --show-only --packages-select'
 alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
 alias cbi='colcon build --continue-on-error --packages-up-to'
 
