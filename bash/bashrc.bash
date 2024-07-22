@@ -203,19 +203,26 @@ alias src='source /workspaces/isaac_ros-dev/install/setup.bash'
 alias cbi='colcon build --continue-on-error --packages-up-to'
 
 # Carter
-export CARTER_DEV_REPO='/mnt/nova_ssd/workspaces/carter-dev-lgulich'
-export CARTER_DEV_WS="${CARTER_DEV_REPO:?}/ros_ws/"
-export CONFIG_CONTAINER_NAME_SUFFIX='lgulich'
+export ISAAC_REPO='/mnt/nova_ssd/workspaces/isaac-lgulich'
+export ISAAC_WS="${ISAAC_REPO:?}/ros_ws/"
+export CONFIG_CONTAINER_NAME_SUFFIX="${CONFIG_CONTAINER_NAME_SUFFIX}-lgulich"
 export DOCKER_ARGS=(
   "-e CYCLONEDDS_URI=/usr/local/share/middleware_profiles/cyclone_unicast_profile.xml"
   "-v `realpath ~/.bashrc`:/home/admin/.bashrc"
 )
-alias cdc='cd /mnt/nova_ssd/workspaces/carter-dev'
-alias cdcs='cd /mnt/nova_ssd/workspaces/carter-dev/ros_ws/src'
-alias cdlg='cd /mnt/nova_ssd/workspaces/carter-dev-lgulich'
-alias run_dev='${CARTER_DEV_REPO:?}/scripts/run_dev.sh ${CARTER_DEV_WS:?}'
+alias cdlg="cd ${ISAAC_WS}/src"
+alias run_dev='${ISAAC_REPO:?}/scripts/run_dev.sh -d ${ISAAC_REPO:?}'
 
 [[ -f /opt/ros/humble/setup.bash ]] && source /opt/ros/humble/setup.bash
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
 . "$HOME/.cargo/env"
+
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+RC=/workspaces/isaac_ros-dev/scripts/.bashrc && test -f ${RC} && echo Add custom ${RC} && source ${RC}
+source /opt/ros/humble/setup.bash
+source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
+RC=/workspaces/isaac_ros-dev/scripts/.bashrc && test -f ${RC} && echo Add custom ${RC} && source ${RC}

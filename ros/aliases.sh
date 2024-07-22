@@ -6,11 +6,11 @@ alias kr='killall -9 roslaunch'
 alias caktin='catkin'
 
 # Isaac ROS developement
-export ISAAC_ROS_REPO=$HOME/workspaces/isaac_ros-dev/
-export ISAAC_ROS_WS=$HOME/workspaces/isaac_ros-dev/ros_ws/
+export ISAAC_ROS_REPO=$HOME/workspaces/isaac/
+export ISAAC_ROS_WS=$HOME/workspaces/isaac/ros_ws/
 alias cdw='cd ${ISAAC_ROS_WS:?}'
 alias cdws='cd ${ISAAC_ROS_WS:?}/src'
-alias run_isaac_dev='${ISAAC_ROS_REPO:?}/scripts/run_dev.sh -d ${ISAAC_ROS_WS}'
+alias run_isaac_dev='${ISAAC_ROS_REPO:?}/scripts/run_dev.sh -d ${ISAAC_ROS_REPO}'
 
 ros() {
     local args=()
