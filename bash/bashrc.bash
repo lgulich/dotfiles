@@ -184,14 +184,19 @@ function colcon_test_packages_select {
   if [ -n "$2" ]; then
     # Test only tests matching regex pattern.
     pattern=${2:?}
-    colcon test --packages-select ${package} \
+    echo "Testing only '${pattern}' in package '${package}'."
+    colcon test \
       --return-code-on-test-failure \
-      --ctest-args -R ${pattern} \
-      --event-handlers console_direct+
+      --event-handlers console_direct+ \
+      --packages-select ${package} \
+      --ctest-args -R ${pattern}
   else
+    echo "Testing entire package '${package}'."
     # Test entire package.
-    colcon test --return-code-on-test-failure --packages-select ${package} \
-      --event-handlers console_direct+
+    colcon test \
+      --return-code-on-test-failure \
+      --event-handlers console_direct+ \
+      --packages-select ${package}
   fi
 }
 alias cb='colcon build --symlink-install --continue-on-error --packages-up-to'
@@ -220,9 +225,3 @@ eval "$(atuin init bash)"
 
 source /opt/ros/humble/setup.bash
 source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
-source /opt/ros/humble/setup.bash
-source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
-RC=/workspaces/isaac_ros-dev/scripts/.bashrc && test -f ${RC} && echo Add custom ${RC} && source ${RC}
-source /opt/ros/humble/setup.bash
-source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash
-RC=/workspaces/isaac_ros-dev/scripts/.bashrc && test -f ${RC} && echo Add custom ${RC} && source ${RC}

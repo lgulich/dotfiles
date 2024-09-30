@@ -28,6 +28,7 @@
 	commit-nolint = "! SKIP_PRE_COMMIT_HOOK=true git commit"
 	ignore = update-index --assume-unchanged
 	stop-ignore = update-index --no-assume-unchanged
+	url = ! bash -c 'git config --get remote.origin.url | sed -E "s/.+:\\(.+\\)\\.git$/https:\\\\/\\\\/github\\\\.com\\\\/\\\\1/g"'
 
 [core]
 	editor = nvim

@@ -16,8 +16,23 @@ fun! InsertUuid()
 endfun
 command InsertUuid call InsertUuid()
 
-" Clang-format the selection
+" Clang-format the selection.
 command ClangFormat !clang-format | == <CR>
 
-" Write with sudo even when vim was not opened with sudo
+" Write with sudo even when vim was not opened with sudo.
 command WriteWithSudo w !sudo tee %
+
+" Get the remote URL to the current line.
+fun! GetRemoteUrl()
+  let git_url = system('git config --get remote.origin.url')
+  let git_url = substitute(git_url, '\n$', '', '')
+  let git_url = substitute(git_url, '\(.*\)@\(.*\):\(\d*\/\)\?\(.*\)\.git', 'https://\2/\4', '')
+  let branch = system('git rev-parse --abbrev-ref HEAD')
+  let branch = substitute(branch, '\n$', '', '')
+  let file = system('git ls-files --full-name '.expand('%'))
+  let file = substitute(file, '\n$', '', '')
+  let line = line('.')
+  let url = git_url . '/blob/' . branch . '/' . file . '#L' . line
+  echo url
+endfun
+command! GetRemoteUrl call GetRemoteUrl()
