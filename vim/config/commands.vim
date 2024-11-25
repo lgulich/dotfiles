@@ -33,6 +33,7 @@ fun! GetRemoteUrl()
   let file = substitute(file, '\n$', '', '')
   let line = line('.')
   let url = git_url . '/blob/' . branch . '/' . file . '#L' . line
+  let @+ = url
   echo url
 endfun
 command! GetRemoteUrl call GetRemoteUrl()

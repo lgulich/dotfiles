@@ -8,6 +8,6 @@ docker_kill_all() {
 }
 
 docker_cleanup() {
-  # Prune images and containers that were created more than 10 days ago.
-  docker system prune -a --filter "until=240h"
+  # Prune images and containers that were created more than 5 days ago.
+  docker system prune -a --filter "until=120h"
 }

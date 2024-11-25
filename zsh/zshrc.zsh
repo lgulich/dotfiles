@@ -84,6 +84,9 @@ export ISAAC_DEV_BAZEL=dazel
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
 [ -f /home/lgulich/Code/osmo/osmo/autocomplete.bash ] && source '/home/lgulich/Code/osmo/osmo/autocomplete.bash'
 
+# Dora-rs
+export PATH=$PATH:${HOME}/.dora/bin
+
 # History setup
 HISTSIZE=10000000
 SAVEHIST=10000000

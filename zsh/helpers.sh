@@ -18,3 +18,8 @@ serve_file() {
   echo "See file at: 'http://${ip}:${port}/${file_basename}'"
   python3 -m http.server ${port} --directory ${file_parentdir}
 }
+
+download_folder() {
+  folder_url=${1:?}
+  wget --recursive --no-parent --reject "index.html" ${folder_url}
+}
