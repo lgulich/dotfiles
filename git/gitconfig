@@ -6,7 +6,7 @@
   path = /home/lgulich/Code/.gitconfig
 
 [init]
-	defaultBranch = master
+	defaultBranch = main
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
