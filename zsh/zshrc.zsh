@@ -54,6 +54,7 @@ export DOTFILES=~/Code/dotfiles
 
 # Default UNIX env variables:
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
+export PATH="/usr/NX/bin/:${PATH}" # For nomachine.
 export PATH="${DOTFILES:?}/generated/bin:${PATH}"
 export VISUAL=nvim
 export EDITOR=nvim
