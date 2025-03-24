@@ -15,3 +15,11 @@ bazel_visualize() {
 dazel_visualize() {
   bazel_visualize.sh $@ --bazel dazel
 }
+
+buildifier() {
+  /opt/bazel/tools/buildifier $@
+}
+
+buildozer() {
+  /opt/bazel/tools/buildozer $@
+}
