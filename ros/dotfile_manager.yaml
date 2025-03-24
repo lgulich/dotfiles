@@ -7,3 +7,4 @@ bin:
   - catkin_combine_compile_commands.sh
   - update_clion_ws.sh
   - fix_uncrustify_ros.sh
+  - merge_all_mcap_files.sh
