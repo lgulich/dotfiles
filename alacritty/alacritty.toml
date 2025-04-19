@@ -80,6 +80,3 @@ multiplier = 10
 [selection]
 save_to_clipboard = false
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
-
-[general]
-live_config_reload = true
