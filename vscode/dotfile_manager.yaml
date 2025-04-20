@@ -1,0 +1,7 @@
+install_ubuntu:
+  - install_ubuntu.sh
+install_macos:
+  - install_macos.sh
+symlinks:
+  keybindings.json: ~/.config/Code/User/keybindings.json
+  settings.json: ~/.config/Code/User/settings.json
