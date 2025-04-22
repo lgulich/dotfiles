@@ -1,10 +1,10 @@
 #!/bin/sh
-set -ex
+set -e
 
 tmpdir="$(mktemp -d)"
 cd ${tmpdir}
 
-release=$(curl -s https://api.github.com/repos/ActivityWatch/activitywatch/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+release='v0.13.2'
 
 wget https://github.com/ActivityWatch/activitywatch/releases/download/${release}/activitywatch-${release}-macos-x86_64.dmg
 

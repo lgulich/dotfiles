@@ -2,4 +2,11 @@
 
 set -e
 
-brew install cmake curl || brew upgrade cmake curl
+packages=(
+    cmake \
+    curl \
+    wget \
+    the_silver_searcher \
+)
+
+brew install ${packages} || brew upgrade ${packages}

@@ -2,4 +2,4 @@
 
 set -e
 
-brew install vscode || brew update vscode
+brew install visual-studio-code || brew update visual-studio-code

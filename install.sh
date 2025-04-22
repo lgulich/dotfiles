@@ -30,5 +30,5 @@ fi
 
 script_path=$(dirname "$0")
 export DOTFILES="$script_path"
-dotfile_manager install --verbose
-dotfile_manager setup
+python3 -m dotfile_manager install --verbose
+pithon3 -m dotfile_manager setup
