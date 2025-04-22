@@ -5,4 +5,4 @@ install_macos:
 symlinks:
   alacritty.toml: ~/.config/alacritty/alacritty.toml
 requires:
-  brew
+  - brew

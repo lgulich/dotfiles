@@ -5,4 +5,4 @@ install_macos:
 source:
   - helpers.sh
 requires:
-  brew
+  - brew
