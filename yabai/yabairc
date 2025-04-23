@@ -85,6 +85,9 @@ yabai -m rule --add app=Brave space=browser
 yabai -m rule --add app='Brave Browser Beta' space=browser
 yabai -m rule --add app=Atom space=code
 yabai -m rule --add app=Code space=code
+yabai -m rule --add app=Cursor space=code
+yabai -m rule --add app=Windsurf space=code
+yabai -m rule --add app=NoMachine space=varia1
 yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Spark space=mail
 yabai -m rule --add app=Franz space=chat
