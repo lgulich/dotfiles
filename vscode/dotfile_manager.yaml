@@ -1,9 +1,26 @@
-install_ubuntu:
-  - install_ubuntu.sh
-install_macos:
-  - install_macos.sh
+install:
+  ubuntu:
+    - install_ubuntu.sh
+  macos:
+    - install_macos.sh
 symlinks:
-  keybindings.json: ~/.config/Code/User/keybindings.json
-  settings.json: ~/.config/Code/User/settings.json
+  macos:
+    keybindings.json:
+      - '~/Library/Application Support/Code/User/keybindings.json'
+      - '~/Library/Application Support/Windsurf/User/keybindings.json'
+      - '~/Library/Application Support/Cursor/User/keybindings.json'
+    settings.json:
+      - '~/Library/Application Support/Code/User/settings.json'
+      - '~/Library/Application Support/Windsurf/User/settings.json'
+      - '~/Library/Application Support/Cursor/User/settings.json'
+  ubuntu:
+    keybindings.json:
+      - ~/.config/Code/User/keybindings.json
+      - ~/.config/Cursor/User/keybindings.json
+      - ~/.config/Windsurf/User/keybindings.json
+    settings.json:
+      ~/.config/Code/User/settings.json
+      ~/.config/Windsurf/User/settings.json
+      ~/.config/Cursor/User/settings.json
 requires:
   - brew
