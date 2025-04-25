@@ -1,4 +1,5 @@
-install_ubuntu:
-  - install_ubuntu.sh
-install_macos:
-  - install_macos.sh
+install:
+  ubuntu:
+    - install_ubuntu.sh
+  macos:
+    - install_macos.sh

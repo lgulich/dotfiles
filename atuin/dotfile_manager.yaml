@@ -1,6 +1,4 @@
-install_ubuntu:
-  - install.sh
-install_macos:
+install:
   - install.sh
 symlink:
   config.toml: ~/.config/atuin/config.toml

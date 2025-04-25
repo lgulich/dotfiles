@@ -1,72 +1,56 @@
 {
-    "python.pythonPath": "/Users/lionelgulich/anaconda3",
-    "python.defaultInterpreterPath": "/Users/lionelgulich/anaconda3",
-    "editor.fontSize": 16,
-    "explorer.confirmDragAndDrop": false,
-    "vim.insertModeKeyBindings": [
-        {
-            "before": [
-                "j",
-                "k"
-            ],
-            "after": [
-                "<Esc>"
-            ]
-        }
-    ],
-    "vim.normalModeKeyBindings": [
-        {
-            "before": [
-                "B"
-            ],
-            "after": [
-                "^"
-            ]
-        },
-        {
-            "before": [
-                "E"
-            ],
-            "after": [
-                "$"
-            ]
-        }
-    ],
-    "git.autofetch": true,
-    "bazel.buildifierFixOnFormat": true,
-    "editor.wordWrapColumn": 100,
-    "pylint.args": [
-        "--rcfile=bzl/pylintrc"
-    ],
-    "[python]": {
-        "editor.formatOnType": true
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "bazel.buildifierFixOnFormat": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.fontSize": 16,
+  "editor.wordWrapColumn": 100,
+  "explorer.confirmDragAndDrop": false,
+  "files.autoSave": "afterDelay",
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.detectSubmodulesLimit": 30,
+  "git.repositoryScanMaxDepth": -1,
+  "grammarly.files.include": [
+    "**/*.txt",
+    "**/*.rst",
+    "**/*.md"
+  ],
+  "scm.showIncomingChanges": "always",
+  "scm.showOutgoingChanges": "always",
+  "search.followSymlinks": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "vim.insertModeKeyBindings": [
+    {
+      "after": [
+        "<Esc>"
+      ],
+      "before": [
+        "j",
+        "k"
+      ]
+    }
+  ],
+  "vim.normalModeKeyBindings": [
+    {
+      "after": [
+        "^"
+      ],
+      "before": [
+        "B"
+      ]
     },
-    "diffEditor.ignoreTrimWhitespace": false,
-    "[cpp]": {
-        "editor.defaultFormatter": "xaver.clang-format"
-    },
-    "llm.configTemplate": "Custom",
-    "llm.modelIdOrEndpoint": "http://0.0.0.0:8000/api/generate",
-    "llm.tlsSkipVerifyInsecure": true,
-    "llm.documentFilter": {},
-    "git.confirmSync": false,
-    "files.autoSave": "afterDelay",
-    "security.workspace.trust.untrustedFiles": "open",
-    "grammarly.files.include": [
-        "**/readme.md",
-        "**/README.md",
-        "**/*.txt",
-        "**/*.rst",
-        "**/*.md"
-    ],
-    "scm.showIncomingChanges": "always",
-    "scm.showOutgoingChanges": "always",
-    "git.detectSubmodulesLimit": 30,
-    "git.repositoryScanMaxDepth": -1,
-    "search.followSymlinks": false,
-    "cmake.showOptionsMovedNotification": false,
-    "cmake.pinnedCommands": [
-        "workbench.action.tasks.configureTaskRunner",
-        "workbench.action.tasks.runTask"
-    ]
+    {
+      "after": [
+        "$"
+      ],
+      "before": [
+        "E"
+      ]
+    }
+  ]
 }

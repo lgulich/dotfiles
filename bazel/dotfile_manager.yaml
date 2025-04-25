@@ -1,5 +1,6 @@
-install_ubuntu:
-  - install_ubuntu.sh
+install:
+  ubuntu:
+    - install_ubuntu.sh
 source:
   - helpers.sh
 bin:
