@@ -88,6 +88,11 @@ yabai -m rule --add app=Code space=code
 yabai -m rule --add app=Cursor space=code
 yabai -m rule --add app=Windsurf space=code
 yabai -m rule --add app=NoMachine space=varia1
+yabai -m rule --add app=Calendar space=calendar
+yabai -m rule --add app=Teams space=calendar
+yabai -m rule --add app=Reminders space=organisation
+yabai -m rule --add app=Notes space=organisation
+yabai -m rule --add app=Outlook space=mail
 yabai -m rule --add app=Mail space=mail
 yabai -m rule --add app=Spark space=mail
 yabai -m rule --add app=Franz space=chat
@@ -96,10 +101,7 @@ yabai -m rule --add app=WhatsApp space=chat
 yabai -m rule --add app=Signal space=chat
 yabai -m rule --add app=Spotify space=chat
 yabai -m rule --add app=Slack space=chat
-yabai -m rule --add app=Teams space=calendar
-yabai -m rule --add app=Calendar space=calendar
-yabai -m rule --add app=Reminders space=organisation
-yabai -m rule --add app=Notes space=organisation
+yabai -m rule --apply
 
 yabai -m space --focus chat
 yabai -m space --focus term
