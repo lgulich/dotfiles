@@ -1,97 +1,96 @@
-// Place your key bindings in this file to override the defaultsauto[]
 [
-    {
-        "key": "f3",
-        "command": "editor.action.formatDocument",
-        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
-    },
-    {
-        "key": "ctrl+shift+i",
-        "command": "-editor.action.formatDocument",
-        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
-    },
-    {
-        "key": "f3",
-        "command": "editor.action.formatDocument.none",
-        "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
-    },
-    {
-        "key": "ctrl+shift+i",
-        "command": "-editor.action.formatDocument.none",
-        "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
-    },
-    {
-        "key": "f3",
-        "command": "notebook.formatCell",
-        "when": "editorHasDocumentFormattingProvider && editorTextFocus && inCompositeEditor && notebookEditable && !editorReadonly && activeEditor == 'workbench.editor.notebook'"
-    },
-    {
-        "key": "ctrl+shift+i",
-        "command": "-notebook.formatCell",
-        "when": "editorHasDocumentFormattingProvider && editorTextFocus && inCompositeEditor && notebookEditable && !editorReadonly && activeEditor == 'workbench.editor.notebook'"
-    },
-    {
-        "key": "f3",
-        "command": "editor.action.formatSelection",
-        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
-    },
-    {
-        "key": "ctrl+k ctrl+f",
-        "command": "-editor.action.formatSelection",
-        "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
-    },
-    {
-        "key": "f3",
-        "command": "-editor.action.nextMatchFindAction",
-        "when": "editorFocus"
-    },
-    {
-        "key": "ctrl+f3",
-        "command": "-editor.action.nextSelectionMatchFindAction",
-        "when": "editorFocus"
-    },
-    {
-        "key": "shift+f3",
-        "command": "-editor.action.previousMatchFindAction",
-        "when": "editorFocus"
-    },
-    {
-        "key": "ctrl+shift+f3",
-        "command": "-editor.action.previousSelectionMatchFindAction",
-        "when": "editorFocus"
-    },
-    {
-        "key": "f5",
-        "command": "-workbench.action.debug.continue",
-        "when": "debugState == 'stopped'"
-    },
-    {
-        "key": "f5",
-        "command": "-workbench.action.debug.start",
-        "when": "debuggersAvailable && debugState == 'inactive'"
-    },
-    {
-        "key": "f5",
-        "command": "-debug.openView",
-        "when": "!debuggersAvailable"
-    },
-    {
-        "key": "f5",
-        "command": "C_Cpp.SwitchHeaderSource",
-        "when": "editorTextFocus && editorLangId == 'c' || editorTextFocus && editorLangId == 'cpp' || editorTextFocus && editorLangId == 'cuda-cpp'"
-    },
-    {
-        "key": "alt+o",
-        "command": "-C_Cpp.SwitchHeaderSource",
-        "when": "editorTextFocus && editorLangId == 'c' || editorTextFocus && editorLangId == 'cpp' || editorTextFocus && editorLangId == 'cuda-cpp'"
-    },
-    {
-        "key": "ctrl+e",
-        "command": "-workbench.action.quickOpen"
-    },
-    {
-        "key": "ctrl+p",
-        "command": "-extension.vim_ctrl+p",
-        "when": "editorTextFocus && vim.active && vim.use<C-p> && !inDebugRepl || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'CommandlineInProgress' || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'SearchInProgressMode'"
-    }
+  {
+    "command": "editor.action.formatDocument",
+    "key": "f3",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+  },
+  {
+    "command": "-editor.action.formatDocument",
+    "key": "ctrl+shift+i",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+  },
+  {
+    "command": "editor.action.formatDocument.none",
+    "key": "f3",
+    "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
+  },
+  {
+    "command": "-editor.action.formatDocument.none",
+    "key": "ctrl+shift+i",
+    "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
+  },
+  {
+    "command": "notebook.formatCell",
+    "key": "f3",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && inCompositeEditor && notebookEditable && !editorReadonly && activeEditor == 'workbench.editor.notebook'"
+  },
+  {
+    "command": "-notebook.formatCell",
+    "key": "ctrl+shift+i",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && inCompositeEditor && notebookEditable && !editorReadonly && activeEditor == 'workbench.editor.notebook'"
+  },
+  {
+    "command": "editor.action.formatSelection",
+    "key": "f3",
+    "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
+  },
+  {
+    "command": "-editor.action.formatSelection",
+    "key": "ctrl+k ctrl+f",
+    "when": "editorHasDocumentSelectionFormattingProvider && editorTextFocus && !editorReadonly"
+  },
+  {
+    "command": "-editor.action.nextMatchFindAction",
+    "key": "f3",
+    "when": "editorFocus"
+  },
+  {
+    "command": "-editor.action.nextSelectionMatchFindAction",
+    "key": "ctrl+f3",
+    "when": "editorFocus"
+  },
+  {
+    "command": "-editor.action.previousMatchFindAction",
+    "key": "shift+f3",
+    "when": "editorFocus"
+  },
+  {
+    "command": "-editor.action.previousSelectionMatchFindAction",
+    "key": "ctrl+shift+f3",
+    "when": "editorFocus"
+  },
+  {
+    "command": "-workbench.action.debug.continue",
+    "key": "f5",
+    "when": "debugState == 'stopped'"
+  },
+  {
+    "command": "-workbench.action.debug.start",
+    "key": "f5",
+    "when": "debuggersAvailable && debugState == 'inactive'"
+  },
+  {
+    "command": "-debug.openView",
+    "key": "f5",
+    "when": "!debuggersAvailable"
+  },
+  {
+    "command": "C_Cpp.SwitchHeaderSource",
+    "key": "f5",
+    "when": "editorTextFocus && editorLangId == 'c' || editorTextFocus && editorLangId == 'cpp' || editorTextFocus && editorLangId == 'cuda-cpp'"
+  },
+  {
+    "command": "-C_Cpp.SwitchHeaderSource",
+    "key": "alt+o",
+    "when": "editorTextFocus && editorLangId == 'c' || editorTextFocus && editorLangId == 'cpp' || editorTextFocus && editorLangId == 'cuda-cpp'"
+  },
+  {
+    "command": "-workbench.action.quickOpen",
+    "key": "ctrl+e"
+  },
+  {
+    "command": "-extension.vim_ctrl+p",
+    "key": "ctrl+p",
+    "when": "editorTextFocus && vim.active && vim.use<C-p> && !inDebugRepl || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'CommandlineInProgress' || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'SearchInProgressMode'"
+  }
 ]
