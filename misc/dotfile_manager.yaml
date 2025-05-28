@@ -1,5 +1,7 @@
 bin:
-  - rename.sh
-  - edit_dotfile.zsh
-  - view_image_sequence.py
   - download_rosbag.sh
+  - edit_dotfile.zsh
+  - ldd_graph.sh
+  - plot_yaml_graph.py
+  - rename.sh
+  - view_image_sequence.py
