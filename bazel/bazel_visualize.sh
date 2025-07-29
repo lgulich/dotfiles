@@ -21,7 +21,7 @@ shift 1
 bazel=auto
 workspace='.'
 depth=2
-output=png
+output=graph
 in='//...'
 while [ $# -gt 0 ]; do
   case "$1" in

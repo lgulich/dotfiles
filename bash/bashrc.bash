@@ -80,3 +80,7 @@ export VISUAL=vim
 
 # Enable fzf if it is installed.
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [ -f /usr/local/osmo/autocomplete.bash ]; then
+  source /usr/local/osmo/autocomplete.bash
+fi

@@ -28,7 +28,7 @@ install_vim_plugins() {
 }
 
 source_bashrc_if_correct_user() {
-  local line_to_add='if [ "$SSH_USER" = "lgulich" ]; then source "/tmp/lgulich_bashrc.bash"; fi'
+  local line_to_add='if [ "$SSH_USER" = "lgulich" ]; then source "~/.${USER}_bashrc.bash"; fi'
   local target_bashrc="$HOME/.bashrc"
 
   if grep -qF -- "$line_to_add" "$target_bashrc" 2>/dev/null; then
@@ -50,7 +50,7 @@ set -e
 
 remote=${1:?}
 
-scp -r "${DOTFILES:?}/bash/bashrc.bash" "${remote}:/tmp/${USER}_bashrc.bash"
+scp -r "${DOTFILES:?}/bash/bashrc.bash" "${remote}:~/.${USER}_bashrc.bash"
 scp -r "${DOTFILES:?}/vim/minimal_vimrc.vim" "${remote}:~/.vimrc"
 
 run_function_on_remote install_git_prompt "${remote}"
