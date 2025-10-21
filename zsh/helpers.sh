@@ -23,8 +23,3 @@ download_folder() {
   folder_url=${1:?}
   wget --recursive --no-parent --reject "index.html" ${folder_url}
 }
-
-# Run the cursor command and suppress background process output completely
-cursor() {
-  (nohup /opt/cursor/cursor.AppImage --no-sandbox "$@" > /dev/null 2>&1 &)
-}

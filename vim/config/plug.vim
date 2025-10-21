@@ -32,7 +32,7 @@ Plug 'nvim-telescope/telescope.nvim' " Needed for remote-sshfs
 Plug 'ActivityWatch/aw-watcher-vim' " To track activity of vim
 
 " AI plugins
-Plug 'Exafunction/windsurf.vim'
+Plug 'supermaven-inc/supermaven-nvim'
 
 " LSP plugins
 Plug 'neovim/nvim-lspconfig'
