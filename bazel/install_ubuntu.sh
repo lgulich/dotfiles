@@ -2,15 +2,13 @@
 
 set -e
 
-# Install bazelisk as bazel.
-brew install bazelisk
+# create tmp dir
+tmpdir="$(mktemp -d)"
+cd ${tmpdir}
 
-# Install buildifier and buildozer.
-version=v8.0.3
-os=$(uname -s | tr '[:upper:]' '[:lower:]')
-sudo mkdir -p /opt/bazel/tools
-sudo wget https://github.com/bazelbuild/buildtools/releases/download/${version}/buildozer-${os}-amd64 -O /opt/bazel/tools/buildozer
-sudo wget https://github.com/bazelbuild/buildtools/releases/download/${version}/buildifier-${os}-amd64 -O /opt/bazel/tools/buildifier
+wget https://github.com/bazelbuild/bazelisk/releases/download/v1.27.0/bazelisk-amd64.deb
+sudo apt-get install -y ./bazelisk-amd64.deb
 
-sudo chmod +x /opt/bazel/tools/buildozer
-sudo chmod +x /opt/bazel/tools/buildifier
+# Verify installation
+bazelisk --version
+bazel --version

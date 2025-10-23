@@ -55,6 +55,7 @@ export DOTFILES=~/Code/dotfiles
 export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="/usr/NX/bin/:${PATH}" # For nomachine.
 export PATH="${DOTFILES:?}/generated/bin:${PATH}"
+export PATH="$PATH:/home/lgulich/go/bin"
 export VISUAL=nvim
 export EDITOR=nvim
 export BROWSER=brave-browser

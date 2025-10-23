@@ -5,8 +5,17 @@ set -ex
 script_path=$(dirname "$0")
 cd ${script_path}
 
-docker run -it \
+# Use a persistent cache directory for faster subsequent runs
+cache_dir="/tmp/dotfiles-test-cache"
+mkdir -p ${cache_dir}
+
+# Sync dotfiles to cache directory (only copy changed files, delete extra files)
+rsync -a --delete --exclude='generated/' --exclude='.git/' . ${cache_dir}/
+
+docker run \
+  --env DEBIAN_FRONTEND=noninteractive \
+  --env TZ=UTC \
   --entrypoint dotfiles/install.sh \
   --workdir /root \
-  -v `realpath .`:/root/dotfiles \
-  ubuntu:22.04
+  -v ${cache_dir}:/root/dotfiles \
+  ubuntu:24.04

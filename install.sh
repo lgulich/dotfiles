@@ -1,7 +1,7 @@
 #!/bin/bash
 
 install_dependencies_macos(){
-  python3 -m pip install dotfile-manager
+  python3 -m pip install --break-system-packages dotfile-manager
 }
 
 install_dependencies_linux(){
@@ -10,7 +10,7 @@ install_dependencies_linux(){
   fi
   sudo apt-get update
   sudo apt-get install -y python3 python3-pip git software-properties-common curl wget unzip
-  python3 -m pip install dotfile-manager
+  python3 -m pip install --break-system-packages dotfile-manager
   export PATH="~/.local/bin:$PATH"
 }
 

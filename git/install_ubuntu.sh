@@ -3,4 +3,4 @@
 set -e
 
 sudo apt-get install git
-brew install diff-so-fancy
+/home/linuxbrew/.linuxbrew/bin/brew install diff-so-fancy

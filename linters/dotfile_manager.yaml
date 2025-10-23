@@ -1,3 +1,6 @@
+requires:
+  - brew
+
 install:
   ubuntu:
     - install_ubuntu.sh
