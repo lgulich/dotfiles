@@ -23,3 +23,5 @@ source:
 bin:
   - helpers/interactive_select.sh
   - helpers/osmo.sh
+  - helpers/upload_to_artifactory.sh
+

@@ -5,8 +5,9 @@ set -e
 packages=(
     cmake \
     curl \
-    wget \
+    fzf \
     the_silver_searcher \
+    wget
 )
 
 brew install ${packages} || brew upgrade ${packages}

@@ -1,5 +1,6 @@
 requires:
   - brew
+  - system_installation
 
 install:
   ubuntu:

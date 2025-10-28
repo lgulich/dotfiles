@@ -67,7 +67,7 @@ export OPENSSL_ROOT_DIR=/usr/local/opt/openssl@1.1
 source "${DOTFILES:?}"/generated/sources.sh
 
 # Load fzf fuzzyfinder.
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 export FZF_DEFAULT_COMMAND='fd --type f --hidden'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
@@ -107,7 +107,12 @@ setopt HIST_NO_STORE         # Don't store history commands
 setopt HIST_REDUCE_BLANKS    # Remove superfluous blanks from each command line being added to the history.
 HIST_STAMPS="yyyy-mm-dd"
 
+# Setup brew.
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Autocomplete setup
+source <(jira completion zsh)
 eval "$(atuin init zsh --disable-up-arrow)"
+
 # Has to follow after atuin init.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
