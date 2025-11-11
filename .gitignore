@@ -3,3 +3,4 @@ vim/vim_plug
 .DS_Store
 generated/
 *.add.spl
+*.pyc

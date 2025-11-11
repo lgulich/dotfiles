@@ -20,7 +20,8 @@ import subprocess
 import sys
 import uuid
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+
+from git_hosting_client import GitHostingClient, GitLabClient
 
 # Try to import argcomplete for shell completion
 try:
@@ -139,7 +140,7 @@ def get_branch_name(change_id: str) -> str:
     return f"{user_name}/stack-{change_id}"
 
 
-def load_mapping(path: Path) -> Dict[str, Any]:
+def load_mapping(path: Path) -> dict[str, any]:
     """
     Load the Change-Id to MR mapping from file.
     
@@ -159,7 +160,7 @@ def load_mapping(path: Path) -> Dict[str, Any]:
         return {}
 
 
-def save_mapping(path: Path, data: Dict[str, Any]) -> None:
+def save_mapping(path: Path, data: dict[str, any]) -> None:
     """
     Save the Change-Id to MR mapping to file.
     
@@ -200,25 +201,28 @@ def add_change_id_to_message(message: str, change_id: str) -> str:
     return f"{message}Change-Id: {change_id}"
 
 
-def build_mr_chain(commits: List[Dict[str, Any]], base_branch: str) -> List[Dict[str, Any]]:
+def build_mr_chain(commits: list[dict[str, any]], base_branch: str) -> list[dict[str, any]]:
     """
     Build MR chain with target branches for each commit.
     
     Args:
         commits: List of commit dicts with 'sha', 'change_id', 'subject'
-        base_branch: The base branch name
+        base_branch: The base branch name (may include origin/ prefix)
         
     Returns:
         List of commits with added 'target_branch' and 'source_branch' fields
     """
     chain = []
     
+    # Strip origin/ prefix for MR target branches (GitLab uses local branch names)
+    target_base_branch = base_branch.replace('origin/', '')
+    
     for i, commit in enumerate(commits):
         commit_copy = commit.copy()
         
         # First commit targets base branch
         if i == 0:
-            commit_copy['target_branch'] = base_branch
+            commit_copy['target_branch'] = target_base_branch
         else:
             # Subsequent commits target previous commit's branch
             prev_change_id = commits[i - 1]['change_id']
@@ -235,24 +239,36 @@ def build_mr_chain(commits: List[Dict[str, Any]], base_branch: str) -> List[Dict
 class GitStackPush:
     """Main class for managing stacked MRs."""
     
-    def __init__(self, dry_run: bool = False, mapping_path: Path | None = None, stack_name: str | None = None):
+    def __init__(self, dry_run: bool = False, mapping_path: Path | None = None, stack_name: str | None = None, client: GitHostingClient | None = None):
         """
         Initialize GitStackPush.
         
         Args:
             dry_run: If True, don't execute any commands
-            mapping_path: Path to mapping file (defaults to ~/.config/stacked-mrs-map.json)
+            mapping_path: Path to mapping file (defaults to ~/.config/stacked-mrs-map.json or GIT_STACK_MAPPING_FILE env var)
             stack_name: Optional stack name to use (if not provided, will be detected or prompted)
+            client: GitHostingClient instance (defaults to GitLabClient)
         """
         self.dry_run = dry_run
         self.stack_name_override = stack_name
         
+        # Set up mapping path with environment variable support
         if mapping_path is None:
-            self.mapping_path = Path.home() / '.config' / 'stacked-mrs-map.json'
+            env_path = os.getenv('GIT_STACK_MAPPING_FILE')
+            if env_path:
+                self.mapping_path = Path(env_path)
+            else:
+                self.mapping_path = Path.home() / '.config' / 'stacked-mrs-map.json'
         else:
             self.mapping_path = mapping_path
         
         self.mapping = load_mapping(self.mapping_path)
+        
+        # Set up client
+        if client is None:
+            self.client = GitLabClient(dry_run=dry_run)
+        else:
+            self.client = client
     
     def _run_git_command(self, args: list[str], check: bool = True) -> str:
         """
@@ -280,39 +296,6 @@ class GitStackPush:
         
         return result.stdout.strip()
     
-    def _run_glab_command(self, args: list[str], check: bool = True) -> str:
-        """
-        Run a glab command and return output.
-        
-        Args:
-            args: Glab command arguments
-            check: Whether to raise exception on error
-            
-        Returns:
-            Command output as string
-        """
-        if self.dry_run:
-            print(f"[DRY-RUN] Would run: glab {' '.join(args)}")
-            return ""
-        
-        try:
-            result = subprocess.run(
-                ['glab'] + args,
-                capture_output=True,
-                text=True,
-                check=False
-            )
-        except FileNotFoundError:
-            print("Error: glab CLI not found. Install from: https://gitlab.com/gitlab-org/cli", file=sys.stderr)
-            sys.exit(1)
-        
-        if check and result.returncode != 0:
-            error_msg = result.stderr.strip() if result.stderr else result.stdout.strip()
-            print(f"Error running glab command: glab {' '.join(args)}", file=sys.stderr)
-            print(f"Error output: {error_msg}", file=sys.stderr)
-            raise subprocess.CalledProcessError(result.returncode, ['glab'] + args, result.stdout, result.stderr)
-        
-        return result.stdout.strip()
     
     def _validate_environment(self) -> None:
         """Validate that required tools and environment are available."""
@@ -322,24 +305,21 @@ class GitStackPush:
         except subprocess.CalledProcessError:
             print("Error: Not in a git repository", file=sys.stderr)
             sys.exit(1)
-        
-        # Check if glab is installed
-        try:
-            subprocess.run(['glab', '--version'], capture_output=True, check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            print("Error: glab CLI not found. Install from: https://gitlab.com/gitlab-org/cli", file=sys.stderr)
-            sys.exit(1)
     
     def _get_commits(self, base_branch: str) -> list[dict[str, any]]:
         """
         Get list of commits between base branch and HEAD.
         
         Args:
-            base_branch: Base branch to compare against
+            base_branch: Base branch to compare against (will use origin/<branch> if not already prefixed)
             
         Returns:
             List of commit dictionaries
         """
+        # Ensure we're using the remote branch
+        if not base_branch.startswith('origin/'):
+            base_branch = f'origin/{base_branch}'
+        
         # Get list of commit SHAs
         try:
             commit_shas = self._run_git_command([
@@ -561,12 +541,8 @@ class GitStackPush:
                     print(f"           Title: {commit['subject']}")
                     print(f"           Source: {source_branch} -> Target: {target_branch}")
                 else:
-                    # Update MR title and description
-                    self._run_glab_command([
-                        'mr', 'update', str(mr_iid),
-                        '--title', commit['subject'],
-                        '--description', commit['message']
-                    ])
+                    # Update MR title
+                    self.client.update_mr(mr_iid, commit['subject'])
                     
                     print(f"  ✓ Updated MR !{mr_iid}: {commit['subject']}")
                     print(f"    {existing_mr['mr_url']}")
@@ -577,39 +553,26 @@ class GitStackPush:
                     print(f"           Title: {commit['subject']}")
                     print(f"           Source: {source_branch} -> Target: {target_branch}")
                 else:
-                    output = self._run_glab_command([
-                        'mr', 'create',
-                        '--source-branch', source_branch,
-                        '--target-branch', target_branch,
-                        '--title', commit['subject'],
-                        '--description', commit['message'],
-                        '--yes'
-                    ])
+                    result = self.client.create_mr(
+                        source_branch=source_branch,
+                        target_branch=target_branch,
+                        title=commit['subject'],
+                        description=commit['message']
+                    )
                     
-                    # Parse MR URL from output
-                    mr_url = None
-                    mr_iid = None
-                    for line in output.split('\n'):
-                        if 'merge_requests' in line and 'http' in line:
-                            mr_url = line.strip()
-                            # Extract IID from URL
-                            match = re.search(r'/merge_requests/(\d+)', mr_url)
-                            if match:
-                                mr_iid = int(match.group(1))
+                    mr_iid = result['mr_iid']
+                    mr_url = result['mr_url']
                     
-                    if mr_iid and mr_url:
-                        # Save to mapping
-                        self.mapping[change_id] = {
-                            'mr_iid': mr_iid,
-                            'mr_url': mr_url,
-                            'project_id': self._get_project_id()
-                        }
-                        save_mapping(self.mapping_path, self.mapping)
-                        
-                        print(f"  ✓ Created MR !{mr_iid}: {commit['subject']}")
-                        print(f"    {mr_url}")
-                    else:
-                        print(f"  ⚠ Created MR but couldn't parse URL from output")
+                    # Save to mapping
+                    self.mapping[change_id] = {
+                        'mr_iid': mr_iid,
+                        'mr_url': mr_url,
+                        'project_id': self._get_project_id()
+                    }
+                    save_mapping(self.mapping_path, self.mapping)
+                    
+                    print(f"  ✓ Created MR !{mr_iid}: {commit['subject']}")
+                    print(f"    {mr_url}")
     
     def _get_project_id(self) -> str:
         """Get the GitLab project ID from git remote."""
@@ -624,7 +587,7 @@ class GitStackPush:
             pass
         return "unknown"
     
-    def process(self, base_branch: str) -> dict[str, any] | None:
+    def push(self, base_branch: str) -> dict[str, any] | None:
         """
         Process commits and create/update stacked MRs.
         
@@ -698,28 +661,8 @@ class GitStackPush:
             mr_iid = mr_info['mr_iid']
             
             try:
-                # Get MR state using glab (parse text output)
-                output = self._run_glab_command(['mr', 'view', str(mr_iid)])
-                
-                # Parse the output to find state
-                state = None
-                for line in output.split('\n'):
-                    if 'state:' in line.lower() or 'status:' in line.lower():
-                        # Extract state from line like "state: merged" or "• State: Merged"
-                        parts = line.split(':', 1)
-                        if len(parts) == 2:
-                            state = parts[1].strip().lower()
-                            break
-                
-                if not state:
-                    # Try to detect from output text
-                    output_lower = output.lower()
-                    if 'merged' in output_lower:
-                        state = 'merged'
-                    elif 'closed' in output_lower:
-                        state = 'closed'
-                    elif 'open' in output_lower:
-                        state = 'open'
+                # Get MR state using client
+                state = self.client.get_mr_state(mr_iid)
                 
                 if state in ['closed', 'merged']:
                     print(f"  MR !{mr_iid} is {state}, removing from mapping")
@@ -729,7 +672,7 @@ class GitStackPush:
                     print(f"  MR !{mr_iid} is {state}, keeping in mapping")
                 else:
                     print(f"  Warning: Could not determine state for MR !{mr_iid}, keeping in mapping")
-            except subprocess.CalledProcessError as e:
+            except (subprocess.CalledProcessError, ValueError) as e:
                 print(f"  Warning: Could not check MR !{mr_iid}, keeping in mapping")
         
         # Remove closed MRs from mapping
@@ -767,11 +710,11 @@ class GitStackPush:
                         print(f"[DRY-RUN] Would close MR !{mr_iid} for Change-Id {commit['change_id']}")
                     else:
                         try:
-                            self._run_glab_command(['mr', 'close', str(mr_iid)])
+                            self.client.close_mr(mr_iid)
                             print(f"  Closed MR !{mr_iid} for Change-Id {commit['change_id']}")
                             del self.mapping[commit['change_id']]
                             closed_count += 1
-                        except subprocess.CalledProcessError:
+                        except (subprocess.CalledProcessError, ValueError):
                             print(f"  Warning: Could not close MR !{mr_iid}")
         
         if closed_count > 0 and not self.dry_run:
@@ -798,7 +741,7 @@ class GitStackPush:
         if not self.dry_run:
             print("\n✓ Reindexing complete! Run 'git_stack.py push' to create new MRs")
     
-    def list_stacks(self) -> None:
+    def list(self) -> None:
         """List all stacks with their branches and MRs."""
         if not self.mapping:
             print("No stacks found (mapping file is empty)")
@@ -845,7 +788,7 @@ class GitStackPush:
         
         print(f"\n✓ Found {len(stacks)} stack(s)")
     
-    def checkout_stack(self, stack_name: str) -> None:
+    def checkout(self, stack_name: str) -> None:
         """Checkout the latest branch from a stack."""
         if not self.mapping:
             print("No stacks found (mapping file is empty)")
@@ -896,7 +839,7 @@ class GitStackPush:
                 print(f"\nError: Could not checkout branch {last_item['branch']}", file=sys.stderr)
                 print(f"You may need to fetch it first: git fetch origin {last_item['branch']}", file=sys.stderr)
     
-    def remove_stack(self, stack_name: str) -> None:
+    def remove(self, stack_name: str) -> None:
         """Remove all branches and close all MRs for a stack."""
         if not self.mapping:
             print("No stacks found (mapping file is empty)")
@@ -943,10 +886,10 @@ class GitStackPush:
                 print(f"[DRY-RUN] Would close MR !{item['mr_iid']}")
             else:
                 try:
-                    self._run_glab_command(['mr', 'close', str(item['mr_iid'])])
+                    self.client.close_mr(item['mr_iid'])
                     print(f"  Closed MR !{item['mr_iid']}")
                     closed_count += 1
-                except subprocess.CalledProcessError:
+                except (subprocess.CalledProcessError, ValueError):
                     print(f"  Warning: Could not close MR !{item['mr_iid']}")
         
         # Delete branches
@@ -977,12 +920,88 @@ class GitStackPush:
             print(f"  Deleted {deleted_count} branch(es)")
         else:
             print(f"\n[DRY-RUN] Would remove {len(stack_items)} items from mapping")
+    
+    def show(self) -> None:
+        """Show information about the current commit's stack."""
+        # Get current commit SHA
+        try:
+            current_sha = self._run_git_command(['rev-parse', 'HEAD']).strip()
+        except subprocess.CalledProcessError:
+            print("Error: Could not get current commit", file=sys.stderr)
+            return
+        
+        # Get current commit message
+        try:
+            commit_message = self._run_git_command(['log', '-1', '--format=%B', current_sha])
+            commit_subject = self._run_git_command(['log', '-1', '--format=%s', current_sha])
+        except subprocess.CalledProcessError:
+            print("Error: Could not get commit message", file=sys.stderr)
+            return
+        
+        # Extract Change-ID from commit message
+        change_id = extract_change_id(commit_message)
+        
+        if not change_id:
+            print("\n❌ Current commit has no Change-ID")
+            print(f"   Commit: {current_sha[:8]}")
+            print(f"   Subject: {commit_subject}")
+            print("\nRun 'git_stack.py push' to add a Change-ID and create an MR")
+            return
+        
+        # Extract stack name and position
+        stack_name = extract_stack_name(change_id)
+        parts = change_id.split('-')
+        position = int(parts[-1]) if parts and parts[-1].isdigit() else None
+        
+        print(f"\n📍 Current Commit")
+        print(f"   SHA: {current_sha[:8]}")
+        print(f"   Subject: {commit_subject}")
+        print(f"   Change-ID: {change_id}")
+        
+        if stack_name:
+            print(f"\n📚 Stack: {stack_name}")
+            if position is not None:
+                print(f"   Position: {position}")
+        
+        # Check if there's an MR for this commit
+        if change_id in self.mapping:
+            mr_info = self.mapping[change_id]
+            print(f"\n🔗 Merge Request")
+            print(f"   MR: !{mr_info['mr_iid']}")
+            print(f"   URL: {mr_info['mr_url']}")
+            print(f"   Branch: {get_branch_name(change_id)}")
+        else:
+            print(f"\n❌ No MR found for this commit")
+            print(f"   Run 'git_stack.py push' to create an MR")
+        
+        # Show other commits in the same stack
+        if stack_name and self.mapping:
+            stack_commits = []
+            for cid, mr_info in self.mapping.items():
+                sn = extract_stack_name(cid)
+                if sn == stack_name:
+                    parts = cid.split('-')
+                    pos = int(parts[-1]) if parts and parts[-1].isdigit() else 0
+                    stack_commits.append({
+                        'change_id': cid,
+                        'position': pos,
+                        'mr_iid': mr_info['mr_iid'],
+                        'is_current': cid == change_id
+                    })
+            
+            if len(stack_commits) > 1:
+                stack_commits.sort(key=lambda x: x['position'])
+                print(f"\n📋 Other commits in '{stack_name}' stack:")
+                for sc in stack_commits:
+                    if not sc['is_current']:
+                        marker = "  " if sc['position'] < (position or 0) else "  "
+                        print(f"   {marker}{sc['position']}. !{sc['mr_iid']}")
 
 
 def cmd_push(args):
     """Handle push subcommand."""
     stack = GitStackPush(dry_run=args.dry_run, stack_name=args.stack_name)
-    stack.process(base_branch=args.base)
+    stack.push(base_branch=args.base)
 
 
 def cmd_clean(args):
@@ -1000,19 +1019,25 @@ def cmd_reindex(args):
 def cmd_list(args):
     """Handle list subcommand."""
     stack = GitStackPush()
-    stack.list_stacks()
+    stack.list()
 
 
 def cmd_checkout(args):
     """Handle checkout subcommand."""
     stack = GitStackPush(dry_run=args.dry_run)
-    stack.checkout_stack(stack_name=args.stack_name)
+    stack.checkout(stack_name=args.stack_name)
 
 
-def cmd_rm(args):
-    """Handle rm subcommand."""
+def cmd_remove(args):
+    """Handle remove subcommand."""
     stack = GitStackPush(dry_run=args.dry_run)
-    stack.remove_stack(stack_name=args.stack_name)
+    stack.remove(stack_name=args.stack_name)
+
+
+def cmd_show(args):
+    """Handle show subcommand."""
+    stack = GitStackPush()
+    stack.show()
 
 
 
@@ -1042,7 +1067,7 @@ Examples:
     push_parser.add_argument(
         '--base',
         default='main',
-        help='Base branch to stack on (default: main)'
+        help='Base branch to stack on (default: origin/main)'
     )
     push_parser.add_argument(
         '--stack-name',
@@ -1090,7 +1115,7 @@ Examples:
     reindex_parser.add_argument(
         '--base',
         default='main',
-        help='Base branch to stack on (default: main)'
+        help='Base branch to stack on (default: origin/main)'
     )
     reindex_parser.add_argument(
         '--stack-name',
@@ -1139,26 +1164,38 @@ Examples:
     checkout_parser.set_defaults(func=cmd_checkout)
     
     # Remove subcommand
-    rm_parser = subparsers.add_parser(
-        'rm',
+    remove_parser = subparsers.add_parser(
+        'remove',
         help='Remove all branches and close all MRs for a stack',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s rm myfeature         # Remove 'myfeature' stack
-  %(prog)s rm myfeature --dry-run  # Show what would be done
+  %(prog)s remove myfeature         # Remove 'myfeature' stack
+  %(prog)s remove myfeature --dry-run  # Show what would be done
         """
     )
-    rm_parser.add_argument(
+    remove_parser.add_argument(
         'stack_name',
         help='Name of the stack to remove'
     ).completer = StackNameCompleter() if ARGCOMPLETE_AVAILABLE else None
-    rm_parser.add_argument(
+    remove_parser.add_argument(
         '--dry-run',
         action='store_true',
         help='Show what would be done without executing'
     )
-    rm_parser.set_defaults(func=cmd_rm)
+    remove_parser.set_defaults(func=cmd_remove)
+    
+    # Show subcommand
+    show_parser = subparsers.add_parser(
+        'show',
+        help='Show information about the current commit',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s show           # Show current commit's stack and MR info
+        """
+    )
+    show_parser.set_defaults(func=cmd_show)
     
     # Enable argcomplete if available
     if ARGCOMPLETE_AVAILABLE:
