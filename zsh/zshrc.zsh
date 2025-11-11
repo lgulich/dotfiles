@@ -56,6 +56,7 @@ export PATH="/usr/lib/ccache:${PATH}" # ccache for faster builds.
 export PATH="/usr/NX/bin/:${PATH}" # For nomachine.
 export PATH="${DOTFILES:?}/generated/bin:${PATH}"
 export PATH="$PATH:/home/lgulich/go/bin"
+export PATH="$PATH:$HOME/.local/bin"
 export VISUAL=nvim
 export EDITOR=nvim
 export BROWSER=brave-browser
@@ -113,6 +114,11 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 # Autocomplete setup
 source <(jira completion zsh)
 eval "$(atuin init zsh --disable-up-arrow)"
+
+# git_stack.py autocomplete (requires: pip install argcomplete)
+if command -v register-python-argcomplete >/dev/null 2>&1; then
+  eval "$(register-python-argcomplete git_stack.py)"
+fi
 
 # Has to follow after atuin init.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)

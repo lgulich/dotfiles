@@ -20,3 +20,4 @@ bin:
   - helpers/git_publish_branch.sh
   - helpers/git_reset_to_origin.sh
   - helpers/git_select_commit.sh
+  - helpers/git_stack.py

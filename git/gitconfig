@@ -21,17 +21,18 @@
 	ignore = update-index --assume-unchanged
 	last = log -1 HEAD
 	publish = "! git_publish_branch.sh"
+	stack = "! git_stack.py"
 	stop-ignore = update-index --no-assume-unchanged
 	uncommit = reset --soft HEAD~1 --mixed
 	unstage = reset HEAD --
 	url = ! bash -c 'git config --get remote.origin.url | sed -E "s/.+:\\(.+\\)\\.git$/https:\\\\/\\\\/github\\\\.com\\\\/\\\\1/g"'
-  append-to = "! git_append_to.sh"
-  branch = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
-  reset-to-main = reset --hard origin/main
-  reset-to-master = reset --hard origin/master
-  reset-to-origin = "! git_reset_to_origin.sh"
-  skip-changes = git update-index --skip-worktree
-  unskip-changes = git update-index --no-skip-worktree
+	append-to = "! git_append_to.sh"
+	branch = branch --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(contents:subject) %(color:green)(%(committerdate:relative)) [%(authorname)]' --sort=-committerdate
+	reset-to-main = reset --hard origin/main
+	reset-to-master = reset --hard origin/master
+	reset-to-origin = "! git_reset_to_origin.sh"
+	skip-changes = git update-index --skip-worktree
+	unskip-changes = git update-index --no-skip-worktree
 
 
 [core]
