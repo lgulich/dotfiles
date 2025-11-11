@@ -669,6 +669,76 @@ class GitStackPush:
             for subject, error in errors:
                 print(f"  ⚠️  Failed to process MR for {subject}: {error}")
     
+    def _set_mr_dependencies(self, chain: list[dict[str, any]]) -> None:
+        """
+        Set MR dependencies so each MR depends on the previous one in the chain.
+        Uses parallel execution for better performance.
+        
+        Args:
+            chain: List of commits with target/source branches
+        """
+        print("\nSetting MR dependencies...")
+        
+        if self.dry_run:
+            # Dry run - just print what would happen
+            for i, commit in enumerate(chain):
+                if i == 0:
+                    continue  # First MR has no dependencies
+                
+                change_id = commit['change_id']
+                if change_id not in self.mapping:
+                    continue
+                
+                prev_change_id = chain[i - 1]['change_id']
+                if prev_change_id not in self.mapping:
+                    continue
+                
+                mr_iid = self.mapping[change_id]['mr_iid']
+                prev_mr_iid = self.mapping[prev_change_id]['mr_iid']
+                print(f"[DRY-RUN] Would set MR !{mr_iid} to depend on !{prev_mr_iid}")
+        else:
+            # Helper function to set dependency for a single MR
+            def set_dependency(i, commit):
+                if i == 0:
+                    return None  # First MR has no dependencies
+                
+                change_id = commit['change_id']
+                if change_id not in self.mapping:
+                    return None
+                
+                prev_change_id = chain[i - 1]['change_id']
+                if prev_change_id not in self.mapping:
+                    return None
+                
+                mr_iid = self.mapping[change_id]['mr_iid']
+                prev_mr_iid = self.mapping[prev_change_id]['mr_iid']
+                
+                try:
+                    self.client.set_mr_dependencies(mr_iid, [prev_mr_iid])
+                    return ('success', mr_iid, prev_mr_iid)
+                except Exception as e:
+                    return ('error', mr_iid, prev_mr_iid, str(e))
+            
+            # Process all dependencies in parallel
+            with ThreadPoolExecutor(max_workers=min(len(chain), 4)) as executor:
+                futures = {executor.submit(set_dependency, i, commit): (i, commit) 
+                          for i, commit in enumerate(chain)}
+                
+                for future in as_completed(futures):
+                    result = future.result()
+                    if result is None:
+                        continue
+                    
+                    if result[0] == 'success':
+                        mr_iid = result[1]
+                        prev_mr_iid = result[2]
+                        print(f"  ✓ Set MR !{mr_iid} to depend on !{prev_mr_iid}")
+                    else:
+                        mr_iid = result[1]
+                        prev_mr_iid = result[2]
+                        error = result[3]
+                        print(f"  ⚠️  Failed to set dependency for MR !{mr_iid} on !{prev_mr_iid}: {error}")
+    
     def _update_mr_stack_links(self, chain: list[dict[str, any]]) -> None:
         """
         Update MR comments with stack chain links.
@@ -805,6 +875,9 @@ class GitStackPush:
         
         # Create/update MRs
         self._create_or_update_mrs(chain)
+        
+        # Set MR dependencies
+        self._set_mr_dependencies(chain)
         
         # Update MR descriptions with stack links
         self._update_mr_stack_links(chain)

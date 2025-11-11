@@ -317,6 +317,9 @@ class TestPushBasicStack(GitStackTestCase):
                     'description': 'Third commit.*',
                 },
             },
+            # MR dependencies - MR 2 depends on MR 1, MR 3 depends on MR 2
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': 2, 'blocking_mr_iids': [1]}},
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': 3, 'blocking_mr_iids': [2]}},
             # Stack link updates - get notes, add notes for each MR
             {'operation': 'get_mr_notes', 'args': {'mr_iid': 1}},
             {'operation': 'add_mr_note', 'args': {'mr_iid': 1, 'body': '.*git-stack-chain.*'}},
@@ -433,6 +436,9 @@ class TestPushWithAmend(GitStackTestCase):
                     'title': 'Third commit',
                 },
             },
+            # MR dependencies - MR 2 depends on MR 1, MR 3 depends on MR 2
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': mr_iid2, 'blocking_mr_iids': [mr_iid1]}},
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': mr_iid3, 'blocking_mr_iids': [mr_iid2]}},
             # Stack link updates - get notes and update existing ones
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},
             {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
@@ -529,6 +535,9 @@ class TestPushAddCommit(GitStackTestCase):
                     'description': 'Third commit.*',
                 },
             },
+            # MR dependencies - MR 2 depends on MR 1, new MR 3 depends on MR 2
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': mr_iid2, 'blocking_mr_iids': [mr_iid1]}},
+            {'operation': 'set_mr_dependencies', 'args': {'mr_iid': '.*', 'blocking_mr_iids': [mr_iid2]}},
             # Stack link updates for all 3 MRs
             # First 2 MRs have existing notes from first push - update them
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},

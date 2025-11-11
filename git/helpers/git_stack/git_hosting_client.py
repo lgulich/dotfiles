@@ -102,6 +102,19 @@ class GitHostingClient(ABC):
             body: New comment body text
         """
         pass
+    
+    @abstractmethod
+    def set_mr_dependencies(self, mr_iid: int, blocking_mr_iids: list[int]) -> None:
+        """
+        Set merge/pull request dependencies (blocking MRs).
+        
+        Args:
+            mr_iid: MR/PR ID
+            blocking_mr_iids: List of MR IDs that must be merged before this one
+        """
+        pass
+
+
 class GitLabClient(GitHostingClient):
     """GitLab client using glab CLI."""
     
@@ -251,6 +264,21 @@ class GitLabClient(GitHostingClient):
             ]
         except Exception:
             return []
+    
+    def set_mr_dependencies(self, mr_iid: int, blocking_mr_iids: list[int]) -> None:
+        """Set GitLab merge request dependencies."""
+        if not blocking_mr_iids:
+            return
+        
+        # Convert list to comma-separated string
+        blocking_mr_iids_str = ','.join(str(iid) for iid in blocking_mr_iids)
+        
+        # Use GitLab API to set blocking merge requests
+        self._run_glab_command([
+            'api', '-X', 'PUT',
+            f'projects/:id/merge_requests/{mr_iid}',
+            '-f', f'blocking_merge_request_references={blocking_mr_iids_str}'
+        ])
     
 class MockGitHostingClient(GitHostingClient):
     """Mock client for testing that stores operations in JSON files."""
@@ -474,6 +502,29 @@ class MockGitHostingClient(GitHostingClient):
         
         # Return notes (or empty list if not found)
         return self.mrs[mr_key].get('notes', [])
+    
+    def set_mr_dependencies(self, mr_iid: int, blocking_mr_iids: list[int]) -> None:
+        """Set mock merge request dependencies."""
+        mr_key = str(mr_iid)
+        if mr_key not in self.mrs:
+            raise ValueError(f"MR !{mr_iid} not found")
+        
+        if 'blocking_mr_iids' not in self.mrs[mr_key]:
+            self.mrs[mr_key]['blocking_mr_iids'] = []
+        
+        self.mrs[mr_key]['blocking_mr_iids'] = blocking_mr_iids
+        
+        # Record operation
+        self.operations.append({
+            'operation': 'set_mr_dependencies',
+            'args': {
+                'mr_iid': mr_iid,
+                'blocking_mr_iids': blocking_mr_iids
+            }
+        })
+        
+        self._save_database()
+        self._save_operations()
     
     def set_mr_state(self, mr_iid: int, state: str) -> None:
         """
