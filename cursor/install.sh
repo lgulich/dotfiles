@@ -65,11 +65,18 @@ fi
 echo "Installing VSIX extension ${ext_name} v${ext_version}..."
 ext_path=$(echo "$ext_name" | sed 's/\./\//')
 curl -fsSL -o "$vsix_path" "https://open-vsx.org/api/${ext_path}/${ext_version}/file/${ext_name}-${ext_version}.vsix"
-cursor --install-extension "$vsix_path" || {
+
+# Check if running as root and add necessary flags
+cursor_flags=""
+if [[ $EUID -eq 0 ]]; then
+  cursor_flags="--no-sandbox --user-data-dir=/tmp/cursor-root"
+fi
+
+cursor $cursor_flags --install-extension "$vsix_path" || {
   echo "error: failed to install extension"
   exit 1
 }
 
 echo "Installation complete!"
-cursor --version
+cursor $cursor_flags --version
 
