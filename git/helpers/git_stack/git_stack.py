@@ -201,6 +201,53 @@ def add_change_id_to_message(message: str, change_id: str) -> str:
     return f"{message}Change-Id: {change_id}"
 
 
+def build_stack_chain_description(chain: list[dict[str, any]], current_index: int, mr_mapping: dict[str, any]) -> str:
+    """
+    Build a markdown description section showing the stack chain.
+    
+    Args:
+        chain: List of commits in the chain
+        current_index: Index of the current commit in the chain
+        mr_mapping: Mapping of change_id to MR info
+        
+    Returns:
+        Markdown string with stack chain information
+    """
+    lines = [
+        "<!-- git-stack-chain -->",
+        "",
+        "## 📚 Stacked MRs",
+        "",
+    ]
+    
+    for i, commit in enumerate(chain):
+        change_id = commit['change_id']
+        
+        if change_id not in mr_mapping:
+            continue
+            
+        mr_info = mr_mapping[change_id]
+        mr_iid = mr_info['mr_iid']
+        mr_url = mr_info['mr_url']
+        
+        # Add visual indicator for current MR
+        if i == current_index:
+            prefix = "➡️  **"
+            suffix = "** (this MR)"
+        else:
+            prefix = "  - "
+            suffix = ""
+        
+        # Format: - [!123](url) Title
+        lines.append(f"{prefix}[!{mr_iid}]({mr_url}) {commit['subject']}{suffix}")
+    
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    
+    return "\n".join(lines)
+
+
 def build_mr_chain(commits: list[dict[str, any]], base_branch: str) -> list[dict[str, any]]:
     """
     Build MR chain with target branches for each commit.
@@ -574,6 +621,46 @@ class GitStackPush:
                     print(f"  ✓ Created MR !{mr_iid}: {commit['subject']}")
                     print(f"    {mr_url}")
     
+    def _update_mr_stack_links(self, chain: list[dict[str, any]]) -> None:
+        """
+        Update MR comments with stack chain links.
+        
+        Creates or updates a non-resolvable comment containing links to all MRs
+        in the current stack.
+        
+        Args:
+            chain: List of commits with target/source branches
+        """
+        print("\nUpdating MR stack links...")
+        
+        for i, commit in enumerate(chain):
+            change_id = commit['change_id']
+            
+            if change_id not in self.mapping:
+                continue
+            
+            mr_iid = self.mapping[change_id]['mr_iid']
+            
+            if self.dry_run:
+                print(f"[DRY-RUN] Would update stack links comment for MR !{mr_iid}")
+                continue
+            
+            # Build stack chain description
+            stack_description = build_stack_chain_description(chain, i, self.mapping)
+            
+            try:
+                # Get existing notes and delete old stack chain comments
+                existing_notes = self.client.get_mr_notes(mr_iid)
+                for note in existing_notes:
+                    if '<!-- git-stack-chain -->' in note['body']:
+                        self.client.delete_mr_note(mr_iid, note['id'])
+                
+                # Create new stack chain comment
+                self.client.add_mr_note(mr_iid, stack_description)
+                print(f"  ✓ Updated stack links comment for MR !{mr_iid}")
+            except Exception as e:
+                print(f"  ⚠️  Failed to update stack links comment for MR !{mr_iid}: {e}")
+    
     def _get_project_id(self) -> str:
         """Get the GitLab project ID from git remote."""
         try:
@@ -641,6 +728,9 @@ class GitStackPush:
         
         # Create/update MRs
         self._create_or_update_mrs(chain)
+        
+        # Update MR descriptions with stack links
+        self._update_mr_stack_links(chain)
         
         print("\n✓ Stack processing complete!")
         return None
@@ -996,6 +1086,95 @@ class GitStackPush:
                     if not sc['is_current']:
                         marker = "  " if sc['position'] < (position or 0) else "  "
                         print(f"   {marker}{sc['position']}. !{sc['mr_iid']}")
+    
+    def status(self, base_branch: str) -> None:
+        """Show status of all commits in the current stack."""
+        # Get commits
+        commits = self._get_commits(base_branch)
+        
+        if not commits:
+            print(f"No commits found between {base_branch} and HEAD")
+            return
+        
+        # Add Change-IDs if missing
+        commits = self._add_change_ids_to_commits(commits)
+        
+        # Get stack name from first commit
+        if not commits[0]['change_id']:
+            print("No Change-IDs found. Run 'git_stack.py push' first.")
+            return
+        
+        stack_name = extract_stack_name(commits[0]['change_id'])
+        
+        print(f"\n📚 Stack: {stack_name}")
+        print(f"   Base: {base_branch}")
+        print(f"   Commits: {len(commits)}")
+        print()
+        
+        # Check status of each commit
+        for i, commit in enumerate(commits, 1):
+            change_id = commit['change_id']
+            branch_name = get_branch_name(change_id)
+            
+            # Check if MR exists
+            if change_id not in self.mapping:
+                status_icon = "❌"
+                status_text = "No MR"
+                detail_text = None
+            else:
+                # Check if local commit matches remote branch
+                try:
+                    # Get remote branch SHA
+                    remote_sha = self._run_git_command(
+                        ['rev-parse', f'origin/{branch_name}'],
+                        check=False
+                    ).strip()
+                    
+                    if not remote_sha:
+                        status_icon = "⚠️ "
+                        status_text = "Not pushed"
+                        detail_text = None
+                    elif remote_sha == commit['sha']:
+                        status_icon = "✓"
+                        status_text = "Up-to-date"
+                        detail_text = None
+                    else:
+                        status_icon = "⚠️ "
+                        status_text = "Out of sync"
+                        # Get more details about what's different
+                        try:
+                            # Check if local is ahead, behind, or diverged
+                            ahead_behind = self._run_git_command(
+                                ['rev-list', '--left-right', '--count', 
+                                 f'{remote_sha}...{commit["sha"]}'],
+                                check=False
+                            ).strip()
+                            
+                            if ahead_behind:
+                                behind, ahead = ahead_behind.split()
+                                if ahead != '0' and behind != '0':
+                                    detail_text = f"Local has {ahead} commit(s) ahead, {behind} behind remote"
+                                elif ahead != '0':
+                                    detail_text = f"Local has {ahead} commit(s) not pushed to remote"
+                                elif behind != '0':
+                                    detail_text = f"Remote has {behind} commit(s) not in local"
+                                else:
+                                    detail_text = f"Local: {commit['sha'][:8]}, Remote: {remote_sha[:8]}"
+                            else:
+                                detail_text = f"Local: {commit['sha'][:8]}, Remote: {remote_sha[:8]}"
+                        except subprocess.CalledProcessError:
+                            detail_text = f"Local: {commit['sha'][:8]}, Remote: {remote_sha[:8]}"
+                except subprocess.CalledProcessError:
+                    status_icon = "⚠️ "
+                    status_text = "Not pushed"
+                    detail_text = None
+            
+            # Print commit info
+            mr_text = f"!{self.mapping[change_id]['mr_iid']}" if change_id in self.mapping else "no MR"
+            print(f"  {status_icon} {i}. {commit['subject'][:60]}")
+            print(f"      SHA: {commit['sha'][:8]}  MR: {mr_text}  Status: {status_text}")
+            if detail_text:
+                print(f"      {detail_text}")
 
 
 def cmd_push(args):
@@ -1040,6 +1219,10 @@ def cmd_show(args):
     stack.show()
 
 
+def cmd_status(args):
+    """Handle status subcommand."""
+    stack = GitStackPush()
+    stack.status(base_branch=args.base)
 
 
 def main():
@@ -1196,6 +1379,24 @@ Examples:
         """
     )
     show_parser.set_defaults(func=cmd_show)
+    
+    # Status subcommand
+    status_parser = subparsers.add_parser(
+        'status',
+        help='Show status of all commits in the current stack',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s status                    # Show status of commits on current stack
+  %(prog)s status --base develop     # Show status with develop as base
+        """
+    )
+    status_parser.add_argument(
+        '--base',
+        default='main',
+        help='Base branch to compare against (default: origin/main)'
+    )
+    status_parser.set_defaults(func=cmd_status)
     
     # Enable argcomplete if available
     if ARGCOMPLETE_AVAILABLE:

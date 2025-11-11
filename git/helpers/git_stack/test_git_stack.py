@@ -269,6 +269,13 @@ class TestPushBasicStack(GitStackTestCase):
                     'description': 'Third commit.*',
                 },
             },
+            # Stack link updates - get notes, add notes for each MR
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': 1}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': 1, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': 2}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': 2, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': 3}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': 3, 'body': '.*git-stack-chain.*'}},
         ]
         
         self.check_operations(operations, expected_operations)
@@ -378,6 +385,16 @@ class TestPushWithAmend(GitStackTestCase):
                     'title': 'Third commit',
                 },
             },
+            # Stack link updates - get notes, delete old notes if any, add new notes
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},
+            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*'}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid1, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid2}},
+            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*'}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid2, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid3}},
+            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid3, 'note_id': '.*'}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid3, 'body': '.*git-stack-chain.*'}},
         ]
         
         self.check_operations(operations, expected_operations)
@@ -442,7 +459,7 @@ class TestPushAddCommit(GitStackTestCase):
         # Read operations
         operations = self.read_operations()
         
-        # Verify operations: 2 updates and 1 create
+        # Verify operations: 2 updates and 1 create, plus stack link updates
         expected_operations = [
             {
                 'operation': 'update_mr',
@@ -467,6 +484,17 @@ class TestPushAddCommit(GitStackTestCase):
                     'description': 'Third commit.*',
                 },
             },
+            # Stack link updates for all 3 MRs
+            # First 2 MRs have existing notes from first push
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},
+            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*'}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid1, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid2}},
+            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*'}},
+            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid2, 'body': '.*git-stack-chain.*'}},
+            # Third MR is new, no existing notes to delete
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': '.*'}},  # MR IID not known yet
+            {'operation': 'add_mr_note', 'args': {'mr_iid': '.*', 'body': '.*git-stack-chain.*'}},
         ]
         
         self.check_operations(operations, expected_operations)
