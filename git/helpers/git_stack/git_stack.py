@@ -19,6 +19,7 @@ import re
 import subprocess
 import sys
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from git_hosting_client import GitHostingClient, GitLabClient
@@ -232,7 +233,10 @@ def build_stack_chain_description(chain: list[dict[str, any]], current_index: in
         
         # Add visual indicator for current MR
         if i == current_index:
-            prefix = "➡️  **"
+            # Add blank line before current MR for visual separation
+            if i > 0:
+                lines.append("")
+            prefix = "  - ➡️  **"
             suffix = "** (this MR)"
         else:
             prefix = "  - "
@@ -240,6 +244,10 @@ def build_stack_chain_description(chain: list[dict[str, any]], current_index: in
         
         # Format: - [!123](url) Title
         lines.append(f"{prefix}[!{mr_iid}]({mr_url}) {commit['subject']}{suffix}")
+        
+        # Add blank line after current MR for visual separation
+        if i == current_index and i < len(chain) - 1:
+            lines.append("")
     
     lines.append("")
     lines.append("---")
@@ -530,6 +538,7 @@ class GitStackPush:
     def _create_or_update_branches(self, chain: list[dict[str, any]]) -> None:
         """
         Create or update branches for each commit in the chain.
+        Batches all pushes into a single git push command for efficiency.
         
         Args:
             chain: List of commits with target/source branches
@@ -542,88 +551,128 @@ class GitStackPush:
         except subprocess.CalledProcessError:
             current_branch = None  # Detached HEAD
         
-        for commit in chain:
-            branch_name = commit['source_branch']
-            
-            if self.dry_run:
+        if self.dry_run:
+            for commit in chain:
+                branch_name = commit['source_branch']
                 print(f"[DRY-RUN] Would create/update branch: {branch_name} at {commit['sha'][:8]}")
-                print(f"[DRY-RUN] Would push: git push -f origin {commit['sha']}:refs/heads/{branch_name}")
-            else:
-                # If we're currently on this branch, we can't force update it
-                # Instead, we'll just push directly (the branch pointer will be updated by the push)
-                if current_branch == branch_name:
-                    # Just push - the remote will be updated
-                    self._run_git_command(['push', '-f', 'origin', f"{commit['sha']}:refs/heads/{branch_name}"])
-                else:
-                    # Create/update local branch at commit
+            
+            # Show the batched push command
+            refspecs = [f"{commit['sha']}:refs/heads/{commit['source_branch']}" for commit in chain]
+            print(f"[DRY-RUN] Would push: git push -f origin {' '.join(refspecs)}")
+        else:
+            # Create/update all local branches first
+            for commit in chain:
+                branch_name = commit['source_branch']
+                # Skip if we're currently on this branch (can't force update it)
+                if current_branch != branch_name:
                     self._run_git_command(['branch', '-f', branch_name, commit['sha']])
-                    # Push to remote (use full refspec when pushing a commit SHA)
-                    self._run_git_command(['push', '-f', 'origin', f"{commit['sha']}:refs/heads/{branch_name}"])
-                
-                print(f"  ✓ {branch_name} at {commit['sha'][:8]}")
+            
+            # Batch push all branches in a single command
+            refspecs = [f"{commit['sha']}:refs/heads/{commit['source_branch']}" for commit in chain]
+            push_cmd = ['push', '-f', 'origin'] + refspecs
+            self._run_git_command(push_cmd)
+            
+            # Print success messages
+            for commit in chain:
+                print(f"  ✓ {commit['source_branch']} at {commit['sha'][:8]}")
     
     def _create_or_update_mrs(self, chain: list[dict[str, any]]) -> None:
         """
         Create or update MRs for each commit in the chain.
+        Uses parallel execution for better performance.
         
         Args:
             chain: List of commits with target/source branches
         """
         print("\nCreating/updating MRs...")
         
-        for commit in chain:
-            change_id = commit['change_id']
-            source_branch = commit['source_branch']
-            target_branch = commit['target_branch']
-            
-            # Check if MR already exists for this Change-Id
-            existing_mr = self.mapping.get(change_id)
-            
-            if existing_mr:
-                # Update existing MR
-                mr_iid = existing_mr['mr_iid']
+        if self.dry_run:
+            # Dry run - just print what would happen
+            for commit in chain:
+                change_id = commit['change_id']
+                source_branch = commit['source_branch']
+                target_branch = commit['target_branch']
+                existing_mr = self.mapping.get(change_id)
                 
-                if self.dry_run:
+                if existing_mr:
+                    mr_iid = existing_mr['mr_iid']
                     print(f"[DRY-RUN] Would update MR !{mr_iid}")
                     print(f"           Title: {commit['subject']}")
                     print(f"           Source: {source_branch} -> Target: {target_branch}")
                 else:
-                    # Update MR title
-                    self.client.update_mr(mr_iid, commit['subject'])
-                    
-                    print(f"  ✓ Updated MR !{mr_iid}: {commit['subject']}")
-                    print(f"    {existing_mr['mr_url']}")
-            else:
-                # Create new MR
-                if self.dry_run:
                     print(f"[DRY-RUN] Would create new MR")
                     print(f"           Title: {commit['subject']}")
                     print(f"           Source: {source_branch} -> Target: {target_branch}")
+        else:
+            # Helper function to process a single MR
+            def process_mr(commit):
+                change_id = commit['change_id']
+                source_branch = commit['source_branch']
+                target_branch = commit['target_branch']
+                existing_mr = self.mapping.get(change_id)
+                
+                if existing_mr:
+                    # Update existing MR
+                    mr_iid = existing_mr['mr_iid']
+                    self.client.update_mr(mr_iid, commit['subject'])
+                    return ('update', mr_iid, existing_mr['mr_url'], commit['subject'], None)
                 else:
+                    # Create new MR
                     result = self.client.create_mr(
                         source_branch=source_branch,
                         target_branch=target_branch,
                         title=commit['subject'],
                         description=commit['message']
                     )
-                    
-                    mr_iid = result['mr_iid']
-                    mr_url = result['mr_url']
-                    
-                    # Save to mapping
+                    return ('create', result['mr_iid'], result['mr_url'], commit['subject'], change_id)
+            
+            # Process all MRs in parallel
+            results = []
+            errors = []
+            
+            with ThreadPoolExecutor(max_workers=min(len(chain), 4)) as executor:
+                futures = {executor.submit(process_mr, commit): commit for commit in chain}
+                
+                for future in as_completed(futures):
+                    commit = futures[future]
+                    try:
+                        result = future.result()
+                        results.append(result)
+                    except Exception as e:
+                        errors.append((commit['subject'], str(e)))
+            
+            # Update mapping for all new MRs
+            new_mrs_created = False
+            for action, mr_iid, mr_url, subject, change_id in results:
+                if action == 'create':
                     self.mapping[change_id] = {
                         'mr_iid': mr_iid,
                         'mr_url': mr_url,
                         'project_id': self._get_project_id()
                     }
-                    save_mapping(self.mapping_path, self.mapping)
-                    
-                    print(f"  ✓ Created MR !{mr_iid}: {commit['subject']}")
+                    new_mrs_created = True
+            
+            # Save mapping once if any new MRs were created
+            if new_mrs_created:
+                save_mapping(self.mapping_path, self.mapping)
+            
+            # Print results
+            for action, mr_iid, mr_url, subject, change_id in results:
+                if action == 'create':
+                    print(f"  ✓ Created MR !{mr_iid}: {subject}")
                     print(f"    {mr_url}")
+                else:
+                    print(f"  ✓ Updated MR !{mr_iid}: {subject}")
+                    print(f"    {mr_url}")
+            
+            # Print errors
+            for subject, error in errors:
+                print(f"  ⚠️  Failed to process MR for {subject}: {error}")
     
     def _update_mr_stack_links(self, chain: list[dict[str, any]]) -> None:
         """
         Update MR comments with stack chain links.
+        Uses parallel execution for better performance.
         
         Creates or updates a non-resolvable comment containing links to all MRs
         in the current stack.
@@ -633,33 +682,61 @@ class GitStackPush:
         """
         print("\nUpdating MR stack links...")
         
-        for i, commit in enumerate(chain):
-            change_id = commit['change_id']
-            
-            if change_id not in self.mapping:
-                continue
-            
-            mr_iid = self.mapping[change_id]['mr_iid']
-            
-            if self.dry_run:
+        if self.dry_run:
+            # Dry run - just print what would happen
+            for i, commit in enumerate(chain):
+                change_id = commit['change_id']
+                if change_id not in self.mapping:
+                    continue
+                mr_iid = self.mapping[change_id]['mr_iid']
                 print(f"[DRY-RUN] Would update stack links comment for MR !{mr_iid}")
-                continue
-            
-            # Build stack chain description
-            stack_description = build_stack_chain_description(chain, i, self.mapping)
-            
-            try:
-                # Get existing notes and delete old stack chain comments
-                existing_notes = self.client.get_mr_notes(mr_iid)
-                for note in existing_notes:
-                    if '<!-- git-stack-chain -->' in note['body']:
-                        self.client.delete_mr_note(mr_iid, note['id'])
+        else:
+            # Helper function to update a single MR's stack links
+            def update_stack_link(i, commit):
+                change_id = commit['change_id']
                 
-                # Create new stack chain comment
-                self.client.add_mr_note(mr_iid, stack_description)
-                print(f"  ✓ Updated stack links comment for MR !{mr_iid}")
-            except Exception as e:
-                print(f"  ⚠️  Failed to update stack links comment for MR !{mr_iid}: {e}")
+                if change_id not in self.mapping:
+                    return None
+                
+                mr_iid = self.mapping[change_id]['mr_iid']
+                stack_description = build_stack_chain_description(chain, i, self.mapping)
+                
+                try:
+                    # Get existing notes and find stack chain comment
+                    existing_notes = self.client.get_mr_notes(mr_iid)
+                    stack_note_id = None
+                    for note in existing_notes:
+                        if '<!-- git-stack-chain -->' in note['body']:
+                            stack_note_id = note['id']
+                            break
+                    
+                    # Update existing comment or create new one
+                    if stack_note_id:
+                        self.client.update_mr_note(mr_iid, stack_note_id, stack_description)
+                    else:
+                        self.client.add_mr_note(mr_iid, stack_description)
+                    
+                    return ('success', mr_iid)
+                except Exception as e:
+                    return ('error', mr_iid, str(e))
+            
+            # Process all stack link updates in parallel
+            with ThreadPoolExecutor(max_workers=min(len(chain), 4)) as executor:
+                futures = {executor.submit(update_stack_link, i, commit): (i, commit) 
+                          for i, commit in enumerate(chain)}
+                
+                for future in as_completed(futures):
+                    result = future.result()
+                    if result is None:
+                        continue
+                    
+                    if result[0] == 'success':
+                        mr_iid = result[1]
+                        print(f"  ✓ Updated stack links comment for MR !{mr_iid}")
+                    else:
+                        mr_iid = result[1]
+                        error = result[2]
+                        print(f"  ⚠️  Failed to update stack links comment for MR !{mr_iid}: {error}")
     
     def _get_project_id(self) -> str:
         """Get the GitLab project ID from git remote."""

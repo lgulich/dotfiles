@@ -173,43 +173,91 @@ class GitStackTestCase(unittest.TestCase):
         msg = get_commit_message(repo_path, ref)
         return extract_change_id(msg)
     
-    def check_operations(self, operations: list[dict], expected_operations: list[dict]) -> None:
+    def check_operations(self, operations: list[dict], expected_operations: list[dict], 
+                        order_matters: bool = False) -> None:
         """
         Check that operations match expected operations.
-        
         Compares operation type and args, ignoring result field.
         String values in expected args are treated as regex patterns.
         
         Args:
             operations: List of actual operations
             expected_operations: List of expected operations
+            order_matters: If True, operations must match in order. If False, 
+                         operations can match in any order (for parallel execution)
         """
         # Check number of operations
         self.assertEqual(len(operations), len(expected_operations),
                         f"Expected {len(expected_operations)} operations, got {len(operations)}")
         
-        # Compare each operation
-        for i, (actual, expected) in enumerate(zip(operations, expected_operations)):
-            # Check operation type
-            self.assertEqual(actual['operation'], expected['operation'],
-                           f"Operation {i}: expected '{expected['operation']}', got '{actual['operation']}'")
+        if order_matters:
+            # Sequential matching - operations must be in order
+            for i, (actual, expected) in enumerate(zip(operations, expected_operations)):
+                self._match_operation(actual, expected, i)
+        else:
+            # Parallel matching - operations can be in any order
+            # Create a list to track which actual operations have been matched
+            matched = [False] * len(operations)
             
-            # Check args (ignore result field)
-            # For each arg, if expected value is a string, treat it as regex pattern
-            self.assertEqual(set(actual['args'].keys()), set(expected['args'].keys()),
-                           f"Operation {i}: arg keys don't match")
-            
-            for key, expected_value in expected['args'].items():
-                actual_value = actual['args'][key]
+            for exp_idx, expected in enumerate(expected_operations):
+                # Try to find a matching actual operation that hasn't been matched yet
+                found_match = False
+                for act_idx, actual in enumerate(operations):
+                    if matched[act_idx]:
+                        continue
+                    
+                    # Try to match this pair
+                    try:
+                        self._match_operation(actual, expected, act_idx, raise_on_mismatch=False)
+                        matched[act_idx] = True
+                        found_match = True
+                        break
+                    except AssertionError:
+                        continue
                 
-                if isinstance(expected_value, str):
-                    # Treat as regex pattern (use DOTALL flag so . matches newlines)
-                    self.assertIsNotNone(re.fullmatch(expected_value, str(actual_value), re.DOTALL),
-                                       f"Operation {i}: arg '{key}' value '{actual_value}' does not match pattern '{expected_value}'")
-                else:
-                    # Direct comparison for non-string values
-                    self.assertEqual(actual_value, expected_value,
-                                   f"Operation {i}: arg '{key}' doesn't match")
+                if not found_match:
+                    self.fail(f"Could not find match for expected operation {exp_idx}: "
+                            f"{expected['operation']} with args {expected['args']}")
+    
+    def _match_operation(self, actual: dict, expected: dict, index: int, 
+                        raise_on_mismatch: bool = True) -> None:
+        """Helper to match a single operation against expected."""
+        # Check operation type
+        if actual['operation'] != expected['operation']:
+            if raise_on_mismatch:
+                self.assertEqual(actual['operation'], expected['operation'],
+                               f"Operation {index}: expected '{expected['operation']}', got '{actual['operation']}'")
+            else:
+                raise AssertionError("Operation type mismatch")
+        
+        # Check args (ignore result field)
+        # For each arg, if expected value is a string, treat it as regex pattern
+        if set(actual['args'].keys()) != set(expected['args'].keys()):
+            if raise_on_mismatch:
+                self.assertEqual(set(actual['args'].keys()), set(expected['args'].keys()),
+                               f"Operation {index}: arg keys don't match")
+            else:
+                raise AssertionError("Arg keys mismatch")
+        
+        for key, expected_value in expected['args'].items():
+            actual_value = actual['args'][key]
+            
+            if isinstance(expected_value, str):
+                # Treat as regex pattern (use DOTALL flag so . matches newlines)
+                if not re.fullmatch(expected_value, str(actual_value), re.DOTALL):
+                    if raise_on_mismatch:
+                        self.assertIsNotNone(re.fullmatch(expected_value, str(actual_value), re.DOTALL),
+                                           f"Operation {index}: arg '{key}' value '{actual_value}' does not match pattern '{expected_value}'")
+                    else:
+                        raise AssertionError(f"Arg value mismatch for '{key}'")
+            else:
+                # Direct comparison for non-string values
+                if actual_value != expected_value:
+                    if raise_on_mismatch:
+                        self.assertEqual(actual_value, expected_value,
+                                       f"Operation {index}: arg '{key}' doesn't match")
+                    else:
+                        raise AssertionError(f"Arg value mismatch for '{key}'")
 
 
 class TestPushBasicStack(GitStackTestCase):
@@ -385,16 +433,13 @@ class TestPushWithAmend(GitStackTestCase):
                     'title': 'Third commit',
                 },
             },
-            # Stack link updates - get notes, delete old notes if any, add new notes
+            # Stack link updates - get notes and update existing ones
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},
-            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*'}},
-            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid1, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid2}},
-            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*'}},
-            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid2, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid3}},
-            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid3, 'note_id': '.*'}},
-            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid3, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid3, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
         ]
         
         self.check_operations(operations, expected_operations)
@@ -485,15 +530,13 @@ class TestPushAddCommit(GitStackTestCase):
                 },
             },
             # Stack link updates for all 3 MRs
-            # First 2 MRs have existing notes from first push
+            # First 2 MRs have existing notes from first push - update them
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid1}},
-            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*'}},
-            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid1, 'body': '.*git-stack-chain.*'}},
+            {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid1, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
             {'operation': 'get_mr_notes', 'args': {'mr_iid': mr_iid2}},
-            {'operation': 'delete_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*'}},
-            {'operation': 'add_mr_note', 'args': {'mr_iid': mr_iid2, 'body': '.*git-stack-chain.*'}},
-            # Third MR is new, no existing notes to delete
-            {'operation': 'get_mr_notes', 'args': {'mr_iid': '.*'}},  # MR IID not known yet
+            {'operation': 'update_mr_note', 'args': {'mr_iid': mr_iid2, 'note_id': '.*', 'body': '.*git-stack-chain.*'}},
+            # Third MR is new, no existing notes - add new one
+            {'operation': 'get_mr_notes', 'args': {'mr_iid': '.*'}},
             {'operation': 'add_mr_note', 'args': {'mr_iid': '.*', 'body': '.*git-stack-chain.*'}},
         ]
         

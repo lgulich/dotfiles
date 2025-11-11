@@ -92,17 +92,16 @@ class GitHostingClient(ABC):
         pass
     
     @abstractmethod
-    def delete_mr_note(self, mr_iid: int, note_id: int) -> None:
+    def update_mr_note(self, mr_iid: int, note_id: int, body: str) -> None:
         """
-        Delete a note/comment from merge/pull request.
+        Update a note/comment on merge/pull request.
         
         Args:
             mr_iid: MR/PR ID
             note_id: Note/comment ID
+            body: New comment body text
         """
         pass
-
-
 class GitLabClient(GitHostingClient):
     """GitLab client using glab CLI."""
     
@@ -226,6 +225,14 @@ class GitLabClient(GitHostingClient):
             '--message', body
         ])
     
+    def update_mr_note(self, mr_iid: int, note_id: int, body: str) -> None:
+        """Update a note/comment on GitLab merge request."""
+        self._run_glab_command([
+            'api', '-X', 'PUT',
+            f'projects/:id/merge_requests/{mr_iid}/notes/{note_id}',
+            '-f', f'body={body}'
+        ])
+    
     def get_mr_notes(self, mr_iid: int) -> list[dict[str, any]]:
         """Get all notes from GitLab merge request."""
         try:
@@ -234,7 +241,6 @@ class GitLabClient(GitHostingClient):
                 'api', f'projects/:id/merge_requests/{mr_iid}/notes'
             ])
             
-            import json
             notes = json.loads(output)
             
             # Return simplified structure
@@ -246,14 +252,6 @@ class GitLabClient(GitHostingClient):
         except Exception:
             return []
     
-    def delete_mr_note(self, mr_iid: int, note_id: int) -> None:
-        """Delete a note from GitLab merge request."""
-        self._run_glab_command([
-            'api', '-X', 'DELETE',
-            f'projects/:id/merge_requests/{mr_iid}/notes/{note_id}'
-        ])
-
-
 class MockGitHostingClient(GitHostingClient):
     """Mock client for testing that stores operations in JSON files."""
     
@@ -424,6 +422,40 @@ class MockGitHostingClient(GitHostingClient):
         self._save_database()
         self._save_operations()
     
+    def update_mr_note(self, mr_iid: int, note_id: int, body: str) -> None:
+        """Update a note/comment on mock merge request."""
+        mr_key = str(mr_iid)
+        if mr_key not in self.mrs:
+            raise ValueError(f"MR !{mr_iid} not found")
+        
+        # Ensure notes list exists
+        if 'notes' not in self.mrs[mr_key]:
+            self.mrs[mr_key]['notes'] = []
+        
+        # Find and update the note
+        note_found = False
+        for note in self.mrs[mr_key]['notes']:
+            if note['id'] == note_id:
+                note['body'] = body
+                note_found = True
+                break
+        
+        if not note_found:
+            raise ValueError(f"Note {note_id} not found in MR !{mr_iid}")
+        
+        # Record operation
+        self.operations.append({
+            'operation': 'update_mr_note',
+            'args': {
+                'mr_iid': mr_iid,
+                'note_id': note_id,
+                'body': body
+            }
+        })
+        
+        self._save_database()
+        self._save_operations()
+    
     def get_mr_notes(self, mr_iid: int) -> list[dict[str, any]]:
         """Get all notes from mock merge request."""
         mr_key = str(mr_iid)
@@ -442,34 +474,6 @@ class MockGitHostingClient(GitHostingClient):
         
         # Return notes (or empty list if not found)
         return self.mrs[mr_key].get('notes', [])
-    
-    def delete_mr_note(self, mr_iid: int, note_id: int) -> None:
-        """Delete a note from mock merge request."""
-        mr_key = str(mr_iid)
-        if mr_key not in self.mrs:
-            raise ValueError(f"MR !{mr_iid} not found")
-        
-        # Ensure notes list exists
-        if 'notes' not in self.mrs[mr_key]:
-            self.mrs[mr_key]['notes'] = []
-        
-        # Filter out the note with the given ID
-        self.mrs[mr_key]['notes'] = [
-            note for note in self.mrs[mr_key]['notes']
-            if note['id'] != note_id
-        ]
-        
-        # Record operation
-        self.operations.append({
-            'operation': 'delete_mr_note',
-            'args': {
-                'mr_iid': mr_iid,
-                'note_id': note_id
-            }
-        })
-        
-        self._save_database()
-        self._save_operations()
     
     def set_mr_state(self, mr_iid: int, state: str) -> None:
         """
