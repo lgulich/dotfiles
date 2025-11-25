@@ -1,6 +1,5 @@
 requires:
   - brew
-
 install:
   macos:
     - macos/install_utils.sh

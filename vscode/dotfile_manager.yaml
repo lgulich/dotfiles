@@ -18,9 +18,6 @@ symlinks:
       - ~/.config/Code/User/keybindings.json
       - ~/.config/Cursor/User/keybindings.json
       - ~/.config/Windsurf/User/keybindings.json
-    settings.json:
-      ~/.config/Code/User/settings.json
-      ~/.config/Windsurf/User/settings.json
-      ~/.config/Cursor/User/settings.json
+    settings.json: ~/.config/Code/User/settings.json ~/.config/Windsurf/User/settings.json ~/.config/Cursor/User/settings.json
 requires:
   - brew

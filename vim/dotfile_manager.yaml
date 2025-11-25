@@ -1,7 +1,6 @@
 requires:
   - brew
   - system_installation
-
 install:
   ubuntu:
     - install/install_neovim_ubuntu.sh

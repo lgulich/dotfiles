@@ -79,4 +79,3 @@ cursor $cursor_flags --install-extension "$vsix_path" || {
 
 echo "Installation complete!"
 cursor $cursor_flags --version
-

@@ -16,4 +16,3 @@ ln -s $(which fdfind) ~/.local/bin/fd
 /home/linuxbrew/.linuxbrew/bin/brew install \
   fzf \
   go
-
