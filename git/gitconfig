@@ -8,12 +8,6 @@
 [init]
 	defaultBranch = main
 
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	process = git-lfs filter-process
-	required = true
-	smudge = git-lfs smudge -- %f
-
 [alias]
 	amend-to = "! git_amend_to.sh"
 	commit-nolint = "! SKIP_PRE_COMMIT_HOOK=true git commit"
@@ -58,3 +52,8 @@
   parallel = 20
 [rebase]
 	autoStash = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

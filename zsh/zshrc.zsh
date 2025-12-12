@@ -122,3 +122,4 @@ fi
 
 # Has to follow after atuin init.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+export PATH="/home/lgulich/.pixi/bin:$PATH"

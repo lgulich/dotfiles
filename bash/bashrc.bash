@@ -84,3 +84,4 @@ export VISUAL=vim
 if [ -f /usr/local/osmo/autocomplete.bash ]; then
   source /usr/local/osmo/autocomplete.bash
 fi
+. "$HOME/.cargo/env"
