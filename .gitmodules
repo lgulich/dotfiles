@@ -10,3 +10,5 @@
 [submodule "private"]
 	path = private
 	url = git@github.com:lgulich/dotfiles-private.git
+	branch = main
+	update = rebase
