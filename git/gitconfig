@@ -47,6 +47,7 @@
 
 [submodule]
   fetchJobs = 20
+  recurse = true
 
 [fetch]
   parallel = 20
