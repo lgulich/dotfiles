@@ -1,7 +1,8 @@
 #!/bin/bash
 
 install_dependencies_macos(){
-  python3 -m pip install --break-system-packages dotfile-manager
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  source $HOME/.local/bin/env
 }
 
 install_dependencies_linux(){
@@ -9,9 +10,9 @@ install_dependencies_linux(){
       apt-get update && apt-get install -y sudo
   fi
   sudo apt-get update
-  sudo apt-get install -y python3 python3-pip git software-properties-common curl wget unzip
-  python3 -m pip install --break-system-packages dotfile-manager
-  export PATH="~/.local/bin:$PATH"
+  sudo apt-get install -y git software-properties-common curl wget unzip
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  source $HOME/.local/bin/env
 }
 
 set -e
@@ -30,5 +31,5 @@ fi
 
 script_path=$(dirname "$0")
 export DOTFILES="$script_path"
-python3 -m dotfile_manager install --verbose
-python3 -m dotfile_manager setup
+uvx dotfile-manager install --verbose
+uvx dotfile-manager setup

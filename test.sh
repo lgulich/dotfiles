@@ -15,6 +15,7 @@ rsync -a --delete --exclude='generated/' --exclude='.git/' . ${cache_dir}/
 docker run \
   --env DEBIAN_FRONTEND=noninteractive \
   --env TZ=UTC \
+  --env HOME=/root \
   --entrypoint dotfiles/install.sh \
   --workdir /root \
   -v ${cache_dir}:/root/dotfiles \
