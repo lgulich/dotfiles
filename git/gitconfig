@@ -50,8 +50,10 @@
 
 [fetch]
   parallel = 20
+
 [rebase]
 	autoStash = true
+
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

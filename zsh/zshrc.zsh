@@ -76,18 +76,11 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
-# Directory used for DAZEL cache
-# export DAZEL_CACHE_ROOT=/media/lgulich/dazel-cache
-
 # Load OSMO
-export OSMO_PATH="/home/lgulich/Code/osmo"
+export OSMO_PATH="$HOME/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
 export ISAAC_DEV_BAZEL=dazel
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/lgulich/.local/lib/python3.8/site_packages/tensorrt"
-[ -f /home/lgulich/Code/osmo/osmo/autocomplete.bash ] && source '/home/lgulich/Code/osmo/osmo/autocomplete.bash'
-
-# Dora-rs
-export PATH=$PATH:${HOME}/.dora/bin
+[ -f $OSMO_PATH/osmo/autocomplete.bash ] && source '$OSMO_PATH/osmo/autocomplete.bash'
 
 # History setup
 HISTSIZE=10000000
