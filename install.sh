@@ -31,5 +31,5 @@ fi
 
 script_path=$(dirname "$0")
 export DOTFILES="$script_path"
-uvx dotfile-manager install --verbose
-uvx dotfile-manager setup
+uvx dotfile_manager install --verbose
+uvx dotfile_manager setup

@@ -9,14 +9,27 @@ cd ${script_path}
 cache_dir="/tmp/dotfiles-test-cache"
 mkdir -p ${cache_dir}
 
-# Sync dotfiles to cache directory (only copy changed files, delete extra files)
-rsync -a --delete --exclude='generated/' --exclude='.git/' . ${cache_dir}/
+# Sync dotfiles to cache directory (remove old cache and copy fresh)
+rm -rf ${cache_dir}
+mkdir -p ${cache_dir}
+cp -a . ${cache_dir}/
+rm -rf ${cache_dir}/generated ${cache_dir}/.git
 
-docker run \
-  --env DEBIAN_FRONTEND=noninteractive \
-  --env TZ=UTC \
-  --env HOME=/root \
-  --entrypoint dotfiles/install.sh \
-  --workdir /root \
-  -v ${cache_dir}:/root/dotfiles \
-  ubuntu:24.04
+# Check if Docker is available and working
+if docker info > /dev/null 2>&1; then
+  echo "Running test in Docker container..."
+  docker run \
+    --env DEBIAN_FRONTEND=noninteractive \
+    --env TZ=UTC \
+    --env HOME=/root \
+    --entrypoint dotfiles/install.sh \
+    --workdir /root \
+    -v ${cache_dir}:/root/dotfiles \
+    ubuntu:24.04
+else
+  echo "Docker not available, running test directly in cache directory..."
+  export DEBIAN_FRONTEND=noninteractive
+  export TZ=UTC
+  cd ${cache_dir}
+  ./install.sh
+fi
