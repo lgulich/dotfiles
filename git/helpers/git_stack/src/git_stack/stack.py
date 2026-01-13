@@ -673,7 +673,8 @@ class GitStackPush:
             if existing_mr:
                 mr_iid = existing_mr['mr_iid']
                 title = truncate_mr_title(commit['subject'])
-                self.client.update_mr(mr_iid, title)
+                # Always pass target_branch to ensure it's updated if stack changed
+                self.client.update_mr(mr_iid, title, target_branch)
                 return ('update', mr_iid, existing_mr['mr_url'],
                         commit['subject'], None)
 

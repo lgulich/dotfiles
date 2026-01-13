@@ -36,13 +36,17 @@ class GitHostingClient(ABC):
         """
 
     @abstractmethod
-    def update_mr(self, mr_iid: int, title: str) -> None:
+    def update_mr(self,
+                  mr_iid: int,
+                  title: str,
+                  target_branch: str | None = None) -> None:
         """
-        Update a merge/pull request title.
+        Update a merge/pull request.
 
         Args:
             mr_iid: MR/PR ID
             title: New title
+            target_branch: New target branch (optional)
         """
 
     @abstractmethod
@@ -242,9 +246,15 @@ class GitLabClient(GitHostingClient):
 
         return {'mr_iid': mr_iid, 'mr_url': mr_url}
 
-    def update_mr(self, mr_iid: int, title: str) -> None:
-        """Update a GitLab merge request title."""
-        self._run_glab_command(['mr', 'update', str(mr_iid), '--title', title])
+    def update_mr(self,
+                  mr_iid: int,
+                  title: str,
+                  target_branch: str | None = None) -> None:
+        """Update a GitLab merge request."""
+        cmd = ['mr', 'update', str(mr_iid), '--title', title]
+        if target_branch:
+            cmd.extend(['--target-branch', target_branch])
+        self._run_glab_command(cmd)
 
     def get_mr_state(self, mr_iid: int) -> str:
         """
@@ -423,20 +433,26 @@ class MockGitHostingClient(GitHostingClient):
             f"https://gitlab.example.com/project/merge_requests/{mr_iid}",
         }
 
-    def update_mr(self, mr_iid: int, title: str) -> None:
+    def update_mr(self,
+                  mr_iid: int,
+                  title: str,
+                  target_branch: str | None = None) -> None:
         """Update a mock merge request."""
         mr_key = str(mr_iid)
         if mr_key not in self.mrs:
             raise ValueError(f"MR !{mr_iid} not found")
 
         self.mrs[mr_key]['title'] = title
+        if target_branch:
+            self.mrs[mr_key]['target_branch'] = target_branch
 
         # Record operation
         self.operations.append({
             'operation': 'update_mr',
             'args': {
                 'mr_iid': mr_iid,
-                'title': title
+                'title': title,
+                'target_branch': target_branch
             }
         })
 

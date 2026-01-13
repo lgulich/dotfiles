@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from io import StringIO
 from unittest.mock import patch
 
@@ -24,6 +25,7 @@ from .conftest import (
     create_commit,
     get_commit_message,
     get_current_branch,
+    run_git,
 )
 
 
@@ -222,6 +224,72 @@ class TestPushAddCommit:
         # Mapping should have 3 entries
         mapping_after = git_stack_fixture.read_mapping()
         assert len(mapping_after) == 3
+
+
+class TestPushRemoveCommit:
+    """Test removing commits from a stack."""
+
+    def test_target_branch_updated_on_commit_removal(
+            self, git_stack_fixture: GitStackTestFixture) -> None:
+        """Test that target branch is updated when a commit is removed."""
+        # Create stack with 2 commits
+        create_branch(git_stack_fixture.repo_path, 'feature', 'origin/main')
+        create_commit(git_stack_fixture.repo_path, 'file1.txt', 'First commit')
+        create_commit(git_stack_fixture.repo_path, 'file2.txt',
+                      'Second commit')
+
+        stack = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack.push(base_branch='main')
+
+        mapping_before = git_stack_fixture.read_mapping()
+        assert len(mapping_before) == 2
+
+        # Get the second commit's MR and its original target
+        cid2 = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD'))
+        assert cid2 is not None
+        mr2_iid = mapping_before[cid2]['mr_iid']
+
+        # Check that MR2 originally targeted MR1's branch (not main)
+        create_ops = git_stack_fixture.read_operations()
+        mr2_create = [
+            op for op in create_ops if op['operation'] == 'create_mr'
+            and op['args'].get('source_branch') == get_branch_name(cid2)
+        ]
+        assert len(mr2_create) == 1
+        original_target = mr2_create[0]['args']['target_branch']
+        assert original_target != 'main'  # Should target first commit's branch
+
+        git_stack_fixture.reset_mock_client()
+
+        # Remove first commit via interactive rebase simulation
+        # (keep only the second commit, rebase onto main)
+        second_commit_sha = run_git(git_stack_fixture.repo_path,
+                                    ['rev-parse', 'HEAD'])
+        run_git(git_stack_fixture.repo_path,
+                ['reset', '--hard', 'origin/main'])
+        run_git(git_stack_fixture.repo_path,
+                ['cherry-pick', second_commit_sha])
+
+        # Remove old mapping entry for first commit (simulating what user would do)
+        mapping_after_remove = {cid2: mapping_before[cid2]}
+        git_stack_fixture.mapping_file.write_text(
+            json.dumps(mapping_after_remove, indent=2))
+
+        # Push again
+        stack2 = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack2.push(base_branch='main')
+
+        # Check that update_mr was called with main as target_branch
+        update_ops = [
+            op for op in git_stack_fixture.read_operations()
+            if op['operation'] == 'update_mr'
+        ]
+        assert len(update_ops) == 1
+        assert update_ops[0]['args']['mr_iid'] == mr2_iid
+        assert update_ops[0]['args']['target_branch'] == 'main'
 
 
 class TestClean:
