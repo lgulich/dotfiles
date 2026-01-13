@@ -5,11 +5,15 @@ This repo uses the [dotfile manager](https://github.com/lgulich/dotfile_manager)
 to organize the dotfiles.
 
 ## Getting started
-Clone this repo and use the install script the first time.
- Make sure you install it first. (Pip installs
-executables to `~/.local/bin`, make sure this is part of your $PATH)
 
-When you use this the first time install everything with
+### Quick Install
+```sh
+curl -fsSL https://raw.githubusercontent.com/lgulich/dotfiles/master/install-remote.sh | bash
+```
+
+This clones the repo to `~/.dotfiles` and runs the installation.
+
+### Manual Install
 ```sh
 git clone https://github.com/lgulich/dotfiles.git
 cd dotfiles
