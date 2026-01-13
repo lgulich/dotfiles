@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
 """
 Git hosting client abstraction layer.
 
 This module provides an abstraction for interacting with git hosting services
 (GitLab, GitHub, etc.) to manage merge/pull requests.
 """
+
+from __future__ import annotations
 
 import json
 import re
@@ -53,7 +54,7 @@ class GitHostingClient(ABC):
             mr_iid: MR/PR ID
 
         Returns:
-            State string: 'open', 'closed', or 'merged'
+            State string: 'opened', 'closed', or 'merged'
         """
 
     @abstractmethod
@@ -111,7 +112,7 @@ class GitHostingClient(ABC):
 
 
 class GitLabClient(GitHostingClient):
-    """GitLab client using glab CLI."""
+    """GitLab client using glab CLI with JSON API for reliable parsing."""
 
     def __init__(self, dry_run: bool = False):
         """
@@ -122,13 +123,17 @@ class GitLabClient(GitHostingClient):
         """
         self.dry_run = dry_run
 
-    def _run_glab_command(self, args: list[str], check: bool = True) -> str:
+    def _run_glab_command(self,
+                          args: list[str],
+                          check: bool = True,
+                          retries: int = 3) -> str:
         """
-        Run a glab command and return output.
+        Run a glab command and return output with retry logic.
 
         Args:
             args: Glab command arguments
             check: Whether to raise exception on error
+            retries: Number of retries for transient failures
 
         Returns:
             Command output as string
@@ -137,36 +142,87 @@ class GitLabClient(GitHostingClient):
             print(f"[DRY-RUN] Would run: glab {' '.join(args)}")
             return ''
 
-        try:
-            result = subprocess.run(['glab'] + args,
-                                    capture_output=True,
-                                    text=True,
-                                    check=False)
-        except FileNotFoundError:
-            print(
-                'Error: glab CLI not found. Install from: https://gitlab.com/gitlab-org/cli',
-                file=sys.stderr)
-            sys.exit(1)
+        last_error: subprocess.CalledProcessError | None = None
 
-        if check and result.returncode != 0:
-            error_msg = result.stderr.strip(
-            ) if result.stderr else result.stdout.strip()
-            print(f"Error running glab command: glab {' '.join(args)}",
-                  file=sys.stderr)
-            print(f"Error output: {error_msg}", file=sys.stderr)
-            raise subprocess.CalledProcessError(result.returncode,
-                                                ['glab'] + args, result.stdout,
-                                                result.stderr)
+        for attempt in range(retries):
+            try:
+                result = subprocess.run(
+                    ['glab'] + args,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+            except FileNotFoundError:
+                print(
+                    'Error: glab CLI not found. Install from: '
+                    'https://gitlab.com/gitlab-org/cli',
+                    file=sys.stderr,
+                )
+                sys.exit(1)
 
-        return result.stdout.strip()
+            if result.returncode == 0:
+                return result.stdout.strip()
+
+            # Check if this is a retryable error (network issues, rate limiting)
+            error_output = result.stderr.lower() + result.stdout.lower()
+            retryable = any(
+                x in error_output for x in
+                ['timeout', 'connection', 'rate limit', '503', '502', '504'])
+
+            if retryable and attempt < retries - 1:
+                import time  # pylint: disable=import-outside-toplevel
+
+                time.sleep(2**attempt)  # Exponential backoff
+                continue
+
+            last_error = subprocess.CalledProcessError(result.returncode,
+                                                       ['glab'] + args,
+                                                       result.stdout,
+                                                       result.stderr)
+
+            if check:
+                error_msg = (result.stderr.strip()
+                             if result.stderr else result.stdout.strip())
+                print(
+                    f"Error running glab command: glab {' '.join(args)}",
+                    file=sys.stderr,
+                )
+                print(f"Error output: {error_msg}", file=sys.stderr)
+                raise last_error
+
+            break
+
+        return ''
+
+    def _get_mr_via_api(self, mr_iid: int) -> dict[str, Any]:
+        """
+        Get MR details via GitLab API (JSON response).
+
+        Args:
+            mr_iid: MR ID
+
+        Returns:
+            MR data dictionary
+        """
+        output = self._run_glab_command(
+            ['api', f"projects/:id/merge_requests/{mr_iid}"])
+        return json.loads(output) if output else {}
 
     def create_mr(self, source_branch: str, target_branch: str, title: str,
                   description: str) -> dict[str, Any]:
         """Create a GitLab merge request."""
         output = self._run_glab_command([
-            'mr', 'create', '--source-branch', source_branch,
-            '--target-branch', target_branch, '--title', title,
-            '--description', description, '--yes'
+            'mr',
+            'create',
+            '--source-branch',
+            source_branch,
+            '--target-branch',
+            target_branch,
+            '--title',
+            title,
+            '--description',
+            description,
+            '--yes',
         ])
 
         # Parse MR URL from output
@@ -191,33 +247,22 @@ class GitLabClient(GitHostingClient):
         self._run_glab_command(['mr', 'update', str(mr_iid), '--title', title])
 
     def get_mr_state(self, mr_iid: int) -> str:
-        """Get GitLab merge request state."""
-        output = self._run_glab_command(['mr', 'view', str(mr_iid)])
+        """
+        Get GitLab merge request state using JSON API.
 
-        # Parse the output to find state
-        state = None
-        for line in output.split('\n'):
-            if 'state:' in line.lower() or 'status:' in line.lower():
-                # Extract state from line like "state: merged" or "• State: Merged"
-                parts = line.split(':', 1)
-                if len(parts) == 2:
-                    state = parts[1].strip().lower()
-                    break
+        Returns:
+            State string: 'opened', 'closed', or 'merged'
+        """
+        mr_data = self._get_mr_via_api(mr_iid)
 
-        if not state:
-            # Try to detect from output text
-            output_lower = output.lower()
-            if 'merged' in output_lower:
-                state = 'merged'
-            elif 'closed' in output_lower:
-                state = 'closed'
-            elif 'open' in output_lower:
-                state = 'open'
+        if not mr_data:
+            raise ValueError(f"Could not get MR !{mr_iid} data")
 
+        state = mr_data.get('state')
         if not state:
             raise ValueError(f"Could not determine state for MR !{mr_iid}")
 
-        return state
+        return str(state)
 
     def close_mr(self, mr_iid: int) -> None:
         """Close a GitLab merge request."""
@@ -230,29 +275,31 @@ class GitLabClient(GitHostingClient):
     def update_mr_note(self, mr_iid: int, note_id: int, body: str) -> None:
         """Update a note/comment on GitLab merge request."""
         self._run_glab_command([
-            'api', '-X', 'PUT',
-            f'projects/:id/merge_requests/{mr_iid}/notes/{note_id}', '-f',
-            f'body={body}'
+            'api',
+            '-X',
+            'PUT',
+            f"projects/:id/merge_requests/{mr_iid}/notes/{note_id}",
+            '-f',
+            f"body={body}",
         ])
 
     def get_mr_notes(self, mr_iid: int) -> list[dict[str, Any]]:
-        """Get all notes from GitLab merge request."""
+        """Get all notes from GitLab merge request using JSON API."""
         try:
-            # Use GitLab API via glab to get notes
             output = self._run_glab_command(
-                ['api', f'projects/:id/merge_requests/{mr_iid}/notes'])
+                ['api', f"projects/:id/merge_requests/{mr_iid}/notes"])
+
+            if not output:
+                return []
 
             notes = json.loads(output)
 
-            # Return simplified structure
-            return [
-                {
-                    'id': note['id'],
-                    'body': note['body']
-                } for note in notes
-                if not note.get('system', False)  # Exclude system notes
-            ]
-        except Exception:  # pylint: disable=broad-exception-caught
+            # Return simplified structure, excluding system notes
+            return [{
+                'id': note['id'],
+                'body': note['body']
+            } for note in notes if not note.get('system', False)]
+        except (json.JSONDecodeError, subprocess.CalledProcessError):
             return []
 
     def set_mr_dependencies(self, mr_iid: int,
@@ -262,14 +309,16 @@ class GitLabClient(GitHostingClient):
             return
 
         # Use GitLab API to set blocking merge requests
-        # Each dependency must be created separately using the /blocks endpoint
         # Note: This feature requires GitLab Premium/Ultimate tier
         for blocking_mr_iid in blocking_mr_iids:
             try:
                 self._run_glab_command([
-                    'api', '-X', 'POST',
-                    f'projects/:id/merge_requests/{mr_iid}/blocks', '-f',
-                    f'blocking_merge_request_id={blocking_mr_iid}'
+                    'api',
+                    '-X',
+                    'POST',
+                    f"projects/:id/merge_requests/{mr_iid}/blocks",
+                    '-f',
+                    f"blocking_merge_request_id={blocking_mr_iid}",
                 ])
             except subprocess.CalledProcessError as e:
                 # If we get a 404, the GitLab instance doesn't support
@@ -302,9 +351,9 @@ class MockGitHostingClient(GitHostingClient):
 
         # Load or initialize database
         if self.database_file.exists():
-            with open(self.database_file, 'r') as f:
+            with open(self.database_file) as f:
                 data = json.load(f)
-                self.mrs = data.get('mrs', {})
+                self.mrs: dict[str, Any] = data.get('mrs', {})
                 self.next_iid = data.get('next_iid', 1)
                 self.next_note_id = data.get('next_note_id', 1)
         else:
@@ -318,10 +367,11 @@ class MockGitHostingClient(GitHostingClient):
                 {
                     'mrs': self.mrs,
                     'next_iid': self.next_iid,
-                    'next_note_id': self.next_note_id
+                    'next_note_id': self.next_note_id,
                 },
                 f,
-                indent=2)
+                indent=2,
+            )
 
     def _save_operations(self) -> None:
         """Save operations log to file."""
@@ -342,8 +392,8 @@ class MockGitHostingClient(GitHostingClient):
             'target_branch': target_branch,
             'title': title,
             'description': description,
-            'state': 'open',
-            'notes': []
+            'state': 'opened',
+            'notes': [],
         }
 
         # Record operation
@@ -353,23 +403,24 @@ class MockGitHostingClient(GitHostingClient):
                 'source_branch': source_branch,
                 'target_branch': target_branch,
                 'title': title,
-                'description': description
+                'description': description,
             },
             'result': {
                 'mr_iid':
                 mr_iid,
                 'mr_url':
-                f'https://gitlab.example.com/project/merge_requests/{mr_iid}'
-            }
+                f"https://gitlab.example.com/project/merge_requests/{mr_iid}",
+            },
         })
 
         self._save_database()
         self._save_operations()
 
         return {
-            'mr_iid': mr_iid,
+            'mr_iid':
+            mr_iid,
             'mr_url':
-            f'https://gitlab.example.com/project/merge_requests/{mr_iid}'
+            f"https://gitlab.example.com/project/merge_requests/{mr_iid}",
         }
 
     def update_mr(self, mr_iid: int, title: str) -> None:
@@ -404,12 +455,12 @@ class MockGitHostingClient(GitHostingClient):
             'args': {
                 'mr_iid': mr_iid
             },
-            'result': self.mrs[mr_key]['state']
+            'result': self.mrs[mr_key]['state'],
         })
 
         self._save_operations()
 
-        return self.mrs[mr_key]['state']
+        return str(self.mrs[mr_key]['state'])
 
     def close_mr(self, mr_iid: int) -> None:
         """Close a mock merge request."""
@@ -485,7 +536,7 @@ class MockGitHostingClient(GitHostingClient):
                 'mr_iid': mr_iid,
                 'note_id': note_id,
                 'body': body
-            }
+            },
         })
 
         self._save_database()
@@ -508,7 +559,8 @@ class MockGitHostingClient(GitHostingClient):
         self._save_operations()
 
         # Return notes (or empty list if not found)
-        return self.mrs[mr_key].get('notes', [])
+        notes: list[dict[str, Any]] = self.mrs[mr_key].get('notes', [])
+        return notes
 
     def set_mr_dependencies(self, mr_iid: int,
                             blocking_mr_iids: list[int]) -> None:
@@ -528,7 +580,7 @@ class MockGitHostingClient(GitHostingClient):
             'args': {
                 'mr_iid': mr_iid,
                 'blocking_mr_iids': blocking_mr_iids
-            }
+            },
         })
 
         self._save_database()
@@ -540,7 +592,7 @@ class MockGitHostingClient(GitHostingClient):
 
         Args:
             mr_iid: MR ID
-            state: State to set ('open', 'closed', 'merged')
+            state: State to set ('opened', 'closed', 'merged')
         """
         mr_key = str(mr_iid)
         if mr_key not in self.mrs:
