@@ -15,7 +15,7 @@
 	ignore = update-index --assume-unchanged
 	last = log -1 HEAD
 	publish = "! git_publish_branch.sh"
-	stack = "! git_stack.py"
+	stack = "! uvx --with ${DOTFILES:?}/git/helpers/git_stack git-stack"
 	stop-ignore = update-index --no-assume-unchanged
 	uncommit = reset --soft HEAD~1 --mixed
 	unstage = reset HEAD --
