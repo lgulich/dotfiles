@@ -20,6 +20,7 @@ from git_stack.change_id import (
     extract_stack_name,
     generate_change_id,
     get_branch_name,
+    get_git_username,
     validate_stack_name,
 )
 from git_stack.hosting_client import GitHostingClient, GitLabClient
@@ -1053,7 +1054,45 @@ class GitStackPush:
         return None
 
     def clean(self) -> None:
-        """Remove entries from mapping file for closed/merged or orphaned MRs."""
+        """Remove stale branches and entries from mapping file."""
+        # First, clean up stale local branches not in the mapping
+        stale_branches = self._find_stale_branches()
+
+        if stale_branches:
+            print(f"\nFound {len(stale_branches)} stale branch(es)...")
+            deleted_local = 0
+            deleted_remote = 0
+
+            for branch in stale_branches:
+                if self.dry_run:
+                    print(f"  [DRY-RUN] Would delete branch {branch}")
+                else:
+                    # Delete local branch
+                    try:
+                        self._run_git_command(['branch', '-D', branch],
+                                              check=False)
+                        deleted_local += 1
+                    except subprocess.CalledProcessError:
+                        pass
+
+                    # Delete remote branch
+                    try:
+                        self._run_git_command(
+                            ['push', 'origin', '--delete', branch],
+                            check=False)
+                        deleted_remote += 1
+                    except subprocess.CalledProcessError:
+                        pass
+
+                    print(f"  Deleted branch {branch}")
+
+            if not self.dry_run and (deleted_local > 0 or deleted_remote > 0):
+                print(f"\n+ Deleted {deleted_local} local and "
+                      f"{deleted_remote} remote stale branch(es)")
+        else:
+            print('\nNo stale branches found')
+
+        # Then, clean up mapping entries for closed/merged MRs
         if not self.mapping:
             print('No MRs in mapping file')
             return
@@ -1116,6 +1155,86 @@ class GitStackPush:
             print(f"\n+ Removed {' and '.join(parts)} MR(s) from mapping")
         else:
             print('\n+ No closed or orphaned MRs found')
+
+    def _find_stale_branches(self) -> list[str]:
+        """
+        Find local stack branches that are not in the mapping and have no open MR.
+
+        Returns:
+            List of stale branch names safe to delete
+        """
+        user_name = get_git_username()
+        prefix = f"{user_name}/stack-"
+
+        # Get all local branches matching the stack pattern
+        try:
+            output = self._run_git_command([
+                'branch', '--list', f'{prefix}*', '--format=%(refname:short)'
+            ])
+        except subprocess.CalledProcessError:
+            return []
+
+        if not output:
+            return []
+
+        local_branches = set(output.strip().split('\n'))
+
+        # Get branches that are in the mapping
+        mapped_branches = {
+            get_branch_name(change_id)
+            for change_id in self.mapping
+        }
+
+        # Find candidate stale branches (in local but not in mapping)
+        candidates = local_branches - mapped_branches
+
+        if not candidates:
+            return []
+
+        # Filter out branches that have open MRs on remote
+        # This prevents accidentally orphaning MRs not in our mapping
+        stale = []
+        for branch in candidates:
+            if self._branch_has_open_mr(branch):
+                print(f"  Skipping {branch} - has open MR on remote")
+            else:
+                stale.append(branch)
+
+        return sorted(stale)
+
+    def _branch_has_open_mr(self, branch: str) -> bool:
+        """
+        Check if a branch has an open MR on the remote.
+
+        Args:
+            branch: Branch name to check
+
+        Returns:
+            True if there's an open MR for this branch
+        """
+        try:
+            # Use glab to check for open MRs with this source branch
+            output = self._run_git_command(['ls-remote', 'origin', branch],
+                                           check=False)
+            # If branch doesn't exist on remote, no MR possible
+            if not output:
+                return False
+
+            # Check via GitLab API if there's an open MR
+            # Extract stack name from branch to search
+            if '@' in branch:
+                parts = branch.split('@')
+                if len(parts) >= 2:
+                    stack_name = parts[1]
+                    mrs = self.client.find_mrs_by_stack_name(stack_name)
+                    for mr in mrs:
+                        if mr['source_branch'] == branch and mr[
+                                'state'] == 'opened':
+                            return True
+            return False
+        except (subprocess.CalledProcessError, ValueError):
+            # If we can't check, be conservative and assume there might be an MR
+            return True
 
     def reindex(self, base_branch: str) -> None:
         """Remove all Change-Ids, close old MRs, and create new Change-Ids."""
