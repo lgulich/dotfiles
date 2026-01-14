@@ -114,6 +114,18 @@ class GitHostingClient(ABC):
             blocking_mr_iids: List of MR IDs that must be merged before this one
         """
 
+    @abstractmethod
+    def find_mrs_by_stack_name(self, stack_name: str) -> list[dict[str, Any]]:
+        """
+        Find all MRs belonging to a stack by stack name.
+
+        Args:
+            stack_name: The stack name to search for
+
+        Returns:
+            List of MR info dicts with 'mr_iid', 'source_branch', 'state'
+        """
+
 
 class GitLabClient(GitHostingClient):
     """GitLab client using glab CLI with JSON API for reliable parsing."""
@@ -226,6 +238,7 @@ class GitLabClient(GitHostingClient):
             title,
             '--description',
             description,
+            '--remove-source-branch',
             '--yes',
         ])
 
@@ -251,7 +264,10 @@ class GitLabClient(GitHostingClient):
                   title: str,
                   target_branch: str | None = None) -> None:
         """Update a GitLab merge request."""
-        cmd = ['mr', 'update', str(mr_iid), '--title', title]
+        cmd = [
+            'mr', 'update',
+            str(mr_iid), '--title', title, '--remove-source-branch'
+        ]
         if target_branch:
             cmd.extend(['--target-branch', target_branch])
         self._run_glab_command(cmd)
@@ -340,6 +356,38 @@ class GitLabClient(GitHostingClient):
                     ) from e
                 # Re-raise other errors
                 raise
+
+    def find_mrs_by_stack_name(self, stack_name: str) -> list[dict[str, Any]]:
+        """Find all MRs belonging to a stack by searching branch names."""
+        try:
+            # List all open MRs and filter by branch name pattern
+            output = self._run_glab_command([
+                'api',
+                'projects/:id/merge_requests',
+                '-X',
+                'GET',
+                '--paginate',
+                '-f',
+                'state=opened',
+            ])
+            mrs_data: list[dict[str, Any]] = json.loads(output)
+
+            # Filter MRs whose source branch contains the stack name
+            # Branch format: user/stack-uuid@stackname@position
+            result = []
+            for mr in mrs_data:
+                source_branch = mr.get('source_branch', '')
+                if f'@{stack_name}@' in source_branch:
+                    result.append({
+                        'mr_iid': mr['iid'],
+                        'source_branch': source_branch,
+                        'target_branch': mr.get('target_branch', ''),
+                        'state': mr.get('state', 'opened'),
+                        'title': mr.get('title', ''),
+                    })
+            return result
+        except (subprocess.CalledProcessError, json.JSONDecodeError):
+            return []
 
 
 class MockGitHostingClient(GitHostingClient):
@@ -601,6 +649,22 @@ class MockGitHostingClient(GitHostingClient):
 
         self._save_database()
         self._save_operations()
+
+    def find_mrs_by_stack_name(self, stack_name: str) -> list[dict[str, Any]]:
+        """Find all MRs belonging to a stack by searching branch names."""
+        result = []
+        for mr_key, mr_data in self.mrs.items():
+            source_branch = mr_data.get('source_branch', '')
+            # Branch format: user/stack-uuid@stackname@position
+            if f'@{stack_name}@' in source_branch:
+                result.append({
+                    'mr_iid': int(mr_key),
+                    'source_branch': source_branch,
+                    'target_branch': mr_data.get('target_branch', ''),
+                    'state': mr_data.get('state', 'opened'),
+                    'title': mr_data.get('title', ''),
+                })
+        return result
 
     def set_mr_state(self, mr_iid: int, state: str) -> None:
         """

@@ -595,6 +595,114 @@ class GitStackPush:
             print('  Error: Stack name must contain only lowercase letters, '
                   'numbers, and hyphens, and cannot start/end with a hyphen.')
 
+    def _rebase_downstream_commits(self, commits: list[dict[str, Any]],
+                                   _base_branch: str) -> list[dict[str, Any]]:
+        """
+        Fetch and rebase any downstream commits that exist on remote.
+
+        If the local stack has commits 1-3 but remote has 1-4, this will
+        fetch commit 4 and rebase it onto the local commit 3.
+
+        Args:
+            commits: List of local commits (with Change-IDs)
+            base_branch: Base branch name
+
+        Returns:
+            Updated list of commits including rebased downstream commits
+        """
+        if not commits or not commits[0].get('change_id'):
+            return commits
+
+        stack_name = extract_stack_name(commits[0]['change_id'])
+        if not stack_name:
+            return commits
+
+        # Get positions of local commits
+        local_positions = set()
+        for commit in commits:
+            pos = extract_position(commit['change_id'])
+            if pos:
+                local_positions.add(pos)
+
+        if not local_positions:
+            return commits
+
+        max_local_pos = max(local_positions)
+
+        # Find downstream MRs on remote
+        remote_mrs = self.client.find_mrs_by_stack_name(stack_name)
+        downstream_mrs = []
+        for mr in remote_mrs:
+            # Extract position from branch name
+            branch = mr['source_branch']
+            # Branch format: user/stackname@position
+            if '@' in branch:
+                try:
+                    pos = int(branch.split('@')[-1])
+                    if pos > max_local_pos and mr['state'] == 'opened':
+                        downstream_mrs.append((pos, mr))
+                except ValueError:
+                    continue
+
+        if not downstream_mrs:
+            return commits
+
+        # Sort by position
+        downstream_mrs.sort(key=lambda x: x[0])
+
+        print(
+            f"\nFound {len(downstream_mrs)} downstream commit(s) to rebase...")
+
+        if self.dry_run:
+            for pos, mr in downstream_mrs:
+                print(f"[DRY-RUN] Would rebase: {mr['source_branch']} "
+                      f"(position {pos})")
+            return commits
+
+        # Fetch and rebase each downstream commit
+        for pos, mr in downstream_mrs:
+            branch = mr['source_branch']
+            print(f"  Rebasing {branch}...")
+
+            try:
+                # Fetch the branch
+                self._run_git_command(['fetch', 'origin', branch])
+
+                # Cherry-pick the commit onto current HEAD
+                self._run_git_command(['cherry-pick', f'origin/{branch}'],
+                                      check=True)
+
+                # Get the new commit info
+                new_sha = self._run_git_command(['rev-parse', 'HEAD']).strip()
+                message = self._run_git_command(
+                    ['log', '-1', '--format=%B', new_sha]).strip()
+                subject = self._run_git_command(
+                    ['log', '-1', '--format=%s', new_sha]).strip()
+                change_id = extract_change_id(message)
+
+                commits.append({
+                    'sha': new_sha,
+                    'message': message,
+                    'subject': subject,
+                    'change_id': change_id,
+                })
+
+                print(f"    + Rebased to {new_sha[:8]}")
+
+            except subprocess.CalledProcessError as e:
+                # Cherry-pick failed - likely a conflict
+                print(f"\n  Rebase conflict while rebasing {branch}!")
+                print('  Please resolve the conflict and then run:')
+                print('    git cherry-pick --continue')
+                print('    git-stack push')
+                print('\n  Or abort with:')
+                print('    git cherry-pick --abort')
+                raise CherryPickError(
+                    f"Rebase conflict while rebasing {branch}. "
+                    'Please resolve manually.') from e
+
+        return commits
+
     def _create_or_update_branches(self, chain: list[dict[str, Any]]) -> None:
         """
         Create or update branches for each commit in the chain.
@@ -679,11 +787,15 @@ class GitStackPush:
                         commit['subject'], None)
 
             title = truncate_mr_title(commit['subject'])
+            # Remove Change-Id line from description (it should only be in commit)
+            description = '\n'.join(
+                line for line in commit['message'].split('\n')
+                if not line.strip().startswith('Change-Id:')).rstrip()
             result = self.client.create_mr(
                 source_branch=source_branch,
                 target_branch=target_branch,
                 title=title,
-                description=commit['message'],
+                description=description,
             )
             return (
                 'create',
@@ -902,6 +1014,8 @@ class GitStackPush:
 
         try:
             commits = self._add_change_ids_to_commits(commits)
+            # Fetch and rebase any downstream commits from remote
+            commits = self._rebase_downstream_commits(commits, base_branch)
         except DirtyWorkingTreeError as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
@@ -939,18 +1053,36 @@ class GitStackPush:
         return None
 
     def clean(self) -> None:
-        """Remove entries from mapping file for closed MRs."""
+        """Remove entries from mapping file for closed/merged or orphaned MRs."""
         if not self.mapping:
             print('No MRs in mapping file')
             return
 
-        print(f"\nChecking {len(self.mapping)} MR(s) for closed status...")
+        print(f"\nChecking {len(self.mapping)} MR(s)...")
 
         closed_count = 0
+        orphaned_count = 0
         to_remove = []
 
         for change_id, mr_info in self.mapping.items():
             mr_iid = mr_info['mr_iid']
+            branch_name = get_branch_name(change_id)
+
+            # Check if branch exists locally
+            try:
+                self._run_git_command(['rev-parse', '--verify', branch_name],
+                                      check=True)
+                branch_exists = True
+            except subprocess.CalledProcessError:
+                branch_exists = False
+
+            if not branch_exists:
+                print(
+                    f"  MR !{mr_iid} branch '{branch_name}' not found locally, "
+                    'removing from mapping')
+                to_remove.append(change_id)
+                orphaned_count += 1
+                continue
 
             try:
                 state = self.client.get_mr_state(mr_iid)
@@ -973,11 +1105,17 @@ class GitStackPush:
         for change_id in to_remove:
             del self.mapping[change_id]
 
-        if closed_count > 0:
+        total_removed = closed_count + orphaned_count
+        if total_removed > 0:
             save_mapping(self.mapping_path, self.mapping)
-            print(f"\n+ Removed {closed_count} closed MR(s) from mapping")
+            parts = []
+            if closed_count > 0:
+                parts.append(f"{closed_count} closed/merged")
+            if orphaned_count > 0:
+                parts.append(f"{orphaned_count} orphaned")
+            print(f"\n+ Removed {' and '.join(parts)} MR(s) from mapping")
         else:
-            print('\n+ No closed MRs found')
+            print('\n+ No closed or orphaned MRs found')
 
     def reindex(self, base_branch: str) -> None:
         """Remove all Change-Ids, close old MRs, and create new Change-Ids."""

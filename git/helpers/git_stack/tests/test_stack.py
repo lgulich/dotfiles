@@ -292,6 +292,169 @@ class TestPushRemoveCommit:
         assert update_ops[0]['args']['target_branch'] == 'main'
 
 
+class TestDownstreamRebase:
+    """Test rebasing downstream commits from remote."""
+
+    def test_rebase_downstream_on_amend(
+            self, git_stack_fixture: GitStackTestFixture) -> None:
+        """Test that amending commit 3 rebases commit 4 from remote."""
+        # Create stack with 4 commits
+        create_branch(git_stack_fixture.repo_path, 'feature', 'origin/main')
+        create_commit(git_stack_fixture.repo_path, 'file1.txt', 'First commit')
+        create_commit(git_stack_fixture.repo_path, 'file2.txt',
+                      'Second commit')
+        create_commit(git_stack_fixture.repo_path, 'file3.txt', 'Third commit')
+        create_commit(git_stack_fixture.repo_path, 'file4.txt',
+                      'Fourth commit')
+
+        stack = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack.push(base_branch='main')
+
+        mapping_before = git_stack_fixture.read_mapping()
+        assert len(mapping_before) == 4
+
+        # Get commit 4's Change-ID for later verification
+        cid4 = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD'))
+        assert cid4 is not None
+
+        # Get commit 3's SHA before amend
+        commit3_sha = run_git(git_stack_fixture.repo_path,
+                              ['rev-parse', 'HEAD~1'])
+
+        git_stack_fixture.reset_mock_client()
+
+        # Simulate amending commit 3:
+        # 1. Reset to commit 2
+        # 2. Cherry-pick commit 3 with modification
+        run_git(git_stack_fixture.repo_path, ['reset', '--hard', 'HEAD~2'])
+
+        # Cherry-pick commit 3 (preserves Change-ID in message)
+        run_git(git_stack_fixture.repo_path, ['cherry-pick', commit3_sha])
+
+        # Amend commit 3 with a change
+        file3_path = git_stack_fixture.repo_path / 'file3.txt'
+        file3_path.write_text('Third commit - amended content\n')
+        run_git(git_stack_fixture.repo_path, ['add', 'file3.txt'])
+        run_git(git_stack_fixture.repo_path,
+                ['commit', '--amend', '--no-edit'])
+
+        # Now we have commits 1, 2, 3' locally (commit 4 is only on remote)
+        local_commits = run_git(git_stack_fixture.repo_path,
+                                ['log', '--oneline', 'origin/main..HEAD'])
+        assert len(local_commits.strip().split('\n')) == 3
+
+        # Push again - should fetch and rebase commit 4
+        stack2 = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack2.push(base_branch='main')
+
+        # Verify we now have 4 commits locally
+        local_commits_after = run_git(
+            git_stack_fixture.repo_path,
+            ['log', '--oneline', 'origin/main..HEAD'])
+        assert len(local_commits_after.strip().split('\n')) == 4
+
+        # Verify commit 4's Change-ID is preserved
+        cid4_after = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD'))
+        assert cid4_after == cid4
+
+        # Verify commit 4's content is present
+        file4_path = git_stack_fixture.repo_path / 'file4.txt'
+        assert file4_path.exists()
+
+
+class TestMergeAndRebase:
+    """Test rebasing after MR is merged."""
+
+    # pylint: disable=too-many-locals
+    def test_target_updated_after_merge(
+            self, git_stack_fixture: GitStackTestFixture) -> None:
+        """Test that MR targets are updated after first MR is merged."""
+        # Create stack with 4 commits
+        create_branch(git_stack_fixture.repo_path, 'feature', 'origin/main')
+        create_commit(git_stack_fixture.repo_path, 'file1.txt', 'First commit')
+        create_commit(git_stack_fixture.repo_path, 'file2.txt',
+                      'Second commit')
+        create_commit(git_stack_fixture.repo_path, 'file3.txt', 'Third commit')
+        create_commit(git_stack_fixture.repo_path, 'file4.txt',
+                      'Fourth commit')
+
+        stack = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack.push(base_branch='main')
+
+        mapping_before = git_stack_fixture.read_mapping()
+        assert len(mapping_before) == 4
+
+        # Get Change-IDs and MR IIDs
+        cid1 = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD~3'))
+        cid2 = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD~2'))
+        assert cid1 is not None
+        assert cid2 is not None
+
+        mr1_iid = mapping_before[cid1]['mr_iid']
+        mr2_iid = mapping_before[cid2]['mr_iid']
+
+        # Verify MR2 initially targets MR1's branch
+        create_ops = git_stack_fixture.read_operations()
+        mr2_create = [
+            op for op in create_ops if op['operation'] == 'create_mr'
+            and op['args'].get('source_branch') == get_branch_name(cid2)
+        ]
+        assert len(mr2_create) == 1
+        assert mr2_create[0]['args']['target_branch'] != 'main'
+
+        # Mark MR1 as merged
+        git_stack_fixture.mock_client.set_mr_state(mr1_iid, 'merged')
+
+        git_stack_fixture.reset_mock_client()
+
+        # Simulate merge: remove commit 1 from local history
+        # (In real workflow, main would be updated and user would rebase)
+        commit2_sha = run_git(git_stack_fixture.repo_path,
+                              ['rev-parse', 'HEAD~2'])
+        commit3_sha = run_git(git_stack_fixture.repo_path,
+                              ['rev-parse', 'HEAD~1'])
+        commit4_sha = run_git(git_stack_fixture.repo_path,
+                              ['rev-parse', 'HEAD'])
+
+        # Reset to main and cherry-pick commits 2-4
+        run_git(git_stack_fixture.repo_path,
+                ['reset', '--hard', 'origin/main'])
+        run_git(git_stack_fixture.repo_path, ['cherry-pick', commit2_sha])
+        run_git(git_stack_fixture.repo_path, ['cherry-pick', commit3_sha])
+        run_git(git_stack_fixture.repo_path, ['cherry-pick', commit4_sha])
+
+        # Remove MR1 from mapping (it's merged)
+        mapping_after_merge = {
+            k: v
+            for k, v in mapping_before.items() if k != cid1
+        }
+        git_stack_fixture.mapping_file.write_text(
+            json.dumps(mapping_after_merge, indent=2))
+
+        # Push again
+        stack2 = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack2.push(base_branch='main')
+
+        # Verify MR2 now targets main
+        update_ops = [
+            op for op in git_stack_fixture.read_operations()
+            if op['operation'] == 'update_mr'
+        ]
+        mr2_update = [
+            op for op in update_ops if op['args']['mr_iid'] == mr2_iid
+        ]
+        assert len(mr2_update) == 1
+        assert mr2_update[0]['args']['target_branch'] == 'main'
+
+
 class TestClean:
     """Test clean functionality."""
 
