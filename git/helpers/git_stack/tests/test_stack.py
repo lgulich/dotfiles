@@ -1,5 +1,5 @@
 """Tests for git-stack functionality."""
-# pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods, too-many-locals
 
 from __future__ import annotations
 
@@ -292,6 +292,113 @@ class TestPushRemoveCommit:
         assert update_ops[0]['args']['target_branch'] == 'main'
 
 
+class TestInsertCommitAtBeginning:
+    """Test inserting a new commit at the beginning of a stack."""
+
+    def test_insert_commit_updates_target_branches(
+            self, git_stack_fixture: GitStackTestFixture) -> None:
+        """Test inserting a commit before existing ones updates MR targets.
+
+        When inserting a new commit at the beginning of a stack:
+        - The new commit gets a Change-ID with the next available position
+          (max existing + 1), NOT position 1
+        - Existing Change-IDs are preserved (stable identifiers)
+        - The MR target branches are updated based on actual commit order
+        """
+        # Create stack with 4 commits
+        create_branch(git_stack_fixture.repo_path, 'feature', 'origin/main')
+        create_commit(git_stack_fixture.repo_path, 'file1.txt', 'First commit')
+        create_commit(git_stack_fixture.repo_path, 'file2.txt',
+                      'Second commit')
+        create_commit(git_stack_fixture.repo_path, 'file3.txt', 'Third commit')
+        create_commit(git_stack_fixture.repo_path, 'file4.txt',
+                      'Fourth commit')
+
+        # Push the initial stack
+        stack = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack.push(base_branch='main')
+
+        mapping_before = git_stack_fixture.read_mapping()
+        assert len(mapping_before) == 4
+
+        # Get the first commit's Change-ID and MR info
+        first_commit_sha = run_git(git_stack_fixture.repo_path,
+                                   ['rev-parse', 'HEAD~3'])
+        first_cid = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, first_commit_sha))
+        assert first_cid is not None
+        first_mr_iid = mapping_before[first_cid]['mr_iid']
+
+        # Verify original first commit targets main
+        create_ops = [
+            op for op in git_stack_fixture.read_operations()
+            if op['operation'] == 'create_mr'
+        ]
+        first_create = [
+            op for op in create_ops if op['args']['title'] == 'First commit'
+        ]
+        assert len(first_create) == 1
+        assert first_create[0]['args']['target_branch'] == 'main'
+
+        git_stack_fixture.reset_mock_client()
+
+        # Insert a new commit at the beginning:
+        # 1. Save current HEAD
+        head_sha = run_git(git_stack_fixture.repo_path, ['rev-parse', 'HEAD'])
+
+        # 2. Reset to main and create new commit
+        run_git(git_stack_fixture.repo_path,
+                ['reset', '--hard', 'origin/main'])
+        create_commit(git_stack_fixture.repo_path, 'file0.txt',
+                      'Zeroth commit')
+
+        # 3. Cherry-pick all original commits on top (need ~4..HEAD to include all 4)
+        run_git(git_stack_fixture.repo_path,
+                ['cherry-pick', f'{head_sha}~4..{head_sha}'])
+
+        # Verify we now have 5 commits
+        local_commits = run_git(git_stack_fixture.repo_path,
+                                ['log', '--oneline', 'origin/main..HEAD'])
+        assert len(local_commits.strip().split('\n')) == 5
+
+        # Push again - new commit gets Change-ID, existing ones preserved
+        stack2 = git_stack_fixture.create_stack_instance(
+            stack_name='test-feature')
+        stack2.push(base_branch='main')
+
+        # Verify a new MR was created for the new commit
+        create_ops = [
+            op for op in git_stack_fixture.read_operations()
+            if op['operation'] == 'create_mr'
+        ]
+        new_commit_creates = [
+            op for op in create_ops if op['args']['title'] == 'Zeroth commit'
+        ]
+        assert len(new_commit_creates) == 1
+        # The new commit is first in order, so it targets main
+        assert new_commit_creates[0]['args']['target_branch'] == 'main'
+
+        # Verify the original first commit's MR target was updated
+        # to point to the new commit's branch (based on commit order)
+        update_ops = [
+            op for op in git_stack_fixture.read_operations()
+            if op['operation'] == 'update_mr'
+        ]
+        first_mr_update = [
+            op for op in update_ops if op['args']['mr_iid'] == first_mr_iid
+        ]
+        assert len(first_mr_update) == 1
+        # Should now target the new zeroth commit's branch, not main
+        assert first_mr_update[0]['args']['target_branch'] != 'main'
+
+        # Verify the new commit got position 5 (max existing 4 + 1)
+        new_commit_cid = extract_change_id(
+            get_commit_message(git_stack_fixture.repo_path, 'HEAD~4'))
+        assert new_commit_cid is not None
+        assert extract_position(new_commit_cid) == 5
+
+
 class TestDownstreamRebase:
     """Test rebasing downstream commits from remote."""
 
@@ -369,7 +476,6 @@ class TestDownstreamRebase:
 class TestMergeAndRebase:
     """Test rebasing after MR is merged."""
 
-    # pylint: disable=too-many-locals
     def test_target_updated_after_merge(
             self, git_stack_fixture: GitStackTestFixture) -> None:
         """Test that MR targets are updated after first MR is merged."""

@@ -382,6 +382,27 @@ class GitStackPush:
 
         return commits
 
+    def _get_next_position(self, commits: list[dict[str, Any]]) -> int:
+        """
+        Get the next available position for new commits.
+
+        Finds the maximum position among existing commits and returns max+1.
+        If no existing positions, returns 1.
+
+        Args:
+            commits: List of commits
+
+        Returns:
+            Next available position number
+        """
+        max_pos = 0
+        for commit in commits:
+            if commit['change_id']:
+                pos = extract_position(commit['change_id'])
+                if pos and pos > max_pos:
+                    max_pos = pos
+        return max_pos + 1
+
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     def _add_change_ids_to_commits(
             self, commits: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -390,6 +411,11 @@ class GitStackPush:
 
         This rewrites git history using cherry-pick. Creates a backup ref
         before starting and rolls back on failure.
+
+        Existing Change-IDs are preserved - only new commits get IDs.
+        The position in the Change-ID is historical (when created), not
+        the current order. Target branches are determined by actual
+        commit order in build_mr_chain().
 
         Args:
             commits: List of commit dictionaries
@@ -412,30 +438,21 @@ class GitStackPush:
         # Determine stack name
         stack_name = self._determine_stack_name(commits)
 
-        # Determine starting position
-        start_position = 1
-        for commit in commits:
-            if commit['change_id']:
-                pos = extract_position(commit['change_id'])
-                if pos and pos >= start_position:
-                    start_position = pos + 1
+        # Get starting position for new commits (max existing + 1)
+        next_position = self._get_next_position(commits)
 
         if self.dry_run:
             print(f"\n[DRY-RUN] Would add Change-Ids to "
                   f"{len(commits_needing_ids)} commit(s) "
                   f"with stack name '{stack_name}'")
-            position = 1
+            pos = next_position
             for commit in commits:
                 if commit['change_id'] is None:
-                    new_id = generate_change_id(stack_name, position)
+                    new_id = generate_change_id(stack_name, pos)
                     commit['change_id'] = new_id
                     print(f"  {commit['sha'][:8]}: {commit['subject']} -> "
                           f"Change-Id: {new_id}")
-                else:
-                    pos = extract_position(commit['change_id'])
-                    if pos:
-                        position = pos
-                position += 1
+                    pos += 1
             return commits
 
         # Create backup before rewriting history
@@ -458,71 +475,45 @@ class GitStackPush:
             # Checkout the base
             self._run_git_command(['checkout', base_sha], check=False)
 
-            # Cherry-pick each commit and amend with Change-Id
-            position = 1
+            # Cherry-pick each commit, adding Change-Id to new ones
+            position = next_position
             for commit in commits:
+                # Cherry-pick the commit
+                result = subprocess.run(
+                    ['git', 'cherry-pick', commit['sha']],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+
+                if result.returncode != 0:
+                    # Cherry-pick failed - abort and rollback
+                    self._run_git_command(['cherry-pick', '--abort'],
+                                          check=False)
+                    self._restore_from_backup()
+                    raise CherryPickError(
+                        f"Cherry-pick failed for commit {commit['sha'][:8]}: "
+                        f"{commit['subject']}\n"
+                        f"Error: {result.stderr or result.stdout}\n"
+                        'Rolled back to original state.')
+
                 if commit['change_id'] is None:
+                    # New commit - add Change-Id
                     new_change_id = generate_change_id(stack_name, position)
                     commit['change_id'] = new_change_id
-
-                    # Cherry-pick the commit
-                    result = subprocess.run(
-                        ['git', 'cherry-pick', commit['sha']],
-                        capture_output=True,
-                        text=True,
-                        check=False,
-                    )
-
-                    if result.returncode != 0:
-                        # Cherry-pick failed - abort and rollback
-                        self._run_git_command(['cherry-pick', '--abort'],
-                                              check=False)
-                        self._restore_from_backup()
-                        raise CherryPickError(
-                            f"Cherry-pick failed for commit {commit['sha'][:8]}: "
-                            f"{commit['subject']}\n"
-                            f"Error: {result.stderr or result.stdout}\n"
-                            'Rolled back to original state.')
-
-                    # Amend with new message including Change-Id
                     new_message = add_change_id_to_message(
                         commit['message'], new_change_id)
                     self._run_git_command(
                         ['commit', '--amend', '-m', new_message])
-
-                    # Update commit info
-                    new_sha = self._run_git_command(['rev-parse', 'HEAD'])
-                    commit['sha'] = new_sha
                     commit['message'] = new_message
+                    position += 1
 
                     print(f"  {commit['sha'][:8]}: {commit['subject']} -> "
                           f"Change-Id: {new_change_id}")
-                else:
-                    # Commit already has Change-Id, just cherry-pick it
-                    result = subprocess.run(
-                        ['git', 'cherry-pick', commit['sha']],
-                        capture_output=True,
-                        text=True,
-                        check=False,
-                    )
 
-                    if result.returncode != 0:
-                        self._run_git_command(['cherry-pick', '--abort'],
-                                              check=False)
-                        self._restore_from_backup()
-                        raise CherryPickError(
-                            f"Cherry-pick failed for commit {commit['sha'][:8]}: "
-                            f"{commit['subject']}\n"
-                            f"Error: {result.stderr or result.stdout}\n"
-                            'Rolled back to original state.')
-
-                    new_sha = self._run_git_command(['rev-parse', 'HEAD'])
-                    commit['sha'] = new_sha
-                    pos = extract_position(commit['change_id'])
-                    if pos:
-                        position = pos
-
-                position += 1
+                # Update sha after cherry-pick
+                new_sha = self._run_git_command(['rev-parse', 'HEAD'])
+                commit['sha'] = new_sha
 
             # Return to original branch/ref
             if original_ref.startswith('refs/heads/'):
@@ -661,7 +652,7 @@ class GitStackPush:
             return commits
 
         # Fetch and rebase each downstream commit
-        for pos, mr in downstream_mrs:
+        for _pos, mr in downstream_mrs:
             branch = mr['source_branch']
             print(f"  Rebasing {branch}...")
 
