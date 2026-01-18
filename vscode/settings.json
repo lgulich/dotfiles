@@ -52,5 +52,10 @@
         "E"
       ]
     }
-  ]
+  ],
+  "remote.SSH.remotePlatform": {
+    "lgulich-dt1": "linux"
+  },
+  "git.detectSubmodules": true,
+  "cursor.composer.shouldChimeAfterChatFinishes": true
 }
