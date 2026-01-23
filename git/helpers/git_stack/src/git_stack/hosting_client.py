@@ -126,6 +126,19 @@ class GitHostingClient(ABC):
             List of MR info dicts with 'mr_iid', 'source_branch', 'state'
         """
 
+    @abstractmethod
+    def find_mr_by_source_branch(self,
+                                 source_branch: str) -> dict[str, Any] | None:
+        """
+        Find an open MR by its source branch name.
+
+        Args:
+            source_branch: The source branch name to search for
+
+        Returns:
+            MR info dict with 'mr_iid', 'mr_url', 'state' if found, None otherwise
+        """
+
 
 class GitLabClient(GitHostingClient):
     """GitLab client using glab CLI with JSON API for reliable parsing."""
@@ -312,8 +325,11 @@ class GitLabClient(GitHostingClient):
     def get_mr_notes(self, mr_iid: int) -> list[dict[str, Any]]:
         """Get all notes from GitLab merge request using JSON API."""
         try:
-            output = self._run_glab_command(
-                ['api', f"projects/:id/merge_requests/{mr_iid}/notes"])
+            output = self._run_glab_command([
+                'api',
+                f"projects/:id/merge_requests/{mr_iid}/notes",
+                '--paginate',
+            ])
 
             if not output:
                 return []
@@ -388,6 +404,33 @@ class GitLabClient(GitHostingClient):
             return result
         except (subprocess.CalledProcessError, json.JSONDecodeError):
             return []
+
+    def find_mr_by_source_branch(self,
+                                 source_branch: str) -> dict[str, Any] | None:
+        """Find an open MR by its source branch name."""
+        try:
+            output = self._run_glab_command([
+                'api',
+                'projects/:id/merge_requests',
+                '-X',
+                'GET',
+                '-f',
+                'state=opened',
+                '-f',
+                f'source_branch={source_branch}',
+            ])
+            mrs_data: list[dict[str, Any]] = json.loads(output)
+
+            if mrs_data:
+                mr = mrs_data[0]
+                return {
+                    'mr_iid': mr['iid'],
+                    'mr_url': mr.get('web_url', ''),
+                    'state': mr.get('state', 'opened'),
+                }
+            return None
+        except (subprocess.CalledProcessError, json.JSONDecodeError):
+            return None
 
 
 class MockGitHostingClient(GitHostingClient):
@@ -665,6 +708,20 @@ class MockGitHostingClient(GitHostingClient):
                     'title': mr_data.get('title', ''),
                 })
         return result
+
+    def find_mr_by_source_branch(self,
+                                 source_branch: str) -> dict[str, Any] | None:
+        """Find an open MR by its source branch name."""
+        for mr_key, mr_data in self.mrs.items():
+            if (mr_data.get('source_branch') == source_branch
+                    and mr_data.get('state') == 'opened'):
+                return {
+                    'mr_iid': int(mr_key),
+                    'mr_url':
+                    f"https://gitlab.example.com/project/merge_requests/{mr_key}",
+                    'state': mr_data.get('state', 'opened'),
+                }
+        return None
 
     def set_mr_state(self, mr_iid: int, state: str) -> None:
         """

@@ -15,7 +15,7 @@
 	ignore = update-index --assume-unchanged
 	last = log -1 HEAD
 	publish = "! git_publish_branch.sh"
-	stack = "! uvx --with ${DOTFILES:?}/git/helpers/git_stack git-stack"
+	stack = ! uvx --refresh --with ${DOTFILES:?}/git/helpers/git_stack git-stack
 	stop-ignore = update-index --no-assume-unchanged
 	uncommit = reset --soft HEAD~1 --mixed
 	unstage = reset HEAD --
@@ -27,7 +27,7 @@
 	reset-to-origin = "! git_reset_to_origin.sh"
 	skip-changes = git update-index --skip-worktree
 	unskip-changes = git update-index --no-skip-worktree
-
+	reset-author = commit --amend --reset-author --no-edit
 
 [core]
 	editor = nvim

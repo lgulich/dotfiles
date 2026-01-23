@@ -94,21 +94,21 @@
     "when": "editorTextFocus && vim.active && vim.use<C-p> && !inDebugRepl || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'CommandlineInProgress' || vim.active && vim.use<C-p> && !inDebugRepl && vim.mode == 'SearchInProgressMode'"
   },
   {
-    "key": "ctrl+l",
     "command": "composer.sendToAgent",
-    "when": "editorHasPromptBar && editorPromptBarFocused"
-  },
-  {
-    "key": "cmd+l",
-    "command": "-composer.sendToAgent",
-    "when": "editorHasPromptBar && editorPromptBarFocused"
-  },
-  {
     "key": "ctrl+l",
-    "command": "aichat.newchataction"
+    "when": "editorHasPromptBar && editorPromptBarFocused"
   },
   {
+    "command": "-composer.sendToAgent",
     "key": "cmd+l",
-    "command": "-aichat.newchataction"
+    "when": "editorHasPromptBar && editorPromptBarFocused"
+  },
+  {
+    "command": "aichat.newchataction",
+    "key": "ctrl+l"
+  },
+  {
+    "command": "-aichat.newchataction",
+    "key": "cmd+l"
   }
 ]

@@ -742,6 +742,10 @@ class GitStackPush:
     def _create_or_update_mrs(self, chain: list[dict[str, Any]]) -> None:
         """
         Create or update MRs for each commit in the chain.
+
+        Target branches are always rebuilt from the current commit order:
+        - First commit targets the base branch
+        - Each subsequent commit targets the previous commit's branch
         """
         print('\nCreating/updating MRs...')
 
@@ -764,7 +768,8 @@ class GitStackPush:
             return
 
         def process_mr(
-            commit: dict[str, Any], ) -> tuple[str, int, str, str, str | None]:
+            commit: dict[str, Any],
+        ) -> tuple[str, int, str, str, str, str | None]:
             change_id = commit['change_id']
             source_branch = commit['source_branch']
             target_branch = commit['target_branch']
@@ -776,7 +781,19 @@ class GitStackPush:
                 # Always pass target_branch to ensure it's updated if stack changed
                 self.client.update_mr(mr_iid, title, target_branch)
                 return ('update', mr_iid, existing_mr['mr_url'],
-                        commit['subject'], None)
+                        commit['subject'], target_branch, None)
+
+            # Check if an MR already exists on GitLab for this source branch.
+            # This handles cases where the local mapping is out of sync.
+            remote_mr = self.client.find_mr_by_source_branch(source_branch)
+            if remote_mr:
+                mr_iid = remote_mr['mr_iid']
+                mr_url = remote_mr['mr_url']
+                title = truncate_mr_title(commit['subject'])
+                self.client.update_mr(mr_iid, title, target_branch)
+                # Return 'adopt' to indicate we're adopting an existing remote MR.
+                return ('adopt', mr_iid, mr_url, commit['subject'],
+                        target_branch, change_id)
 
             title = truncate_mr_title(commit['subject'])
             # Remove Change-Id line from description (it should only be in commit)
@@ -794,11 +811,12 @@ class GitStackPush:
                 result['mr_iid'],
                 result['mr_url'],
                 commit['subject'],
+                target_branch,
                 change_id,
             )
 
         # Process all MRs in parallel
-        results: list[tuple[str, int, str, str, str | None]] = []
+        results: list[tuple[str, int, str, str, str, str | None]] = []
         errors: list[tuple[str, str]] = []
 
         with ThreadPoolExecutor(max_workers=min(len(chain), 4)) as executor:
@@ -815,27 +833,30 @@ class GitStackPush:
                 except Exception as e:  # pylint: disable=broad-exception-caught
                     errors.append((commit['subject'], str(e)))
 
-        # Update mapping for all new MRs (thread-safe)
-        new_mrs_created = False
-        for action, mr_iid, mr_url, _subject, change_id in results:
-            if action == 'create' and change_id:
+        # Update mapping for all new/adopted MRs (thread-safe)
+        mapping_changed = False
+        for action, mr_iid, mr_url, _subject, _target, change_id in results:
+            if action in ('create', 'adopt') and change_id:
                 self.mapping[change_id] = {
                     'mr_iid': mr_iid,
                     'mr_url': mr_url,
                     'project_id': self._get_project_id(),
                 }
-                new_mrs_created = True
+                mapping_changed = True
 
-        if new_mrs_created:
+        if mapping_changed:
             save_mapping(self.mapping_path, self.mapping)
 
-        # Print results
-        for action, mr_iid, mr_url, subject, _ in results:
+        # Print results with target branch info
+        for action, mr_iid, mr_url, subject, target_branch, _ in results:
             if action == 'create':
                 print(f"  + Created MR !{mr_iid}: {subject}")
+            elif action == 'adopt':
+                print(f"  * Adopted existing MR !{mr_iid}: {subject}")
             else:
                 print(f"  ~ Updated MR !{mr_iid}: {subject}")
             print(f"    {mr_url}")
+            print(f"    Target: {target_branch}")
 
         for subject, error in errors:
             print(f"  ! Failed to process MR for {subject}: {error}")
