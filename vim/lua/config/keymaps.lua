@@ -39,6 +39,9 @@ map('n', '<Leader>P', '"+p')
 map('i', '<C-l>', '<c-g>u<Esc>[s1z=`]a<c-g>u')
 map('n', '<C-l>', '1z=1<CR>')
 
+-- Send selection to Claude Code
+map('v', '<C-l>', '<cmd>ClaudeCodeSend<cr>')
+
 -- Reformat the selection
 map('v', '<F4>', ':!clang-format<CR>')
 map('n', '<F6>', ':%!pandoc -s --from markdown --to rst<CR>')

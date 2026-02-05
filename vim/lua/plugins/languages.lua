@@ -63,6 +63,4 @@ return {
   -- Beancount
   { 'nathangrigg/vim-beancount', ft = 'beancount' },
 
-  -- Earthly
-  { 'earthly/earthly.vim', ft = 'Earthfile' },
 }
