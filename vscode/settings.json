@@ -57,5 +57,6 @@
     "lgulich-dt1": "linux"
   },
   "git.detectSubmodules": true,
-  "cursor.composer.shouldChimeAfterChatFinishes": true
+  "cursor.composer.shouldChimeAfterChatFinishes": true,
+  "claudeCode.preferredLocation": "panel"
 }
