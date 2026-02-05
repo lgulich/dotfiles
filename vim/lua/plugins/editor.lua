@@ -1,114 +1,152 @@
 return {
-  { '907th/vim-auto-save', config = function() vim.g.auto_save = 1 end },
-
+  -- Auto-save
   {
-    'chiel92/vim-autoformat',
-    config = function()
-      vim.keymap.set('', '<F3>', ':Autoformat<CR>')
-    end,
+    'okuuva/auto-save.nvim',
+    event = { 'InsertLeave', 'TextChanged' },
+    opts = {},
   },
 
-  { 'junegunn/fzf', dir = '~/.fzf', build = './install --all' },
-
+  -- Formatting
   {
-    'junegunn/fzf.vim',
-    config = function()
-      vim.keymap.set('', '<C-p>', ':Files<CR>')
-    end,
+    'stevearc/conform.nvim',
+    event = { 'BufWritePre' },
+    cmd = { 'ConformInfo' },
+    keys = {
+      { '<F3>', function() require('conform').format({ async = true }) end, desc = 'Format buffer' },
+    },
+    opts = {
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        python = { 'black' },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        json = { 'prettier' },
+        yaml = { 'prettier' },
+        markdown = { 'prettier' },
+        cpp = { 'clang-format' },
+        c = { 'clang-format' },
+        rust = { 'rustfmt' },
+      },
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+    },
   },
 
+  -- File explorer
   {
-    'scrooloose/nerdtree',
-    config = function()
-      vim.keymap.set('', '<C-n>', ':NERDTreeToggle<CR>')
-      vim.keymap.set('', '<leader>f', ':NERDTreeFind<CR>')
-
-      -- NERDTree preview functionality
-      vim.g.nerd_preview_enabled = 0
-      vim.g.preview_last_buffer = 0
-
-      vim.cmd([[
-        function! NERDTreePreview()
-          if (&ft ==# 'nerdtree')
-            let l:filename = substitute(getline("."), "^\s\+\|\s\+$","","g")
-            let l:lastchar = strpart(l:filename, strlen(l:filename) - 1, 1)
-            if (l:lastchar != "/" && strpart(l:filename, 0 ,2) != "..")
-              let l:store_buffer_to_close = 1
-              if (bufnr(l:filename) > 0)
-                let l:store_buffer_to_close = 0
-              endif
-              execute "normal go"
-              if (g:preview_last_buffer > 0)
-                execute "bwipeout " . g:preview_last_buffer
-                let g:preview_last_buffer = 0
-              endif
-              if (l:store_buffer_to_close)
-                let g:preview_last_buffer = bufnr(l:filename)
-              endif
-            endif
-          elseif (g:preview_last_buffer > 0)
-            let g:preview_last_buffer = 0
-          endif
-        endfunction
-
-        function! NERDTreePreviewToggle()
-          if (g:nerd_preview_enabled)
-            let g:nerd_preview_enabled = 0
-            augroup nerdpreview
-              autocmd!
-            augroup END
-          else
-            let g:nerd_preview_enabled = 1
-            augroup nerdpreview
-              autocmd!
-              autocmd CursorMoved * nested call NERDTreePreview()
-            augroup END
-          endif
-        endfunction
-      ]])
-    end,
+    'nvim-tree/nvim-tree.lua',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    keys = {
+      { '<C-n>', '<cmd>NvimTreeToggle<cr>', desc = 'Toggle file tree' },
+      { '<leader>f', '<cmd>NvimTreeFindFile<cr>', desc = 'Find file in tree' },
+    },
+    opts = {
+      view = { width = 35 },
+      renderer = { icons = { show = { git = true } } },
+    },
   },
 
+  -- Fuzzy finder
   {
-    'tpope/vim-commentary',
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    },
+    keys = {
+      { '<C-p>', '<cmd>Telescope find_files<cr>', desc = 'Find files' },
+      { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc = 'Live grep' },
+      { '<leader>fb', '<cmd>Telescope buffers<cr>', desc = 'Find buffers' },
+      { '<leader>fh', '<cmd>Telescope help_tags<cr>', desc = 'Help tags' },
+      { '<leader>fr', '<cmd>Telescope oldfiles<cr>', desc = 'Recent files' },
+      { 'gr', '<cmd>Telescope lsp_references<cr>', desc = 'LSP references' },
+    },
     config = function()
-      vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'c', 'cpp' },
-        callback = function()
-          vim.bo.commentstring = '// %s'
-        end,
+      local telescope = require('telescope')
+      telescope.setup({
+        defaults = {
+          file_ignore_patterns = { 'node_modules', '.git/' },
+        },
       })
+      telescope.load_extension('fzf')
     end,
   },
 
+  -- Git integration
+  {
+    'lewis6991/gitsigns.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    opts = {
+      current_line_blame = true,
+      current_line_blame_opts = {
+        delay = 500,
+      },
+      on_attach = function(bufnr)
+        local gs = package.loaded.gitsigns
+        local map = function(mode, l, r, desc)
+          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = desc })
+        end
+        map('n', ']h', gs.next_hunk, 'Next hunk')
+        map('n', '[h', gs.prev_hunk, 'Prev hunk')
+        map('n', '<leader>hs', gs.stage_hunk, 'Stage hunk')
+        map('n', '<leader>hr', gs.reset_hunk, 'Reset hunk')
+        map('n', '<leader>hp', gs.preview_hunk, 'Preview hunk')
+        map('n', '<leader>hb', gs.blame_line, 'Blame line')
+      end,
+    },
+  },
+
+  -- Git commands
   {
     'tpope/vim-fugitive',
-    config = function()
-      vim.keymap.set('n', '<leader>gd', ':Gvdiff<CR>')
-      vim.keymap.set('n', 'dgh', ':diffget //2<CR>')
-      vim.keymap.set('n', 'dgl', ':diffget //3<CR>')
-    end,
+    cmd = { 'Git', 'Gvdiff', 'Gdiffsplit' },
+    keys = {
+      { '<leader>gd', '<cmd>Gvdiff<cr>', desc = 'Git diff' },
+      { 'dgh', '<cmd>diffget //2<cr>', desc = 'Diffget left' },
+      { 'dgl', '<cmd>diffget //3<cr>', desc = 'Diffget right' },
+    },
   },
 
-  { 'tpope/vim-surround' },
-  { 'tpope/vim-repeat' },
-  { 'tpope/vim-abolish' },
-  { 'vim-airline/vim-airline' },
-
+  -- Surround
   {
-    'bkad/CamelCaseMotion',
-    config = function()
-      vim.keymap.set('', 'w', '<Plug>CamelCaseMotion_w', { silent = true })
-      vim.keymap.set('', 'b', '<Plug>CamelCaseMotion_b', { silent = true })
-      vim.keymap.set('', 'e', '<Plug>CamelCaseMotion_e', { silent = true })
-      vim.keymap.set('', 'ge', '<Plug>CamelCaseMotion_ge', { silent = true })
-      vim.cmd('sunmap w')
-      vim.cmd('sunmap b')
-      vim.cmd('sunmap e')
-      vim.cmd('sunmap ge')
-    end,
+    'kylechui/nvim-surround',
+    version = '*',
+    event = 'VeryLazy',
+    opts = {},
   },
 
-  { 'APZelos/blamer.nvim', config = function() vim.g.blamer_enabled = 1 end },
+  -- Statusline
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        theme = 'onedark',
+        component_separators = '|',
+        section_separators = '',
+      },
+    },
+  },
+
+  -- Subword motion (CamelCase, snake_case)
+  {
+    'chrisgrieser/nvim-spider',
+    keys = {
+      { 'w', "<cmd>lua require('spider').motion('w')<cr>", mode = { 'n', 'o', 'x' }, desc = 'Spider w' },
+      { 'e', "<cmd>lua require('spider').motion('e')<cr>", mode = { 'n', 'o', 'x' }, desc = 'Spider e' },
+      { 'b', "<cmd>lua require('spider').motion('b')<cr>", mode = { 'n', 'o', 'x' }, desc = 'Spider b' },
+    },
+  },
+
+  -- Repeat plugin commands
+  { 'tpope/vim-repeat', event = 'VeryLazy' },
+
+  -- Case-preserving substitution
+  { 'tpope/vim-abolish', event = 'VeryLazy' },
+
+  -- Activity tracking
   { 'ActivityWatch/aw-watcher-vim' },
 }

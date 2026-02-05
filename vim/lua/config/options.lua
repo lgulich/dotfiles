@@ -1,16 +1,8 @@
 -- General options
 
--- Set python path for neovim
-if vim.fn.has('mac') == 1 then
-  vim.g.python3_host_prog = '/usr/local/bin/python3'
-else
-  vim.g.python3_host_prog = '/usr/bin/python3'
-end
-
 local opt = vim.opt
 
 -- General
-opt.compatible = false
 opt.autoread = true
 opt.swapfile = false
 
@@ -19,14 +11,10 @@ opt.tabstop = 2
 opt.shiftwidth = 2
 opt.shiftround = true
 opt.expandtab = true
-opt.autoindent = true
 opt.textwidth = 100
 
 -- Searching
 opt.incsearch = false
-
--- Backspace key
-opt.backspace = { 'indent', 'eol', 'start' }
 
 -- Navigation
 opt.iskeyword:append('_')
@@ -48,17 +36,10 @@ opt.spellfile = vim.fn.expand('$DOTFILES') .. '/vim/spell/en.utf-8.add'
 
 -- Appearance
 opt.showmatch = true
-opt.showcmd = true
 opt.colorcolumn = '+1'
-opt.ruler = true
 opt.scrolloff = 5
-
--- Enable nice colors in tmux
-if vim.env.TMUX == nil or vim.env.TMUX == '' then
-  if vim.fn.has('termguicolors') == 1 then
-    opt.termguicolors = true
-  end
-end
+opt.termguicolors = true
+opt.signcolumn = 'yes'
 
 -- Setup make for bazel and gcc
 opt.makeprg = 'bazel build'
@@ -83,6 +64,23 @@ vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'tex', 'latex' },
   callback = function()
     vim.bo.spell = true
+  end,
+})
+
+-- Set C/C++ comment style to //
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup,
+  pattern = { 'c', 'cpp' },
+  callback = function()
+    vim.bo.commentstring = '// %s'
+  end,
+})
+
+-- Highlight on yank
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = augroup,
+  callback = function()
+    vim.highlight.on_yank()
   end,
 })
 

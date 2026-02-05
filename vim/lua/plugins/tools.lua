@@ -3,22 +3,28 @@ return {
   {
     'nosduco/remote-sshfs.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
-    config = function()
-      require('remote-sshfs').setup({
-        connections = {
-          sshfs_args = {
-            "-o reconnect",
-            "-o ConnectTimeout=5",
-            "-o cache=yes",
-            "-o kernel_cache",
-            "-o auto_cache",
-          },
+    cmd = { 'RemoteSSHFSConnect', 'RemoteSSHFSDisconnect', 'RemoteSSHFSEdit', 'RemoteSSHFSFindFiles', 'RemoteSSHFSLiveGrep' },
+    opts = {
+      connections = {
+        sshfs_args = {
+          '-o reconnect',
+          '-o ConnectTimeout=5',
+          '-o cache=yes',
+          '-o kernel_cache',
+          '-o auto_cache',
         },
-      })
-      require('telescope').load_extension 'remote-sshfs'
+      },
+    },
+    config = function(_, opts)
+      require('remote-sshfs').setup(opts)
+      require('telescope').load_extension('remote-sshfs')
     end,
   },
 
-  -- AI
-  { 'supermaven-inc/supermaven-nvim', config = function() require('supermaven-nvim').setup{} end },
+  -- AI completion
+  {
+    'supermaven-inc/supermaven-nvim',
+    event = 'InsertEnter',
+    opts = {},
+  },
 }

@@ -12,8 +12,7 @@ map('n', '<Leader>S', ':%s/<C-r><C-W>/')
 -- Search and replace visual selection
 map('v', '<Leader>s', ':<C-u>%s/<C-r>*/')
 
--- Start global project-wide search
-map('', '<C-F>', ':grep -r -F "')
+-- Start global project-wide search (use telescope live_grep via <leader>fg)
 
 -- Toggle fold around current block
 map('n', '<space>', 'za')

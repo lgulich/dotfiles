@@ -1,9 +1,12 @@
 return {
   {
-    'joshdick/onedark.vim',
+    'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      pcall(vim.cmd, 'colorscheme onedark')
+      require('onedark').setup({
+        style = 'dark',
+      })
+      require('onedark').load()
     end,
   },
 }

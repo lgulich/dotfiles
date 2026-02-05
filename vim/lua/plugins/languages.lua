@@ -23,19 +23,21 @@ return {
 
   {
     'lgulich/toggle-header-source.vim',
-    config = function()
-      vim.keymap.set('', '<F5>', ':call ToggleHeaderSource()<CR>')
-    end,
+    ft = { 'cpp', 'c', 'h', 'hpp' },
+    keys = {
+      { '<F5>', ':call ToggleHeaderSource()<CR>', desc = 'Toggle header/source' },
+    },
   },
 
-  { 'bfrg/vim-cpp-modern' },
+  { 'bfrg/vim-cpp-modern', ft = { 'cpp', 'c' } },
 
   -- Rust
-  { 'rust-lang/rust.vim' },
+  { 'rust-lang/rust.vim', ft = 'rust' },
 
   -- Latex
   {
     'lervag/vimtex',
+    ft = { 'tex', 'latex' },
     config = function()
       vim.g.tex_flavor = 'latex'
       vim.g.vimtex_view_method = 'zathura'
@@ -44,23 +46,23 @@ return {
       vim.g.tex_conceal = 'abdmg'
     end,
   },
-  { 'rhysd/vim-grammarous' },
+  { 'rhysd/vim-grammarous', ft = { 'tex', 'latex', 'markdown' } },
 
   -- Bazel
-  { 'google/vim-maktaba' },
-  { 'bazelbuild/vim-bazel', dependencies = { 'google/vim-maktaba' } },
+  { 'google/vim-maktaba', ft = { 'bzl', 'BUILD' } },
+  { 'bazelbuild/vim-bazel', ft = { 'bzl', 'BUILD' }, dependencies = { 'google/vim-maktaba' } },
 
   -- Documentation
-  { 'godlygeek/tabular' },
-  { 'preservim/vim-markdown', dependencies = { 'godlygeek/tabular' } },
-  { 'habamax/vim-rst' },
+  { 'godlygeek/tabular', cmd = 'Tabularize' },
+  { 'preservim/vim-markdown', ft = 'markdown', dependencies = { 'godlygeek/tabular' } },
+  { 'habamax/vim-rst', ft = 'rst' },
 
   -- Protobuf
-  { 'uarun/vim-protobuf' },
+  { 'uarun/vim-protobuf', ft = 'proto' },
 
   -- Beancount
-  { 'nathangrigg/vim-beancount' },
+  { 'nathangrigg/vim-beancount', ft = 'beancount' },
 
   -- Earthly
-  { 'earthly/earthly.vim' },
+  { 'earthly/earthly.vim', ft = 'Earthfile' },
 }
