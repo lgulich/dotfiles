@@ -1,11 +1,14 @@
-vim.cmd('source $DOTFILES/vim/config/commands.vim')
-vim.cmd('source $DOTFILES/vim/config/set.vim')
-vim.cmd('source $DOTFILES/vim/config/keymap.vim')
-vim.cmd('source $DOTFILES/vim/config/plug.vim')
-vim.cmd('source $DOTFILES/vim/config/plugins.vim')
+-- Set leader keys before loading lazy.nvim
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
 
--- LSP Setup (move to own file when becomes too big).
--- ClangD
+-- Load configuration modules
+require("config.options")
+require("config.keymaps")
+require("config.commands")
+require("config.lazy")
+
+-- LSP Setup
 vim.lsp.config.clangd = {
   cmd = { 'clangd' },
   filetypes = { 'c', 'cpp', 'cxx', 'cc' },
@@ -31,18 +34,3 @@ vim.lsp.config.ts_ls = {
 }
 
 vim.lsp.enable({ 'clangd', 'rust_analyzer', 'pyright', 'ts_ls' })
-
-require('remote-sshfs').setup({
-  connections = {
-    sshfs_args = {
-      "-o reconnect",
-      "-o ConnectTimeout=5",
-      "-o cache=yes",
-      "-o kernel_cache",
-      "-o auto_cache",
-    },
-  },
-})
-require('telescope').load_extension 'remote-sshfs'
-
-require('supermaven-nvim').setup{}

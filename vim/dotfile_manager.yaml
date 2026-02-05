@@ -11,3 +11,4 @@ install:
 symlinks:
   init.vim: ~/.vimrc
   init.lua: ~/.config/nvim/init.lua
+  lua: ~/.config/nvim/lua
