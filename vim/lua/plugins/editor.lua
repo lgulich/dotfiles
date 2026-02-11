@@ -45,6 +45,7 @@ return {
     opts = {
       view = { width = 35 },
       renderer = { icons = { show = { git = true } } },
+      filesystem_watchers = { ignore_dirs = { 'external' } },
     },
   },
 

@@ -40,7 +40,50 @@ map('i', '<C-l>', '<c-g>u<Esc>[s1z=`]a<c-g>u')
 map('n', '<C-l>', '1z=1<CR>')
 
 -- Send selection to Claude Code
+map('n', '<C-l>', '<cmd>ClaudeCodeFocus<cr>')
 map('v', '<C-l>', '<cmd>ClaudeCodeSend<cr>')
+
+-- Toggle terminal
+local term_buf = nil
+local term_win = nil
+local function toggle_terminal()
+  if term_win and vim.api.nvim_win_is_valid(term_win) then
+    vim.api.nvim_win_hide(term_win)
+    term_win = nil
+  else
+    vim.cmd('botright split')
+    vim.cmd('resize 12')
+    if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
+      vim.api.nvim_win_set_buf(0, term_buf)
+    else
+      vim.cmd('terminal')
+      term_buf = vim.api.nvim_get_current_buf()
+    end
+    term_win = vim.api.nvim_get_current_win()
+    vim.cmd('startinsert')
+  end
+end
+map({'n', 't'}, '<C-t>', toggle_terminal, {desc = 'Toggle Terminal'})
+
+-- Toggle window zoom
+local function toggle_zoom()
+  if vim.t.zoomed then
+    vim.cmd(vim.t.zoom_winrestcmd)
+    vim.t.zoomed = false
+  else
+    vim.t.zoom_winrestcmd = vim.fn.winrestcmd()
+    vim.cmd('resize')
+    vim.cmd('vertical resize')
+    vim.t.zoomed = true
+  end
+end
+map('n', '<C-z>', toggle_zoom, {desc = 'Toggle window zoom'})
+
+-- Allow moving out of terminal panes easily
+map('t', '<C-w>h', [[<C-\><C-n><C-w>h]], {silent = true})
+map('t', '<C-w>l', [[<C-\><C-n><C-w>l]], {silent = true})
+map('t', '<C-w>j', [[<C-\><C-n><C-w>j]], {silent = true})
+map('t', '<C-w>k', [[<C-\><C-n><C-w>k]], {silent = true})
 
 -- Reformat the selection
 map('v', '<F4>', ':!clang-format<CR>')

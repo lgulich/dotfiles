@@ -12,7 +12,6 @@ return {
     dependencies = { 'folke/snacks.nvim' },
     event = 'VeryLazy',
     opts = {
-      terminal_cmd = 'ccc --allow-all',
       focus_after_send = true,
     },
     keys = {
