@@ -13,11 +13,6 @@ alias la='ls -A'
 alias l='ls -CF'
 alias cd='cd_and_ls'
 
-# Isaac development
-alias cdi='cd ~/Code/isaac/'
-alias cdis='cd ~/Code/isaac/sdk'
-alias cdg='cd ~/Code/gxf/'
-
 # Vim
 alias vim='nvim'
 

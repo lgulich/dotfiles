@@ -79,7 +79,6 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 # Load OSMO
 export OSMO_PATH="$HOME/Code/osmo"
 export PATH=$PATH:$OSMO_PATH
-export ISAAC_DEV_BAZEL=dazel
 [ -f $OSMO_PATH/osmo/autocomplete.bash ] && source '$OSMO_PATH/osmo/autocomplete.bash'
 
 # History setup

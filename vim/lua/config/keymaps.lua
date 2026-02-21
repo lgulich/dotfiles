@@ -40,8 +40,34 @@ map('i', '<C-l>', '<c-g>u<Esc>[s1z=`]a<c-g>u')
 map('n', '<C-l>', '1z=1<CR>')
 
 -- Send selection to Claude Code
+-- For normal file buffers, use ClaudeCodeSend (@-mention with file path).
+-- For non-file buffers (fugitive, terminal, scratch, etc.), paste the raw
+-- selected text directly into the Claude Code terminal.
+local function send_to_claude_visual()
+  if vim.bo.buftype == '' then
+    vim.cmd('ClaudeCodeSend')
+    return
+  end
+
+  -- Yank the visual selection into register z
+  vim.cmd('normal! "zy')
+  local text = vim.fn.getreg('z')
+
+  -- Focus the Claude Code terminal
+  local terminal = require('claudecode.terminal')
+  terminal.open()
+
+  -- Find the terminal buffer's channel and send the text
+  local term_bufnr = terminal.get_active_terminal_bufnr()
+  if term_bufnr then
+    local chan = vim.bo[term_bufnr].channel
+    if chan and chan > 0 then
+      vim.fn.chansend(chan, text)
+    end
+  end
+end
 map('n', '<C-l>', '<cmd>ClaudeCodeFocus<cr>')
-map('v', '<C-l>', '<cmd>ClaudeCodeSend<cr>')
+map('v', '<C-l>', send_to_claude_visual)
 
 -- Toggle terminal
 local term_buf = nil
@@ -78,6 +104,9 @@ local function toggle_zoom()
   end
 end
 map('n', '<C-z>', toggle_zoom, {desc = 'Toggle window zoom'})
+
+-- Exit terminal mode
+map('t', 'jk', [[<C-\><C-n>]])
 
 -- Allow moving out of terminal panes easily
 map('t', '<C-w>h', [[<C-\><C-n><C-w>h]], {silent = true})
