@@ -58,5 +58,6 @@
   },
   "git.detectSubmodules": true,
   "cursor.composer.shouldChimeAfterChatFinishes": true,
-  "claudeCode.preferredLocation": "panel"
+  "claudeCode.preferredLocation": "panel",
+  "remote.autoForwardPortsSource": "hybrid"
 }
